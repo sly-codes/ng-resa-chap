@@ -20,8 +20,7 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () => import('./main.routes').then((mod) => mod.MAIN_ROUTES),
-      },
-      // Nous avons remplacé l'ancien { path: '', redirectTo: 'catalogue', pathMatch: 'full' }
+      }
     ],
   },
 

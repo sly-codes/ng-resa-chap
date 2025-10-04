@@ -6,17 +6,15 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core-module';
 import { jwtInterceptor } from './core/jwt-interceptor'; // NOUVEL IMPORT
 import { SharedModule } from './shared-module';
-import { ModalWrapperComponent } from './shared/modal-wrapper/modal-wrapper.component';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule, // AJOUT
+    HttpClientModule, 
     CoreModule,
     SharedModule,
-    ModalWrapperComponent
   ],
   providers: [
     // Configuration de l'intercepteur avec le HttpClient

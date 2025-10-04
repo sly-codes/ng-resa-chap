@@ -1,72 +1,91 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-50">
-  <div class="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-xl">
-    <h2 class="text-3xl font-bold text-center text-gray-900">
-      Connectez-vous à ResaChap
-    </h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+<div class="auth-wrapper d-flex align-items-center justify-content-center min-vh-100">
+  <div class="auth-card card border-0 col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+    
+    <!-- Titre -->
+    <h2 class="h4 fw-semibold">Connexion à ResaChap</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       
-      <div class="rounded-md shadow-sm -space-y-px">
-        <div>
-          <label for="email" class="sr-only">Adresse Email</label>
-          <div class="relative">
-            <i class='bx bx-mail-send absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'></i>
-            <input 
-              id="email" 
-              name="email" 
-              type="email" 
-              formControlName="email" 
-              required
-              class="appearance-none rounded-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="Adresse Email"
-            >
-          </div>
-        </div>
-        <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="pt-1 text-sm text-red-600">
-          <p *ngIf="loginForm.get('email')?.errors?.['required']">L'email est requis.</p>
-          <p *ngIf="loginForm.get('email')?.errors?.['email']">Format d'email invalide.</p>
-        </div>
-      </div>
-      
-      <div>
-        <label for="password" class="sr-only">Mot de passe</label>
-        <div class="relative">
-          <i class='bx bx-lock-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'></i>
-          <input 
-            id="password" 
-            name="password" 
-            type="password" 
-            formControlName="password" 
+      <!-- Champ Email -->
+      <div class="mb-3">
+        <div class="input-icon-wrapper">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            formControlName="email"
             required
-            class="appearance-none rounded-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="Mot de passe"
-          >
+            class="form-control"
+            placeholder="Adresse email"
+            autocomplete="email"
+          />
+          <i class="bx bx-mail-send"></i>
         </div>
-        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="pt-1 text-sm text-red-600">
-          <p *ngIf="loginForm.get('password')?.errors?.['required']">Le mot de passe est requis.</p>
-          <p *ngIf="loginForm.get('password')?.errors?.['minlength']">Minimum 6 caractères.</p>
+        <div 
+          *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" 
+          class="form-text text-danger pt-1"
+        >
+          <p *ngIf="loginForm.get('email')?.errors?.['required']">
+            L'email est requis
+          </p>
+          <p *ngIf="loginForm.get('email')?.errors?.['email']">
+            Format d'email invalide
+          </p>
         </div>
       </div>
 
-      <div *ngIf="error" class="p-3 text-sm font-medium text-red-700 bg-red-100 rounded-lg">
+      <!-- Champ Mot de passe -->
+      <div class="mb-4">
+        <div class="input-icon-wrapper">
+          <input
+            id="password"
+            name="password"
+            type="password"
+            formControlName="password"
+            required
+            class="form-control"
+            placeholder="Mot de passe"
+            autocomplete="current-password"
+          />
+          <i class="bx bx-lock-alt"></i>
+        </div>
+        <div 
+          *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" 
+          class="form-text text-danger pt-1"
+        >
+          <p *ngIf="loginForm.get('password')?.errors?.['required']">
+            Le mot de passe est requis
+          </p>
+          <p *ngIf="loginForm.get('password')?.errors?.['minlength']">
+            Minimum 6 caractères requis
+          </p>
+        </div>
+      </div>
+
+      <!-- Message d'erreur global -->
+      <div *ngIf="error" class="alert alert-danger" role="alert">
         {{ error }}
       </div>
 
-      <div>
+      <!-- Bouton de connexion -->
+      <div class="d-grid">
         <button 
           type="submit" 
-          [disabled]="loginForm.invalid || isLoading"
-          class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition duration-150"
+          [disabled]="loginForm.invalid || isLoading" 
+          class="btn btn-primary"
         >
-          <i *ngIf="isLoading" class='bx bx-loader-alt bx-spin mr-2'></i>
-          Se connecter
+          <i *ngIf="isLoading" class="bx bx-loader-alt bx-spin"></i>
+          <span>{{ isLoading ? 'Connexion...' : 'Se connecter' }}</span>
         </button>
       </div>
-      
-      <div class="text-sm text-center">
-        <a [routerLink]="['/auth/signup']" class="font-medium text-blue-600 hover:text-blue-500">
+
+      <!-- Lien vers inscription -->
+      <div class="text-center">
+        <a [routerLink]="['/auth/signup']" class="auth-link">
           Pas de compte ? S'inscrire
         </a>
       </div>
+      
     </form>
   </div>
 </div>

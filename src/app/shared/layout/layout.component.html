@@ -1,38 +1,120 @@
-<div class="min-h-screen flex flex-col">
-  <header class="bg-white shadow-md sticky top-0 z-10">
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-      
-      <div class="flex-shrink-0">
-        <a [routerLink]="['/catalogue']" class="text-2xl font-bold text-blue-600">
-          <i class='bx bx-calendar-check mr-1'></i> ResaChap
-        </a>
-      </div>
-      
-      <div class="flex items-center space-x-6">
-        <a [routerLink]="['/catalogue']" routerLinkActive="text-blue-600 font-semibold" class="text-gray-600 hover:text-blue-500 transition duration-150">Catalogue</a>
-        <a [routerLink]="['/resources/mine']" routerLinkActive="text-blue-600 font-semibold" class="text-gray-600 hover:text-blue-500 transition duration-150">Mes Ressources</a>
+<div class="d-flex flex-column min-vh-100">
+  
+  <!-- 📌 Header avec navbar sticky -->
+  <header class="navbar-wrapper sticky-top">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid navbar-container">
         
-        <div class="relative group">
-            <span class="text-gray-600 hover:text-blue-500 cursor-pointer transition duration-150 flex items-center">
-                Réservations <i class='bx bx-chevron-down ml-1'></i>
-            </span>
-            <div class="absolute right-0 mt-3 w-48 bg-white rounded-md shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                <a [routerLink]="['/reservations/made']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <i class='bx bx-book-bookmark mr-2'></i> Faites par moi
-                </a>
-                <a [routerLink]="['/reservations/received']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <i class='bx bx-list-check mr-2'></i> Reçues
-                </a>
-            </div>
-        </div>
+        <!-- 🏷️ Logo/Brand -->
+        <a [routerLink]="['/catalogue']" class="navbar-brand">
+          <span class="text-green">
+            <i class='bx bx-calendar-check'></i>
+            <span>ResaChap</span>
+          </span>
+        </a>
 
-        <button (click)="onLogout()" class="px-3 py-1 text-sm bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition duration-150">
-          <i class='bx bx-log-out mr-1'></i> Déconnexion
+        <!-- 🍔 Bouton burger mobile -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bx bx-menu"></i>
         </button>
+
+        <!-- 📋 Menu de navigation -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          
+          <!-- Navigation principale -->
+          <ul class="navbar-nav me-auto">
+            
+            <!-- Catalogue -->
+            <li class="nav-item">
+              <a 
+                [routerLink]="['/catalogue']"
+                routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{exact: false}"
+                class="nav-link"
+              >
+                <i class='bx bx-collection'></i>
+                <span>Catalogue</span>
+              </a>
+            </li>
+            
+            <!-- Mes Ressources -->
+            <li class="nav-item">
+              <a 
+                [routerLink]="['/resources/mine']"
+                routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{exact: false}"
+                class="nav-link"
+              >
+                <i class='bx bx-box'></i>
+                <span>Mes Ressources</span>
+              </a>
+            </li>
+            
+            <!-- Dropdown Réservations -->
+            <li ngbDropdown class="nav-item dropdown" autoClose="true">
+              <a 
+                class="nav-link dropdown-toggle"
+                id="reservationsDropdown"
+                role="button"
+                ngbDropdownToggle
+              >
+                <i class='bx bx-calendar'></i>
+                <span>Réservations</span>
+                <i class='bx bx-chevron-down chevron-icon'></i>
+              </a>
+              
+              <div 
+                ngbDropdownMenu 
+                aria-labelledby="reservationsDropdown" 
+                class="dropdown-menu-dark"
+              >
+                <a 
+                  [routerLink]="['/reservations/made']" 
+                  ngbDropdownItem
+                  class="dropdown-item"
+                >
+                  <i class='bx bx-book-bookmark'></i>
+                  <span>Faites par moi</span>
+                </a>
+                <a 
+                  [routerLink]="['/reservations/received']" 
+                  ngbDropdownItem
+                  class="dropdown-item"
+                >
+                  <i class='bx bx-list-check'></i>
+                  <span>Reçues</span>
+                </a>
+              </div>
+            </li>
+          </ul>
+
+          <!-- 🚪 Bouton déconnexion -->
+          <div class="navbar-actions">
+            <button 
+              (click)="onLogout()" 
+              class="btn btn-sm btn-outline-danger"
+            >
+              <i class='bx bx-log-out'></i>
+              <span>Déconnexion</span>
+            </button>
+          </div>
+          
+        </div>
       </div>
     </nav>
   </header>
 
-  <main class="flex-grow p-8 bg-gray-50">
-    <router-outlet></router-outlet> </main>
+  <!-- 📄 Contenu principal -->
+  <main class="flex-grow-1">
+    <router-outlet></router-outlet>
+  </main>
+  
 </div>
