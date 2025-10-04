@@ -1,0 +1,38 @@
+<div class="min-h-screen flex flex-col">
+  <header class="bg-white shadow-md sticky top-0 z-10">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
+      
+      <div class="flex-shrink-0">
+        <a [routerLink]="['/catalogue']" class="text-2xl font-bold text-blue-600">
+          <i class='bx bx-calendar-check mr-1'></i> ResaChap
+        </a>
+      </div>
+      
+      <div class="flex items-center space-x-6">
+        <a [routerLink]="['/catalogue']" routerLinkActive="text-blue-600 font-semibold" class="text-gray-600 hover:text-blue-500 transition duration-150">Catalogue</a>
+        <a [routerLink]="['/resources/mine']" routerLinkActive="text-blue-600 font-semibold" class="text-gray-600 hover:text-blue-500 transition duration-150">Mes Ressources</a>
+        
+        <div class="relative group">
+            <span class="text-gray-600 hover:text-blue-500 cursor-pointer transition duration-150 flex items-center">
+                Réservations <i class='bx bx-chevron-down ml-1'></i>
+            </span>
+            <div class="absolute right-0 mt-3 w-48 bg-white rounded-md shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                <a [routerLink]="['/reservations/made']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class='bx bx-book-bookmark mr-2'></i> Faites par moi
+                </a>
+                <a [routerLink]="['/reservations/received']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class='bx bx-list-check mr-2'></i> Reçues
+                </a>
+            </div>
+        </div>
+
+        <button (click)="onLogout()" class="px-3 py-1 text-sm bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition duration-150">
+          <i class='bx bx-log-out mr-1'></i> Déconnexion
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-grow p-8 bg-gray-50">
+    <router-outlet></router-outlet> </main>
+</div>

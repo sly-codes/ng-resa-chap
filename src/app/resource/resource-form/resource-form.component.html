@@ -1,0 +1,84 @@
+<!-- Le formulaire n'a plus besoin d'un div de centrage, la modale s'en charge. -->
+<div class="p-6">
+  <h1 class="text-2xl font-bold text-gray-900 mb-6">
+    <i class='bx bx-sitemap mr-2 text-blue-600'></i> 
+    {{ isEditMode ? 'Modifier la Ressource' : 'Ajouter une Nouvelle Ressource' }}
+  </h1>
+
+  <div *ngIf="isLoading" class="text-center p-4">
+    <i class='bx bx-loader-alt bx-spin text-3xl text-blue-500'></i>
+    <p class="mt-1 text-gray-600">Chargement...</p>
+  </div>
+
+  <form *ngIf="!isLoading" [formGroup]="resourceForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    
+    <!-- Erreur Générale -->
+    <div *ngIf="error" class="p-3 text-sm font-medium text-red-700 bg-red-100 rounded-lg">
+      {{ error }}
+    </div>
+
+    <!-- Champ Nom -->
+    <div>
+      <label for="name" class="block text-sm font-medium text-gray-700">Nom de la Ressource *</label>
+      <input 
+        id="name" 
+        type="text" 
+        formControlName="name" 
+        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Ex: Salle de conférence Alpha"
+      >
+      <div *ngIf="resourceForm.get('name')?.touched && resourceForm.get('name')?.invalid" class="pt-1 text-xs text-red-600">
+        <p *ngIf="resourceForm.get('name')?.errors?.['required']">Le nom est obligatoire.</p>
+        <p *ngIf="resourceForm.get('name')?.errors?.['maxlength']">Le nom ne doit pas dépasser 100 caractères.</p>
+      </div>
+    </div>
+
+    <!-- Champ Type -->
+    <div>
+      <label for="type" class="block text-sm font-medium text-gray-700">Type de Ressource *</label>
+      <select 
+        id="type" 
+        formControlName="type" 
+        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="ROOM">Salle (ROOM)</option>
+        <option value="EQUIPMENT">Équipement (EQUIPMENT)</option>
+      </select>
+    </div>
+
+    <!-- Champ Description -->
+    <div>
+      <label for="description" class="block text-sm font-medium text-gray-700">Description (Optionnel)</label>
+      <textarea 
+        id="description" 
+        rows="3" 
+        formControlName="description" 
+        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Détails, capacités, emplacement..."
+      ></textarea>
+    </div>
+    
+    <!-- Boutons d'action -->
+    <div class="flex justify-end space-x-3 pt-4 border-t mt-4">
+      
+      <!-- Annuler (Ferme la modale) -->
+      <button 
+        type="button" 
+        (click)="onCancel()"
+        class="px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150"
+      >
+        Annuler
+      </button>
+      
+      <!-- Soumettre -->
+      <button 
+        type="submit" 
+        [disabled]="resourceForm.invalid || isLoading"
+        class="px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition duration-150 disabled:opacity-50"
+      >
+        <i *ngIf="isLoading" class='bx bx-loader-alt bx-spin mr-2'></i>
+        {{ isEditMode ? 'Sauvegarder' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+</div>

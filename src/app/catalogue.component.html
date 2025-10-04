@@ -1,0 +1,61 @@
+<div class="max-w-7xl mx-auto py-6">
+  
+  <h1 class="text-4xl font-extrabold text-gray-900 mb-8">
+    Catalogue des Ressources <i class='bx bx-search-alt-2 text-blue-600'></i>
+  </h1>
+
+  <div *ngIf="loading" class="text-center p-10">
+    <i class='bx bx-loader-alt bx-spin text-5xl text-blue-500'></i>
+    <p class="mt-2 text-gray-600">Chargement des ressources disponibles...</p>
+  </div>
+
+  <div *ngIf="error" class="p-4 mb-4 text-sm font-medium text-red-700 bg-red-100 rounded-lg">
+    {{ error }}
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    
+    <ng-container *ngIf="resources$ | async as resources">
+      
+      <div *ngIf="resources.length === 0 && !loading" class="col-span-full p-10 text-center text-gray-500">
+        <i class='bx bx-sad text-6xl mb-3'></i>
+        <p>Aucune ressource n'est actuellement disponible à la réservation.</p>
+      </div>
+
+      <div 
+        *ngFor="let resource of resources" 
+        class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100"
+      >
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">
+              {{ resource.name }}
+            </h2>
+            <i 
+              [class]="'bx ' + getResourceIcon(resource.type) + ' text-3xl text-blue-600'" 
+              [ngClass]="{'text-green-600': resource.type === 'ROOM'}"
+            ></i>
+          </div>
+
+          <p class="text-gray-600 mb-4 text-sm min-h-[60px]">
+            {{ resource.description || 'Aucune description fournie.' }}
+          </p>
+
+          <div class="flex items-center justify-between text-xs text-gray-500 mb-4 border-t pt-4">
+            <span>Type : <strong class="uppercase">{{ resource.type }}</strong></span>
+            <span>ID : {{ resource.id.slice(0, 8) }}...</span>
+          </div>
+          
+          <div>
+            <button 
+              (click)="onReserve(resource.id)" 
+              class="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+            >
+              <i class='bx bx-calendar-plus mr-1'></i> Réserver cette ressource
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

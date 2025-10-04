@@ -1,20 +1,27 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http'; // NOUVEAUX IMPORTS
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing-module';
-import { App } from './app';
+import { AppComponent } from './app.component';
+import { CoreModule } from './core-module';
+import { jwtInterceptor } from './core/jwt-interceptor'; // NOUVEL IMPORT
+import { SharedModule } from './shared-module';
+import { ModalWrapperComponent } from './shared/modal-wrapper/modal-wrapper.component';
 
 @NgModule({
-  declarations: [
-    App
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule, // AJOUT
+    CoreModule,
+    SharedModule,
+    ModalWrapperComponent
   ],
   providers: [
-    provideBrowserGlobalErrorListeners()
+    // Configuration de l'intercepteur avec le HttpClient
+    provideHttpClient(withInterceptors([jwtInterceptor])),
   ],
-  bootstrap: [App]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
