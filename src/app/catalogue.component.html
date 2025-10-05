@@ -1,35 +1,28 @@
-<div class="max-w-7xl mx-auto py-4 px-3 sm:py-6 sm:px-4 lg:py-8 lg:px-6">
+<div class="catalogue-container">
   
-  <!-- Titre principal -->
   <h1 class="catalogue-title">
     <i class='bx bx-collection'></i>
     <span>Catalogue des Ressources</span>
   </h1>
 
-  <!-- Loader -->
   <div *ngIf="loading" class="catalogue-loader">
     <i class='bx bx-loader-alt bx-spin'></i>
     <p>Chargement des ressources disponibles...</p>
   </div>
 
-  <!-- Erreur -->
   <div *ngIf="error" class="catalogue-error">
-    <i class='bx bx-error-circle mr-2'></i>{{ error }}
+    {{ error }}
   </div>
 
-  <!-- Grille de ressources -->
   <div *ngIf="resources$ | async as resources" class="catalogue-grid">
     
-    <!-- Aucune ressource -->
     <div *ngIf="resources.length === 0 && !loading" class="no-resource">
       <i class='bx bx-sad'></i>
       <p>Aucune ressource n'est disponible pour le moment.</p>
     </div>
 
-    <!-- Carte ressource -->
     <div *ngFor="let resource of resources" class="resource-card">
       
-      <!-- En-tête : Titre + Icône -->
       <div class="card-header">
         <h2>{{ resource.name }}</h2>
         <i 
@@ -38,10 +31,8 @@
         ></i>
       </div>
 
-      <!-- Description -->
       <p>{{ resource.description || 'Aucune description fournie.' }}</p>
 
-      <!-- Métadonnées -->
       <div class="resource-meta">
         <span>
           Type : <strong>{{ resource.type }}</strong>
@@ -51,7 +42,6 @@
         </span>
       </div>
       
-      <!-- Bouton de réservation -->
       <button 
         (click)="onReserve(resource.id)" 
         class="reserve-btn"

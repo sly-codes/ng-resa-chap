@@ -42,7 +42,7 @@ export class ResourceListComponent implements OnInit {
   // Fonction utilitaire pour ouvrir la modale
   private openResourceModal(resourceId: string | null): void {
      const modalRef = this.modalService.open(ResourceFormModalComponent, {
-       size: 'lg', // Utilise maintenant la définition Bootstrap de 'modal-lg'
+       size: 'md', // Utilise maintenant la définition Bootstrap de 'modal-lg'
        centered: true, // Utilise maintenant 'modal-dialog-centered'
        backdrop: 'static',
      });

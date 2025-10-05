@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router'; // ⬅️ IMPORT CRITIQUE
 import { AuthService } from '../../core/auth.service';
 import { Component, inject } from '@angular/core';
+import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-layout',
@@ -11,6 +12,7 @@ import { Component, inject } from '@angular/core';
   imports: [
     CommonModule,
     RouterModule, // ⬅️ AJOUTÉ : Fournit routerLink, routerLinkActive, et router-outlet
+    NgbDropdown,
   ],
 })
 export class LayoutComponent {

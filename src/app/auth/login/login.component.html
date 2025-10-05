@@ -1,12 +1,10 @@
 <div class="auth-wrapper d-flex align-items-center justify-content-center min-vh-100">
   <div class="auth-card card border-0 col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
     
-    <!-- Titre -->
     <h2 class="h4 fw-semibold">Connexion à ResaChap</h2>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       
-      <!-- Champ Email -->
       <div class="mb-3">
         <div class="input-icon-wrapper">
           <input
@@ -34,7 +32,6 @@
         </div>
       </div>
 
-      <!-- Champ Mot de passe -->
       <div class="mb-4">
         <div class="input-icon-wrapper">
           <input
@@ -62,12 +59,10 @@
         </div>
       </div>
 
-      <!-- Message d'erreur global -->
       <div *ngIf="error" class="alert alert-danger" role="alert">
         {{ error }}
       </div>
 
-      <!-- Bouton de connexion -->
       <div class="d-grid">
         <button 
           type="submit" 
@@ -79,7 +74,6 @@
         </button>
       </div>
 
-      <!-- Lien vers inscription -->
       <div class="text-center">
         <a [routerLink]="['/auth/signup']" class="auth-link">
           Pas de compte ? S'inscrire

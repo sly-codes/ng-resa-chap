@@ -1,120 +1,95 @@
 <!-- 📌 Header du modal -->
 <div class="modal-header">
-    <h4 class="modal-title">
-        <i class='bx bx-sitemap'></i>
-        <span>{{ isEditMode ? 'Modifier la Ressource' : 'Ajouter une Nouvelle Ressource' }}</span>
-    </h4>
-    <button 
-        type="button" 
-        class="btn-close" 
-        (click)="onCancel()" 
-        aria-label="Fermer"
-    ></button>
+  <h4 class="modal-title">
+    <i class="bx bx-sitemap"></i>
+    <span>{{ isEditMode ? 'Modifier la Ressource' : 'Ajouter une Nouvelle Ressource' }}</span>
+  </h4>
+  <button type="button" class="btn-close" (click)="onCancel()" aria-label="Fermer">
+   x
+  </button>
 </div>
 
 <!-- 📝 Body du modal -->
 <div class="modal-body">
-    
-    <!-- 🔄 Loader -->
-    <div *ngIf="isLoading" class="modal-loader">
-        <i class='bx bx-loader-alt bx-spin'></i>
-        <p>Chargement...</p>
+  <!-- 🔄 Loader -->
+  <div *ngIf="isLoading" class="modal-loader">
+    <i class="bx bx-loader-alt bx-spin"></i>
+    <p>Chargement...</p>
+  </div>
+
+  <!-- 📋 Formulaire -->
+  <form *ngIf="!isLoading" [formGroup]="resourceForm" (ngSubmit)="onSubmit()" class="resource-form">
+    <!-- 🚨 Message d'erreur -->
+    <div *ngIf="error" class="modal-error" role="alert">
+      {{ error }}
     </div>
 
-    <!-- 📋 Formulaire -->
-    <form 
-        *ngIf="!isLoading" 
-        [formGroup]="resourceForm" 
-        (ngSubmit)="onSubmit()"
-        class="resource-form"
-    >
-        
-        <!-- 🚨 Message d'erreur -->
-        <div *ngIf="error" class="modal-error" role="alert">
-            {{ error }}
-        </div>
+    <!-- 🏷️ Champ Nom -->
+    <div class="mb-3">
+      <label for="name" class="form-label">
+        Nom de la Ressource
+        <span class="text-danger">*</span>
+      </label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        class="form-control"
+        placeholder="Ex: Salle de conférence Alpha"
+        autocomplete="off"
+      />
+      <div
+        *ngIf="resourceForm.get('name')?.touched && resourceForm.get('name')?.invalid"
+        class="form-text text-danger"
+      >
+        <p *ngIf="resourceForm.get('name')?.errors?.['required']">Le nom est obligatoire</p>
+        <p *ngIf="resourceForm.get('name')?.errors?.['maxlength']">
+          Le nom ne doit pas dépasser 100 caractères
+        </p>
+      </div>
+    </div>
 
-        <!-- 🏷️ Champ Nom -->
-        <div class="mb-3">
-            <label for="name" class="form-label">
-                Nom de la Ressource
-                <span class="text-danger">*</span>
-            </label>
-            <input 
-                id="name" 
-                type="text" 
-                formControlName="name" 
-                class="form-control"
-                placeholder="Ex: Salle de conférence Alpha"
-                autocomplete="off"
-            />
-            <div 
-                *ngIf="resourceForm.get('name')?.touched && resourceForm.get('name')?.invalid" 
-                class="form-text text-danger"
-            >
-                <p *ngIf="resourceForm.get('name')?.errors?.['required']">
-                    Le nom est obligatoire
-                </p>
-                <p *ngIf="resourceForm.get('name')?.errors?.['maxlength']">
-                    Le nom ne doit pas dépasser 100 caractères
-                </p>
-            </div>
-        </div>
+    <!-- 🔽 Champ Type -->
+    <div class="mb-3">
+      <label for="type" class="form-label">
+        Type de Ressource
+        <span class="text-danger">*</span>
+      </label>
+      <select id="type" formControlName="type" class="form-select">
+        <option value="ROOM">Salle (ROOM)</option>
+        <option value="EQUIPMENT">Équipement (EQUIPMENT)</option>
+      </select>
+    </div>
 
-        <!-- 🔽 Champ Type -->
-        <div class="mb-3">
-            <label for="type" class="form-label">
-                Type de Ressource
-                <span class="text-danger">*</span>
-            </label>
-            <select 
-                id="type" 
-                formControlName="type" 
-                class="form-select"
-            >
-                <option value="ROOM">Salle (ROOM)</option>
-                <option value="EQUIPMENT">Équipement (EQUIPMENT)</option>
-            </select>
-        </div>
-
-        <!-- 📝 Champ Description -->
-        <div class="mb-0">
-            <label for="description" class="form-label">
-                Description (Optionnel)
-            </label>
-            <textarea 
-                id="description" 
-                rows="3" 
-                formControlName="description" 
-                class="form-control"
-                placeholder="Détails, capacités, emplacement..."
-            ></textarea>
-        </div>
-        
-    </form>
+    <!-- 📝 Champ Description -->
+    <div class="mb-0">
+      <label for="description" class="form-label"> Description (Optionnel) </label>
+      <textarea
+        id="description"
+        rows="3"
+        formControlName="description"
+        class="form-control"
+        placeholder="Détails, capacités, emplacement..."
+      ></textarea>
+    </div>
+  </form>
 </div>
 
 <!-- 🦶 Footer du modal -->
 <div class="modal-footer">
-    
-    <!-- Bouton Annuler -->
-    <button 
-        type="button" 
-        (click)="onCancel()"
-        class="btn-secondary"
-    >
-        <span>Annuler</span>
-    </button>
-    
-    <!-- Bouton Soumettre -->
-    <button 
-        type="submit" 
-        [disabled]="resourceForm.invalid || isLoading"
-        (click)="onSubmit()"
-        class="btn-primary"
-    >
-        <i *ngIf="isLoading" class='bx bx-loader-alt bx-spin'></i>
-        <span>{{ isEditMode ? 'Sauvegarder' : 'Créer' }}</span>
-    </button>
-    
+  <!-- Bouton Annuler -->
+  <button type="button" (click)="onCancel()" class="btn-secondary">
+    <span>Annuler</span>
+  </button>
+
+  <!-- Bouton Soumettre -->
+  <button
+    type="submit"
+    [disabled]="resourceForm.invalid || isLoading"
+    (click)="onSubmit()"
+    class="btn-primary"
+  >
+    <i *ngIf="isLoading" class="bx bx-loader-alt bx-spin"></i>
+    <span>{{ isEditMode ? 'Sauvegarder' : 'Créer' }}</span>
+  </button>
 </div>
