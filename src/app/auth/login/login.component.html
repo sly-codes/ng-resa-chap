@@ -1,27 +1,28 @@
-<div class="auth-wrapper d-flex align-items-center justify-content-center min-vh-100">
-  <div class="auth-card card border-0 col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+<div class="auth-wrapper">
+  <div class="auth-card">
     
-    <h2 class="h4 fw-semibold">Connexion à ResaChap</h2>
+    <h2 class="auth-title">Connexion à ResaChap</h2>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       
-      <div class="mb-3">
-        <div class="input-icon-wrapper">
+      <div class="form-group">
+        <label for="email" class="form-label">Adresse email</label>
+        <div class="input-wrapper">
           <input
             id="email"
             name="email"
             type="email"
             formControlName="email"
             required
-            class="form-control"
-            placeholder="Adresse email"
+            class="form-input"
+            placeholder="exemple@email.com"
             autocomplete="email"
           />
-          <i class="bx bx-mail-send"></i>
+          <i class="bx bx-mail-send input-icon"></i>
         </div>
         <div 
           *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" 
-          class="form-text text-danger pt-1"
+          class="form-error"
         >
           <p *ngIf="loginForm.get('email')?.errors?.['required']">
             L'email est requis
@@ -32,23 +33,24 @@
         </div>
       </div>
 
-      <div class="mb-4">
-        <div class="input-icon-wrapper">
+      <div class="form-group">
+        <label for="password" class="form-label">Mot de passe</label>
+        <div class="input-wrapper">
           <input
             id="password"
             name="password"
             type="password"
             formControlName="password"
             required
-            class="form-control"
-            placeholder="Mot de passe"
+            class="form-input"
+            placeholder="••••••••"
             autocomplete="current-password"
           />
-          <i class="bx bx-lock-alt"></i>
+          <i class="bx bx-lock-alt input-icon"></i>
         </div>
         <div 
           *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" 
-          class="form-text text-danger pt-1"
+          class="form-error"
         >
           <p *ngIf="loginForm.get('password')?.errors?.['required']">
             Le mot de passe est requis
@@ -59,22 +61,20 @@
         </div>
       </div>
 
-      <div *ngIf="error" class="alert alert-danger" role="alert">
+      <div *ngIf="error" class="alert-error">
         {{ error }}
       </div>
 
-      <div class="d-grid">
-        <button 
-          type="submit" 
-          [disabled]="loginForm.invalid || isLoading" 
-          class="btn btn-primary"
-        >
-          <i *ngIf="isLoading" class="bx bx-loader-alt bx-spin"></i>
-          <span>{{ isLoading ? 'Connexion...' : 'Se connecter' }}</span>
-        </button>
-      </div>
+      <button 
+        type="submit" 
+        [disabled]="loginForm.invalid || isLoading" 
+        class="btn-submit"
+      >
+        <i *ngIf="isLoading" class="bx bx-loader-alt bx-spin"></i>
+        <span>{{ isLoading ? 'Connexion...' : 'Se connecter' }}</span>
+      </button>
 
-      <div class="text-center">
+      <div class="auth-footer">
         <a [routerLink]="['/auth/signup']" class="auth-link">
           Pas de compte ? S'inscrire
         </a>

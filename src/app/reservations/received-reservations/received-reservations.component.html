@@ -57,7 +57,10 @@
             <!-- Période -->
             <td>
               <div class="period-info">
-                <span class="period-date">{{ res.dateDebut | date : 'dd/MM/yyyy' }}</span>
+                <span class="period-date"
+                  >{{ res.dateDebut | date : 'dd/MM/yyyy' }} -
+                  {{ res.dateFin | date : 'dd/MM/yyyy' }}</span
+                >
                 <span class="period-time">
                   {{ res.dateDebut | date : 'HH:mm' }} - {{ res.dateFin | date : 'HH:mm' }}
                 </span>
@@ -72,7 +75,7 @@
                   'status-pending': res.status === 'PENDING',
                   'status-approved': res.status === 'CONFIRMED',
                   'status-rejected': res.status === 'REJECTED',
-                  'status-cancelled': res.status === 'CONFIRMED'
+                  'status-cancelled': res.status === 'CANCELED'
                 }"
               >
                 {{ getReservationStatusText(res.status) }}
