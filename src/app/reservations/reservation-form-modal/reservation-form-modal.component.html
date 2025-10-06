@@ -1,0 +1,141 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        
+        <!-- En-tête de la modale -->
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class='bx bx-calendar-plus'></i>
+                <span>Réserver : {{ resourceName }}</span>
+            </h2>
+            <button 
+                type="button" 
+                class="modal-close" 
+                (click)="onCancel()"
+                aria-label="Fermer la modale"
+            >
+                <i class='bx bx-x'></i>
+            </button>
+        </div>
+
+        <!-- Corps de la modale -->
+        <div class="modal-body">
+            
+            <!-- Loader -->
+            <div *ngIf="isLoading" class="modal-loader">
+                <i class='bx bx-loader-alt bx-spin'></i>
+                <p>Vérification de la disponibilité...</p>
+            </div>
+
+            <!-- Formulaire -->
+            <form 
+                *ngIf="!isLoading" 
+                [formGroup]="reservationForm" 
+                (ngSubmit)="onSubmit()" 
+                class="reservation-form"
+            >
+                
+                <!-- Message d'erreur -->
+                <div *ngIf="error" class="modal-error">
+                    <i class='bx bx-error-circle'></i>
+                    <span>{{ error }}</span>
+                </div>
+
+                <!-- Champ Date Début -->
+                <div class="form-group">
+                    <label for="dateDebut" class="form-label">
+                        Début de la Réservation
+                        <span class="label-required">*</span>
+                    </label>
+                    <input
+                        id="dateDebut"
+                        type="datetime-local"
+                        formControlName="dateDebut"
+                        class="form-input"
+                        [class.input-error]="reservationForm.get('dateDebut')?.invalid && reservationForm.get('dateDebut')?.touched"
+                    />
+                    <div 
+                        *ngIf="reservationForm.get('dateDebut')?.touched && reservationForm.get('dateDebut')?.invalid"
+                        class="form-error"
+                    >
+                        <i class='bx bx-error-circle'></i>
+                        <span *ngIf="reservationForm.get('dateDebut')?.errors?.['required']">
+                            La date de début est obligatoire.
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Champ Date Fin -->
+                <div class="form-group">
+                    <label for="dateFin" class="form-label">
+                        Fin de la Réservation
+                        <span class="label-required">*</span>
+                    </label>
+                    <input
+                        id="dateFin"
+                        type="datetime-local"
+                        formControlName="dateFin"
+                        class="form-input"
+                        [class.input-error]="reservationForm.get('dateFin')?.invalid && reservationForm.get('dateFin')?.touched"
+                    />
+                    <div 
+                        *ngIf="reservationForm.get('dateFin')?.touched && reservationForm.get('dateFin')?.invalid"
+                        class="form-error"
+                    >
+                        <i class='bx bx-error-circle'></i>
+                        <span *ngIf="reservationForm.get('dateFin')?.errors?.['required']">
+                            La date de fin est obligatoire.
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Erreur de conflit de dates -->
+                <div 
+                    *ngIf="reservationForm.hasError('timeConflict') && reservationForm.get('dateFin')?.touched"
+                    class="form-error-global"
+                >
+                    <i class='bx bx-error-circle'></i>
+                    <span>La date de début doit précéder la date de fin.</span>
+                </div>
+
+                <!-- Champ Notes -->
+                <div class="form-group">
+                    <label for="notes" class="form-label">
+                        Notes / Motif
+                        <span class="label-optional">(Optionnel)</span>
+                    </label>
+                    <textarea
+                        id="notes"
+                        rows="3"
+                        formControlName="notes"
+                        class="form-textarea"
+                        placeholder="Indiquez le motif de la réservation (ex: Réunion de lancement, maintenance, etc.)"
+                    ></textarea>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Pied de la modale -->
+        <div class="modal-footer">
+            <button 
+                type="button" 
+                class="btn-cancel" 
+                (click)="onCancel()"
+                [disabled]="isLoading"
+            >
+                <i class='bx bx-x'></i>
+                <span>Annuler</span>
+            </button>
+            <button 
+                type="submit" 
+                class="btn-submit" 
+                (click)="onSubmit()"
+                [disabled]="reservationForm.invalid || isLoading"
+            >
+                <i class='bx' [ngClass]="isLoading ? 'bx-loader-alt bx-spin' : 'bx-check'"></i>
+                <span>{{ isLoading ? 'Vérification...' : 'Confirmer la Demande' }}</span>
+            </button>
+        </div>
+
+    </div>
+</div>

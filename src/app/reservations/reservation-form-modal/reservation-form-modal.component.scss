@@ -74,6 +74,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  line-height: 1.4;
 
   @media (min-width: 768px) {
     font-size: 1.063rem;
@@ -82,10 +83,15 @@
   i {
     font-size: 1.188rem;
     color: #10b981;
+    flex-shrink: 0;
 
     @media (min-width: 768px) {
       font-size: 1.25rem;
     }
+  }
+
+  span {
+    word-break: break-word;
   }
 }
 
@@ -128,7 +134,7 @@
   }
 
   // Smooth scrolling
-  // scroll-behavior: smooth;
+  scroll-behavior: smooth;
   
   // Custom scrollbar
   &::-webkit-scrollbar {
@@ -198,7 +204,7 @@
   }
 }
 
-.resource-form {
+.reservation-form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -222,6 +228,7 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  flex-wrap: wrap;
 }
 
 .label-required {
@@ -236,7 +243,6 @@
 }
 
 .form-input,
-.form-select,
 .form-textarea {
   width: 100%;
   padding: 0.625rem 0.75rem;
@@ -286,34 +292,23 @@
   }
 }
 
-.form-select {
+.form-input[type="datetime-local"] {
   cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5rem 1.5rem;
-  padding-right: 2.5rem;
-
-  option {
-    color: #1f2937;
-  }
-
-  option[disabled] {
-    color: #9ca3af;
+  
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: opacity(0.6);
+    transition: filter 0.15s ease;
+    
+    &:hover {
+      filter: opacity(1);
+    }
   }
 }
 
 .form-textarea {
   resize: vertical;
-  min-height: 100px;
-  line-height: 1.5;
-}
-
-.form-hint {
-  color: #6b7280;
-  font-size: 0.75rem;
-  margin: 0;
+  min-height: 80px;
   line-height: 1.5;
 }
 
@@ -339,6 +334,25 @@
 
   i {
     font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+}
+
+.form-error-global {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 3px;
+  color: #dc2626;
+  font-size: 0.813rem;
+  padding: 0.625rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: -0.5rem;
+  animation: errorShake 0.4s ease;
+
+  i {
+    font-size: 1rem;
     flex-shrink: 0;
   }
 }

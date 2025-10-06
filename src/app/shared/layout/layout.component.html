@@ -1,105 +1,123 @@
-<div class="d-flex flex-column min-vh-100">
+<div class="layout-wrapper">
+  
+  <!-- Sidebar -->
+  <aside class="sidebar">
     
-    <header class="navbar-wrapper sticky-top">
-        <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid navbar-container">
-                
-                <a [routerLink]="['/catalogue']" class="navbar-brand">
-                    <span class="text-green fw-bold fs-4">
-                        <i class='bx bx-calendar-check'></i>
-                        <span>ResaChap</span>
-                    </span>
-                </a>
+    <!-- Logo -->
+    <div class="sidebar-header">
+      <a [routerLink]="['/catalogue']" class="sidebar-brand">
+        <i class="bx bx-calendar-check"></i>
+        <span>ResaChap</span>
+      </a>
+    </div>
 
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <i class="bx bx-menu"></i>
-                </button>
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <a 
+        [routerLink]="['/catalogue']" 
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{exact: false}"
+        class="nav-link"
+      >
+        <i class="bx bx-collection"></i>
+        <span>Catalogue</span>
+      </a>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    
-                    <ul class="navbar-nav me-auto"> 
-                        <li class="nav-item">
-                            <a 
-                                [routerLink]="['/catalogue']"
-                                routerLinkActive="active-link"
-                                class="nav-link"
-                            >
-                                <i class='bx bx-collection'></i>
-                                <span>Catalogue</span>
-                            </a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a 
-                                [routerLink]="['/resources/mine']"
-                                routerLinkActive="active-link"
-                                class="nav-link"
-                            >
-                                <i class='bx bx-box'></i>
-                                <span>Mes Ressources</span>
-                            </a>
-                        </li>
-                        
-                        <li ngbDropdown class="nav-item dropdown">
-                            <a 
-                                class="nav-link dropdown-toggle"
-                                id="reservationsDropdown"
-                                ngbDropdownToggle
-                            >
-                                <i class='bx bx-calendar'></i>
-                                <span>Réservations</span>
-                                <i class='bx bx-chevron-down chevron-icon'></i>
-                            </a>
-                            
-                            <div 
-                                ngbDropdownMenu 
-                                aria-labelledby="reservationsDropdown" 
-                                class="shadow border-0 rounded-3"
-                            >
-                                <a 
-                                    [routerLink]="['/reservations/made']" 
-                                    ngbDropdownItem
-                                    class="dropdown-item"
-                                >
-                                    <i class='bx bx-book-bookmark me-2'></i>
-                                    <span>Faites par moi</span>
-                                </a>
-                                <a 
-                                    [routerLink]="['/reservations/received']" 
-                                    ngbDropdownItem
-                                    class="dropdown-item"
-                                >
-                                    <i class='bx bx-list-check me-2'></i>
-                                    <span>Reçues</span>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
+      <a 
+        [routerLink]="['/resources/mine']" 
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{exact: false}"
+        class="nav-link"
+      >
+        <i class="bx bx-box"></i>
+        <span>Mes Ressources</span>
+      </a>
 
-                    <div class="navbar-actions">
-                        <button 
-                            (click)="onLogout()" 
-                            class="btn btn-sm btn-outline-danger"
-                        >
-                            <i class='bx bx-log-out me-1'></i>
-                            <span>Déconnexion</span>
-                        </button>
-                    </div>
-                    
-                </div>
-            </div>
-        </nav>
-    </header>
+      <!-- Dropdown Réservations -->
+      <div ngbDropdown class="nav-dropdown" autoClose="true">
+        <a 
+          class="nav-link dropdown-toggle"
+          id="reservationsDropdown"
+          ngbDropdownToggle
+        >
+          <i class="bx bx-calendar"></i>
+          <span>Réservations</span>
+          <i class="bx bx-chevron-down chevron-icon"></i>
+        </a>
 
-    <main class="flex-grow-1">
-        <router-outlet></router-outlet>
-    </main>
+        <div 
+          ngbDropdownMenu 
+          aria-labelledby="reservationsDropdown" 
+          class="dropdown-menu"
+        >
+          <a 
+            [routerLink]="['/reservations/made']" 
+            ngbDropdownItem
+            class="dropdown-item"
+          >
+            <i class="bx bx-book-bookmark"></i>
+            <span>Faites par moi</span>
+          </a>
+          <a 
+            [routerLink]="['/reservations/received']" 
+            ngbDropdownItem
+            class="dropdown-item"
+          >
+            <i class="bx bx-list-check"></i>
+            <span>Reçues</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- User Profile -->
+    <div class="sidebar-footer">
+      <div ngbDropdown class="user-dropdown" *ngIf="profile$ | async as profile" autoClose="true">
+        <button
+          class="user-button"
+          ngbDropdownToggle
+        >
+          <i class="bx bx-user-circle"></i>
+          <span class="user-name">{{ profile.firstName || profile.username || profile.email }}</span>
+          <i class="bx bx-chevron-up chevron-icon"></i>
+        </button>
+
+        <div 
+          ngbDropdownMenu 
+          class="dropdown-menu dropdown-menu-top"
+        >
+          <div class="dropdown-header">
+            {{ profile.email }}
+          </div>
+          
+          <a 
+            [routerLink]="['/profile']" 
+            ngbDropdownItem 
+            class="dropdown-item"
+          >
+            <i class="bx bx-id-card"></i>
+            <span>Mon Profil</span>
+          </a>
+
+          <div class="dropdown-divider"></div>
+
+          <button 
+            (click)="onLogout()" 
+            ngbDropdownItem 
+            class="dropdown-item logout-item"
+          >
+            <i class="bx bx-log-out"></i>
+            <span>Déconnexion</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
 </div>

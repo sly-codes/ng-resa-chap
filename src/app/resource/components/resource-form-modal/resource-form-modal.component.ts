@@ -11,7 +11,7 @@ import { NgIf } from '@angular/common';
   templateUrl: './resource-form-modal.component.html',
   styleUrls: ['./resource-form-modal.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgIf],
 })
 export class ResourceFormModalComponent implements OnInit {
   private fb = inject(FormBuilder);

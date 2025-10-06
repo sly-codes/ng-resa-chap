@@ -1,0 +1,130 @@
+<div class="profile-container">
+    
+    <!-- 📋 En-tête -->
+    <h1 class="profile-title">
+        <i class='bx bx-user-circle'></i>
+        <span>Mon Profil</span>
+    </h1>
+
+    <!-- 🔄 Loader -->
+    <div *ngIf="isLoading" class="profile-loader">
+        <i class='bx bx-loader-alt bx-spin'></i>
+        <p>Chargement de vos informations...</p>
+    </div>
+
+    <!-- 📝 Contenu du Profil -->
+    <div *ngIf="!isLoading" class="profile-content">
+        <div class="profile-card">
+            
+            <!-- Messages de notification -->
+            <div *ngIf="error" class="profile-error">
+                <i class='bx bx-error-circle'></i>
+                <span>{{ error }}</span>
+            </div>
+            
+            <div *ngIf="successMessage" class="profile-success">
+                <i class='bx bx-check-circle'></i>
+                <span>{{ successMessage }}</span>
+            </div>
+
+            <!-- Formulaire -->
+            <form [formGroup]="profileForm!" (ngSubmit)="onSaveProfile()" class="profile-form">
+
+                <!-- Champ Email (Lecture seule) -->
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        Email (Identifiant principal)
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        formControlName="email" 
+                        class="form-input input-readonly" 
+                        readonly
+                    >
+                    <div class="form-hint">
+                        L'email ne peut pas être modifié ici.
+                    </div>
+                </div>
+
+                <!-- Champ Username -->
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        Nom d'utilisateur (Public)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        formControlName="username" 
+                        class="form-input" 
+                        placeholder="Entrez un nom d'utilisateur public"
+                        [class.input-error]="profileForm!.get('username')?.invalid && (profileForm!.get('username')?.dirty || profileForm!.get('username')?.touched)"
+                    >
+                    <div 
+                        *ngIf="profileForm!.get('username')?.invalid && (profileForm!.get('username')?.dirty || profileForm!.get('username')?.touched)" 
+                        class="form-error"
+                    >
+                        <i class='bx bx-error-circle'></i>
+                        Nom d'utilisateur invalide ou trop long.
+                    </div>
+                </div>
+
+                <!-- Champs Prénom et Nom -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">
+                            Prénom
+                        </label>
+                        <input 
+                            type="text" 
+                            id="firstName" 
+                            formControlName="firstName" 
+                            class="form-input" 
+                            placeholder="Votre prénom"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">
+                            Nom de famille
+                        </label>
+                        <input 
+                            type="text" 
+                            id="lastName" 
+                            formControlName="lastName" 
+                            class="form-input" 
+                            placeholder="Votre nom de famille"
+                        >
+                    </div>
+                </div>
+
+                <!-- Champ Téléphone -->
+                <div class="form-group">
+                    <label for="contactPhone" class="form-label">
+                        Numéro de Téléphone
+                    </label>
+                    <input 
+                        type="text" 
+                        id="contactPhone" 
+                        formControlName="contactPhone" 
+                        class="form-input" 
+                        placeholder="Ex: +33 6 00 00 00 00"
+                    >
+                </div>
+
+                <!-- Bouton de Sauvegarde -->
+                <div class="form-actions">
+                    <button 
+                        type="submit" 
+                        class="btn-save" 
+                        [disabled]="profileForm!.invalid || isSaving"
+                    >
+                        <i class='bx' [ngClass]="isSaving ? 'bx-loader-alt bx-spin' : 'bx-save'"></i>
+                        <span>{{ isSaving ? 'Sauvegarde en cours...' : 'Enregistrer les modifications' }}</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

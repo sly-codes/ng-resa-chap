@@ -4,6 +4,9 @@ import { Resource, ResourceService } from './core/resource.service';
 import { Observable, catchError, of } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ReservationFormModalComponent } from './reservations/reservation-form-modal/reservation-form-modal.component';
+
 
 @Component({
   selector: 'app-catalogue',
@@ -18,6 +21,8 @@ import { NgIf } from '@angular/common';
 })
 export class CatalogueComponent implements OnInit {
   private resourceService = inject(ResourceService);
+  private modalService = inject(NgbModal); // <--- INJECTION DU SERVICE MODALE
+
   resources$!: Observable<Resource[]>;
   loading = true;
   error: string | null = null;
@@ -40,11 +45,29 @@ export class CatalogueComponent implements OnInit {
     });
   }
 
-  // Cette méthode sera utilisée sur le bouton "Réserver"
-  onReserve(resourceId: string): void {
-    // 💡 TO DO: Naviguer vers le formulaire de réservation avec l'ID de la ressource
-    console.log(`Naviguer vers la réservation pour la ressource: ${resourceId}`);
-    // this.router.navigate(['/reservations/new', resourceId]);
+  // NOUVELLE MÉTHODE
+  onReserve(resourceId: string, resourceName: string): void {
+    const modalRef = this.modalService.open(ReservationFormModalComponent, {
+      size: 'md', // Utilise maintenant la définition Bootstrap de 'modal-lg'
+      centered: true, // Utilise maintenant 'modal-dialog-centered'
+      backdrop: 'static',
+    });
+
+    // Passer les données de la ressource à la modale
+    modalRef.componentInstance.resourceId = resourceId;
+    modalRef.componentInstance.resourceName = resourceName;
+
+    modalRef.result.then(
+      (result) => {
+        if (result === 'success') {
+          // Optionnel : Afficher une notification de succès
+          console.log('Réservation créée avec succès.');
+        }
+      },
+      (reason) => {
+        console.log('Modale fermée:', reason);
+      }
+    );
   }
 
   // Petite fonction pour l'icône basée sur le type

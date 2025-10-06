@@ -1,12 +1,11 @@
 <div class="catalogue-container">
-  
   <h1 class="catalogue-title">
-    <i class='bx bx-collection'></i>
+    <i class="bx bx-collection"></i>
     <span>Catalogue des Ressources</span>
   </h1>
 
   <div *ngIf="loading" class="catalogue-loader">
-    <i class='bx bx-loader-alt bx-spin'></i>
+    <i class="bx bx-loader-alt bx-spin"></i>
     <p>Chargement des ressources disponibles...</p>
   </div>
 
@@ -15,19 +14,17 @@
   </div>
 
   <div *ngIf="resources$ | async as resources" class="catalogue-grid">
-    
     <div *ngIf="resources.length === 0 && !loading" class="no-resource">
-      <i class='bx bx-sad'></i>
+      <i class="bx bx-sad"></i>
       <p>Aucune ressource n'est disponible pour le moment.</p>
     </div>
 
     <div *ngFor="let resource of resources" class="resource-card">
-      
       <div class="card-header">
         <h2>{{ resource.name }}</h2>
-        <i 
+        <i
           [class]="'bx ' + getResourceIcon(resource.type) + ' resource-icon'"
-          [ngClass]="{ 'room': resource.type === 'ROOM' }"
+          [ngClass]="{ room: resource.type === 'ROOM' }"
         ></i>
       </div>
 
@@ -41,15 +38,12 @@
           ID : <strong>{{ resource.id.slice(0, 8) }}...</strong>
         </span>
       </div>
-      
-      <button 
-        (click)="onReserve(resource.id)" 
-        class="reserve-btn"
-      >
-        <i class='bx bx-calendar-plus'></i>
+
+      <button (click)="onReserve(resource.id, resource.name)" class="reserve-btn">
+        <i class="bx bx-calendar-plus"></i>
         <span>Réserver</span>
       </button>
+      
     </div>
-
   </div>
 </div>
