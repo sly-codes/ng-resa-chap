@@ -1,109 +1,100 @@
 <div class="resources-container">
-    
-    <!-- 📋 En-tête avec titre et bouton -->
-    <div class="resources-header">
-        <h1>
-            <span>Mes Ressources</span>
-            <i class='bx bx-sitemap'></i>
-        </h1>
-        <button 
-            (click)="onAddResource()"
-            class="btn-add-resource"
-        >
-            <i class='bx bx-plus-circle'></i>
-            <span>Ajouter une ressource</span>
-        </button>
+  <!-- 📋 En-tête avec titre et bouton -->
+  <div class="resources-header">
+    <h1>
+      <span>Mes Ressources</span>
+      <i class="bx bx-sitemap"></i>
+    </h1>
+    <button (click)="onAddResource()" class="btn-add-resource">
+      <i class="bx bx-plus-circle"></i>
+      <span>Ajouter une ressource</span>
+    </button>
+  </div>
+
+  <!-- 🚨 Message d'erreur -->
+  <div *ngIf="error" class="resources-error">
+    {{ error }}
+  </div>
+
+  <!-- 🔄 Loader -->
+  <div *ngIf="loading" class="resources-loader">
+    <i class="bx bx-loader-alt bx-spin"></i>
+  </div>
+
+  <!-- 📊 Liste des ressources -->
+  <ng-container *ngIf="resources$ | async as resources">
+    <!-- 📭 État vide -->
+    <div *ngIf="resources.length === 0 && !loading" class="resources-empty">
+      <i class="bx bx-info-circle"></i>
+      <p>
+        Vous n'avez encore créé aucune ressource.<br />
+        Cliquez sur "Ajouter une ressource" pour commencer.
+      </p>
     </div>
 
-    <!-- 🚨 Message d'erreur -->
-    <div *ngIf="error" class="resources-error">
-        {{ error }}
-    </div>
+    <!-- 📊 Tableau des ressources -->
+    <div *ngIf="resources.length > 0" class="resources-table-wrapper">
+      <table class="resources-table">
+        <thead>
+          <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Type</th>
+            <th scope="col" class="d-none d-md-table-cell">Description</th>
+            <th scope="col">
+              <span>Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let resource of resources">
+            <!-- Nom -->
+            <td class="resource-name">
+              {{ resource.name }}
+            </td>
 
-    <!-- 🔄 Loader -->
-    <div *ngIf="loading" class="resources-loader">
-        <i class='bx bx-loader-alt bx-spin'></i>
-    </div>
+            <!-- Type avec badge -->
+            <td>
+              <span
+                class="resource-type-badge"
+                [ngClass]="{
+                  'badge-room': resource.type === 'ROOM',
+                  'badge-equipment': resource.type === 'EQUIPMENT'
+                }"
+              >
+                <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
+                <span>{{ resource.type }}</span>
+              </span>
+            </td>
 
-    <!-- 📊 Liste des ressources -->
-    <ng-container *ngIf="resources$ | async as resources">
-        
-        <!-- 📭 État vide -->
-        <div 
-            *ngIf="resources.length === 0 && !loading"
-            class="resources-empty"
-        >
-            <i class='bx bx-info-circle'></i>
-            <p>
-                Vous n'avez encore créé aucune ressource.<br>
-                Cliquez sur "Ajouter une ressource" pour commencer.
-            </p>
-        </div>
-            
-        <!-- 📊 Tableau des ressources -->
-        <div *ngIf="resources.length > 0" class="resources-table-wrapper">
-            <table class="resources-table">
-                <thead>
-                    <tr>
-                        <th scope="col">Nom</th>
-                        <th scope="col">Type</th>
-                        <th scope="col" class="d-none d-md-table-cell">Description</th>
-                        <th scope="col">
-                            <span class="visually-hidden">Actions</span>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let resource of resources">
-                        <!-- Nom -->
-                        <td class="resource-name">
-                            {{ resource.name }}
-                        </td>
-                        
-                        <!-- Type avec badge -->
-                        <td>
-                            <span 
-                                class="resource-type-badge"
-                                [ngClass]="{
-                                    'badge-room': resource.type === 'ROOM',
-                                    'badge-equipment': resource.type === 'EQUIPMENT'
-                                }"
-                            >
-                                <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
-                                <span>{{ resource.type }}</span>
-                            </span>
-                        </td>
-                        
-                        <!-- Description (cachée sur mobile) -->
-                        <td class="resource-description d-none d-md-table-cell">
-                            {{ resource.description || 'Aucune description' }}
-                        </td>
-                        
-                        <!-- Actions -->
-                        <td>
-                            <div class="resource-actions">
-                                <button 
-                                    (click)="onEdit(resource.id)" 
-                                    class="btn-edit" 
-                                    title="Modifier"
-                                    aria-label="Modifier la ressource"
-                                >
-                                    <i class='bx bx-edit'></i>
-                                </button>
-                                <button 
-                                    (click)="onDelete(resource.id)" 
-                                    class="btn-delete" 
-                                    title="Supprimer"
-                                    aria-label="Supprimer la ressource"
-                                >
-                                    <i class='bx bx-trash'></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-            
-    </ng-container>
+            <!-- Description (cachée sur mobile) -->
+            <td class="resource-description d-none d-md-table-cell">
+              {{ resource.description || 'Aucune description' }}
+            </td>
+
+            <!-- Actions -->
+            <td>
+              <div class="resource-actions">
+                <button
+                  (click)="onEdit(resource.id)"
+                  class="btn-edit"
+                  title="Modifier"
+                  aria-label="Modifier la ressource"
+                >
+                  <i class="bx bx-edit"></i>
+                </button>
+                <button
+                  (click)="onDelete(resource.id)"
+                  class="btn-delete"
+                  title="Supprimer"
+                  aria-label="Supprimer la ressource"
+                >
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
 </div>
