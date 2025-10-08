@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule, NgClass } from '@angular/common';
+import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { Resource, ResourceService } from '../../../core/resource.service';
 import { Observable, catchError, of, Subject, switchMap, startWith, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // ⬅️ NgbModal pour ouvrir
@@ -10,7 +10,7 @@ import { ResourceFormModalComponent } from '../../components/resource-form-modal
   templateUrl: './resource-list.component.html',
   styleUrls: ['./resource-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgClass],
+  imports: [CommonModule, NgClass, NgIf],
 })
 export class ResourceListComponent implements OnInit {
   private resourceService = inject(ResourceService);
@@ -41,11 +41,11 @@ export class ResourceListComponent implements OnInit {
 
   // Fonction utilitaire pour ouvrir la modale
   private openResourceModal(resourceId: string | null): void {
-     const modalRef = this.modalService.open(ResourceFormModalComponent, {
-       size: 'md', // Utilise maintenant la définition Bootstrap de 'modal-lg'
-       centered: true, // Utilise maintenant 'modal-dialog-centered'
-       backdrop: 'static',
-     });
+    const modalRef = this.modalService.open(ResourceFormModalComponent, {
+      size: 'md', // Utilise maintenant la définition Bootstrap de 'modal-lg'
+      centered: true, // Utilise maintenant 'modal-dialog-centered'
+      backdrop: 'static',
+    });
 
     // Passage de l'Input @Input() resourceId
     modalRef.componentInstance.resourceId = resourceId;

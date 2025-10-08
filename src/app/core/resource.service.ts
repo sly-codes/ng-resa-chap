@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -13,6 +13,11 @@ export interface Resource {
   createdAt: Date;
 }
 
+export interface ResourceFilters {
+  search?: string;
+  type?: 'ROOM' | 'EQUIPMENT';
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,11 +26,23 @@ export class ResourceService {
   private http = inject(HttpClient);
 
   /**
-   * Récupère la liste de TOUTES les ressources (pour le catalogue)
-   * Corresponds à GET /resources
+   * Liste toutes les ressources avec des filtres optionnels.
    */
-  getAllResources(): Observable<Resource[]> {
-    return this.http.get<Resource[]>(this.apiUrl);
+  getAllResources(filters?: ResourceFilters): Observable<any[]> {
+    let params = new HttpParams();
+
+    // Construction des paramètres de requête
+    if (filters) {
+      if (filters.search) {
+        params = params.set('search', filters.search);
+      }
+      if (filters.type) {
+        params = params.set('type', filters.type);
+      }
+    }
+
+    // Passe les paramètres à la requête
+    return this.http.get<any[]>(this.apiUrl, { params });
   }
 
   /**

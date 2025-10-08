@@ -1,3 +1,4 @@
 export const environment = {
-  apiUrl: 'http://localhost:3000'
-}
+  apiUrl: 'https://nest-resa-chap.onrender.com',
+  // localApiUrl: 'http://localhost:3000',
+};

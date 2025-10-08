@@ -1,0 +1,266 @@
+<div class="dashboard-container">
+  <!-- En-tête avec titre et bouton refresh -->
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">
+      <i class="bx bx-home-alt"></i>
+      <span>Tableau de Bord</span>
+    </h1>
+    <button
+      class="refresh-btn"
+      (click)="loadSummary()"
+      [disabled]="loading"
+      title="Actualiser les données"
+    >
+      <i class="bx bx-refresh" [class.bx-spin]="loading"></i>
+      <span>Actualiser</span>
+    </button>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading && !error" class="dashboard-loader">
+    <i class="bx bx-loader-alt bx-spin"></i>
+    <p>Chargement de vos données...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error" class="dashboard-error">
+    <i class="bx bx-error-circle"></i>
+    <span>{{ error }}</span>
+    <button (click)="loadSummary()" class="retry-btn">
+      <i class="bx bx-refresh"></i>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Contenu du dashboard -->
+  <ng-container *ngIf="summary$ | async as summary">
+    <!-- Cartes de statistiques principales -->
+    <div class="stats-grid">
+      <!-- Mes Ressources -->
+      <div class="stat-card stat-card-green">
+        <div class="stat-icon">
+          <i class="bx bx-box"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ summary.myResourceCount }}</span>
+          <span class="stat-label">Mes Ressources</span>
+        </div>
+        <a [routerLink]="['/resources/mine']" class="stat-link">
+          <i class="bx bx-chevron-right"></i>
+          Gérer
+        </a>
+      </div>
+
+      <!-- Demandes en Attente -->
+      <div class="stat-card stat-card-orange">
+        <div class="stat-icon">
+          <i class="bx bx-time-five"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">{{ summary.pendingApprovalCount }}</span>
+          <span class="stat-label">En Attente</span>
+        </div>
+        <a [routerLink]="['/reservations/received']" class="stat-link">
+          <i class="bx bx-chevron-right"></i>
+          Traiter
+        </a>
+      </div>
+
+      <!-- Mes Réservations (utilise myReservationsCount) -->
+      <div class="stat-card stat-card-blue">
+        <div class="stat-icon">
+          <i class="bx bx-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <!-- Ce champ utilise la nouvelle propriété du DTO -->
+          <span class="stat-value">{{ summary.myReservationsCount || 0 }}</span>
+          <span class="stat-label">Mes Réservations</span>
+        </div>
+        <a [routerLink]="['/reservations/made']" class="stat-link">
+          <i class="bx bx-chevron-right"></i>
+          Voir
+        </a>
+      </div>
+
+      <!-- Catalogue Disponible -->
+      <div class="stat-card stat-card-purple">
+        <div class="stat-icon">
+          <i class="bx bx-collection"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">∞</span>
+          <span class="stat-label">Catalogue</span>
+        </div>
+        <a [routerLink]="['/catalogue']" class="stat-link">
+          <i class="bx bx-chevron-right"></i>
+          Explorer
+        </a>
+      </div>
+    </div>
+
+    <!-- Section des actions urgentes -->
+    <div class="urgent-section">
+      <h2 class="section-title">
+        <i class="bx bx-bell"></i>
+        <span>Actions Prioritaires</span>
+      </h2>
+
+      <div class="urgent-grid">
+        <!-- Prochaine Approbation Requise -->
+        <div class="urgent-card urgent-primary">
+          <div class="urgent-header">
+            <div class="urgent-icon">
+              <i class="bx bx-bell-ring"></i>
+            </div>
+            <h3>Demande en Attente</h3>
+          </div>
+
+          <div *ngIf="summary.nextPendingApproval; else noPendingApproval" class="urgent-content">
+            <div class="urgent-info">
+              <div class="info-row">
+                <i class="bx bx-building"></i>
+                <span class="info-text">{{ summary.nextPendingApproval.resourceName }}</span>
+              </div>
+              <div class="info-row">
+                <i class="bx bx-calendar"></i>
+                <span class="info-text">{{
+                  summary.nextPendingApproval.startDate | date : 'dd/MM/yyyy'
+                }}</span>
+              </div>
+              <div class="info-row">
+                <i class="bx bx-time-five"></i>
+                <span class="info-text">{{
+                  summary.nextPendingApproval.startDate | date : 'HH:mm'
+                }}</span>
+              </div>
+            </div>
+            <a [routerLink]="['/reservations/received']" class="urgent-btn urgent-btn-primary">
+              <i class="bx bx-check-circle"></i>
+              <span>Traiter Maintenant</span>
+            </a>
+          </div>
+
+          <ng-template #noPendingApproval>
+            <div class="urgent-empty">
+              <i class="bx bx-check-circle"></i>
+              <p>Aucune demande en attente</p>
+              <span class="empty-subtitle">Toutes vos demandes sont traitées !</span>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- Ma Prochaine Réservation -->
+        <div class="urgent-card urgent-secondary">
+          <div class="urgent-header">
+            <div class="urgent-icon">
+              <i class="bx bx-calendar-event"></i>
+            </div>
+            <h3>Ma Prochaine Réservation</h3>
+          </div>
+
+          <div
+            *ngIf="summary.nextReservationMade; else noUpcomingReservation"
+            class="urgent-content"
+          >
+            <div class="urgent-info">
+              <div class="info-row">
+                <i class="bx bx-sitemap"></i>
+                <span class="info-text">{{ summary.nextReservationMade.resourceName }}</span>
+              </div>
+              <div class="info-row">
+                <i class="bx" [class]="getStatusIconClass(summary.nextReservationMade.status)"></i>
+                <span class="info-text">
+                  <span [class]="getStatusBadgeClass(summary.nextReservationMade.status)">
+                    {{ getStatusText(summary.nextReservationMade.status) }}
+                  </span>
+                </span>
+              </div>
+              <div class="info-row">
+                <i class="bx bx-calendar"></i>
+                <span class="info-text">{{
+                  summary.nextReservationMade.startDate | date : 'dd/MM/yyyy'
+                }}</span>
+              </div>
+              <div class="info-row">
+                <i class="bx bx-time-five"></i>
+                <span class="info-text">{{
+                  summary.nextReservationMade.startDate | date : 'HH:mm'
+                }}</span>
+              </div>
+            </div>
+            <a [routerLink]="['/reservations/made']" class="urgent-btn urgent-btn-secondary">
+              <i class="bx bx-show"></i>
+              <span>Voir Détails</span>
+            </a>
+          </div>
+
+          <ng-template #noUpcomingReservation>
+            <div class="urgent-empty">
+              <i class="bx bx-calendar-x"></i>
+              <p>Aucune réservation à venir</p>
+              <span class="empty-subtitle">Explorez le catalogue pour réserver</span>
+              <a [routerLink]="['/catalogue']" class="urgent-btn urgent-btn-secondary">
+                <i class="bx bx-search-alt"></i>
+                <span>Parcourir</span>
+              </a>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Accès Rapides -->
+    <div class="quick-access-section">
+      <h2 class="section-title">
+        <i class="bx bx-command"></i>
+        <span>Accès Rapides</span>
+      </h2>
+
+      <div class="quick-access-grid">
+        <a [routerLink]="['/resources/mine']" class="quick-card">
+          <div class="quick-icon quick-icon-green">
+            <i class="bx bx-plus-circle"></i>
+          </div>
+          <div class="quick-content">
+            <h3>Ajouter une Ressource</h3>
+            <p>Publiez une nouvelle ressource</p>
+          </div>
+          <i class="bx bx-chevron-right quick-arrow"></i>
+        </a>
+
+        <a [routerLink]="['/catalogue']" class="quick-card">
+          <div class="quick-icon quick-icon-blue">
+            <i class="bx bx-search-alt"></i>
+          </div>
+          <div class="quick-content">
+            <h3>Parcourir le Catalogue</h3>
+            <p>Trouvez une ressource à réserver</p>
+          </div>
+          <i class="bx bx-chevron-right quick-arrow"></i>
+        </a>
+
+        <a [routerLink]="['/reservations/made']" class="quick-card">
+          <div class="quick-icon quick-icon-purple">
+            <i class="bx bx-history"></i>
+          </div>
+          <div class="quick-content">
+            <h3>Historique</h3>
+            <p>Consultez vos réservations</p>
+          </div>
+          <i class="bx bx-chevron-right quick-arrow"></i>
+        </a>
+
+        <a [routerLink]="['/profile']" class="quick-card">
+          <div class="quick-icon quick-icon-gray">
+            <i class="bx bx-user-circle"></i>
+          </div>
+          <div class="quick-content">
+            <h3>Mon Profil</h3>
+            <p>Gérez vos informations</p>
+          </div>
+          <i class="bx bx-chevron-right quick-arrow"></i>
+        </a>
+      </div>
+    </div>
+  </ng-container>
+</div>

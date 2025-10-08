@@ -1,33 +1,78 @@
 <div class="layout-wrapper">
-  
+  <!-- Mobile Header avec Menu Hamburger -->
+  <header class="mobile-header">
+    <button
+      class="mobile-menu-toggle"
+      (click)="toggleMobileSidebar()"
+      [class.active]="isMobileSidebarOpen"
+      aria-label="Toggle menu"
+    >
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <a [routerLink]="['/catalogue']" class="mobile-brand">
+      <i class="bx bx-calendar-check"></i>
+      <span>ResaChap</span>
+    </a>
+
+    <div class="mobile-user" *ngIf="profile$ | async as profile">
+      <i class="bx bx-user-circle"></i>
+    </div>
+  </header>
+
+  <!-- Overlay pour mobile -->
+  <div
+    class="mobile-overlay"
+    [class.active]="isMobileSidebarOpen"
+    (click)="closeMobileSidebar()"
+  ></div>
+
   <!-- Sidebar -->
-  <aside class="sidebar">
-    
+  <aside class="sidebar" [class.mobile-open]="isMobileSidebarOpen">
     <!-- Logo -->
     <div class="sidebar-header">
-      <a [routerLink]="['/catalogue']" class="sidebar-brand">
+      <a [routerLink]="['/catalogue']" class="sidebar-brand" (click)="closeMobileSidebar()">
         <i class="bx bx-calendar-check"></i>
         <span>ResaChap</span>
       </a>
+
+      <!-- Bouton fermer mobile -->
+      <button class="sidebar-close" (click)="closeMobileSidebar()" aria-label="Fermer le menu">
+        <i class="bx bx-x"></i>
+      </button>
     </div>
 
     <!-- Navigation -->
     <nav class="sidebar-nav">
-      <a 
-        [routerLink]="['/catalogue']" 
+      <a
+        [routerLink]="['/dashboard']"
         routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{exact: false}"
+        [routerLinkActiveOptions]="{ exact: false }"
         class="nav-link"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bx bx-home-alt"></i>
+        <span>Dashboard</span>
+      </a>
+      <a
+        [routerLink]="['/catalogue']"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="nav-link"
+        (click)="closeMobileSidebar()"
       >
         <i class="bx bx-collection"></i>
         <span>Catalogue</span>
       </a>
 
-      <a 
-        [routerLink]="['/resources/mine']" 
+      <a
+        [routerLink]="['/resources/mine']"
         routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{exact: false}"
+        [routerLinkActiveOptions]="{ exact: false }"
         class="nav-link"
+        (click)="closeMobileSidebar()"
       >
         <i class="bx bx-box"></i>
         <span>Mes Ressources</span>
@@ -35,33 +80,27 @@
 
       <!-- Dropdown Réservations -->
       <div ngbDropdown class="nav-dropdown" autoClose="true">
-        <a 
-          class="nav-link dropdown-toggle"
-          id="reservationsDropdown"
-          ngbDropdownToggle
-        >
+        <a class="nav-link dropdown-toggle" id="reservationsDropdown" ngbDropdownToggle>
           <i class="bx bx-calendar"></i>
           <span>Réservations</span>
           <i class="bx bx-chevron-down chevron-icon"></i>
         </a>
 
-        <div 
-          ngbDropdownMenu 
-          aria-labelledby="reservationsDropdown" 
-          class="dropdown-menu"
-        >
-          <a 
-            [routerLink]="['/reservations/made']" 
+        <div ngbDropdownMenu aria-labelledby="reservationsDropdown" class="dropdown-menu">
+          <a
+            [routerLink]="['/reservations/made']"
             ngbDropdownItem
             class="dropdown-item"
+            (click)="closeMobileSidebar()"
           >
             <i class="bx bx-book-bookmark"></i>
             <span>Faites par moi</span>
           </a>
-          <a 
-            [routerLink]="['/reservations/received']" 
+          <a
+            [routerLink]="['/reservations/received']"
             ngbDropdownItem
             class="dropdown-item"
+            (click)="closeMobileSidebar()"
           >
             <i class="bx bx-list-check"></i>
             <span>Reçues</span>
@@ -73,27 +112,24 @@
     <!-- User Profile -->
     <div class="sidebar-footer">
       <div ngbDropdown class="user-dropdown" *ngIf="profile$ | async as profile" autoClose="true">
-        <button
-          class="user-button"
-          ngbDropdownToggle
-        >
+        <button class="user-button" ngbDropdownToggle>
           <i class="bx bx-user-circle"></i>
-          <span class="user-name">{{ profile.firstName || profile.username || profile.email }}</span>
+          <span class="user-name">{{
+            profile.firstName || profile.username || profile.email
+          }}</span>
           <i class="bx bx-chevron-up chevron-icon"></i>
         </button>
 
-        <div 
-          ngbDropdownMenu 
-          class="dropdown-menu dropdown-menu-top"
-        >
+        <div ngbDropdownMenu class="dropdown-menu dropdown-menu-top">
           <div class="dropdown-header">
             {{ profile.email }}
           </div>
-          
-          <a 
-            [routerLink]="['/profile']" 
-            ngbDropdownItem 
+
+          <a
+            [routerLink]="['/profile']"
+            ngbDropdownItem
             class="dropdown-item"
+            (click)="closeMobileSidebar()"
           >
             <i class="bx bx-id-card"></i>
             <span>Mon Profil</span>
@@ -101,23 +137,17 @@
 
           <div class="dropdown-divider"></div>
 
-          <button 
-            (click)="onLogout()" 
-            ngbDropdownItem 
-            class="dropdown-item logout-item"
-          >
+          <button (click)="onLogout()" ngbDropdownItem class="dropdown-item logout-item">
             <i class="bx bx-log-out"></i>
             <span>Déconnexion</span>
           </button>
         </div>
       </div>
     </div>
-
   </aside>
 
   <!-- Main Content -->
   <main class="main-content">
     <router-outlet></router-outlet>
   </main>
-
 </div>

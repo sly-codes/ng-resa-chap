@@ -1,9 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
-import { Component, inject, OnInit } from '@angular/core';
-// ✅ Importez spécifiquement NgbDropdown, NgbDropdownMenu, et NgbDropdownToggle
-import { NgbDropdown, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
+import { Component, inject, OnInit, HostListener } from '@angular/core';
+import {
+  NgbDropdown,
+  NgbDropdownMenu,
+  NgbDropdownToggle,
+  NgbDropdownItem,
+} from '@ng-bootstrap/ng-bootstrap';
 import { ProfileService, UserProfile } from '../../core/services/profile.service';
 import { Observable } from 'rxjs';
 
@@ -11,21 +15,28 @@ import { Observable } from 'rxjs';
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
-  standalone: true, // ✅ Assurez-vous que toutes les directives sont dans les imports (c'est l'endroit le plus probable du bug)
-  imports: [CommonModule, RouterModule, NgbDropdown, NgbDropdownMenu, NgbDropdownToggle],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgbDropdown,
+    NgbDropdownMenu,
+    NgbDropdownToggle,
+    NgbDropdownItem,
+  ],
 })
 export class LayoutComponent implements OnInit {
   private authService = inject(AuthService);
-  private profileService = inject(ProfileService); // ✅ Injection du ProfileService
+  private profileService = inject(ProfileService);
 
-  // Observable pour le profil, utilisé dans le template
   profile$!: Observable<UserProfile | null>;
+
+  // État du menu mobile
+  isMobileSidebarOpen = false;
 
   ngOnInit(): void {
     this.profile$ = this.profileService.profile$;
 
-    // Charger le profil lors du chargement du layout, si ce n'est pas déjà fait
-    // Cela initialise l'état du profil après une connexion réussie
     if (!this.profileService.getProfileSnapshot()) {
       this.profileService.loadProfile().subscribe({
         error: (err) => console.error('Erreur de chargement du profil dans le layout:', err),
@@ -33,10 +44,45 @@ export class LayoutComponent implements OnInit {
     }
   }
 
+  /**
+   * Toggle la sidebar mobile
+   */
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+
+    // Bloquer le scroll du body quand la sidebar est ouverte
+    if (this.isMobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  /**
+   * Fermer la sidebar mobile
+   */
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  /**
+   * Fermer la sidebar mobile si on redimensionne vers desktop
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const width = (event.target as Window).innerWidth;
+    if (width > 768 && this.isMobileSidebarOpen) {
+      this.closeMobileSidebar();
+    }
+  }
+
+  /**
+   * Déconnexion
+   */
   onLogout(): void {
-    // 1. Vider l'état du profil
+    this.closeMobileSidebar();
     this.profileService.clearProfile();
-    // 2. Déconnecter l'utilisateur (cela devrait naviguer vers /auth/login)
     this.authService.logout();
   }
 }
