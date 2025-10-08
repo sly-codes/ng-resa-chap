@@ -240,7 +240,7 @@
 .form-textarea {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #1f2937;
   background: #ffffff;
   border: 1px solid #d1d5db;
@@ -248,6 +248,7 @@
   transition: all 0.2s ease;
   outline: none;
   font-family: inherit;
+  font-size: 1rem;
 
   &::placeholder {
     color: #9ca3af;
@@ -294,6 +295,7 @@
   background-repeat: no-repeat;
   background-size: 1.5rem 1.5rem;
   padding-right: 2.5rem;
+  font-size: 1rem;
 
   option {
     color: #1f2937;
@@ -308,6 +310,7 @@
   resize: vertical;
   min-height: 100px;
   line-height: 1.5;
+  font-size: 1rem;
 }
 
 .form-hint {

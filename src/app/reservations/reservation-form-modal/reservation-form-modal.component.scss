@@ -246,7 +246,7 @@
 .form-textarea {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #1f2937;
   background: #ffffff;
   border: 1px solid #d1d5db;
@@ -294,6 +294,7 @@
 
 .form-input[type="datetime-local"] {
   cursor: pointer;
+  font-size: 1rem;
   
   &::-webkit-calendar-picker-indicator {
     cursor: pointer;
@@ -310,6 +311,7 @@
   resize: vertical;
   min-height: 80px;
   line-height: 1.5;
+  font-size: 1rem;
 }
 
 .form-error {

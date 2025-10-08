@@ -100,6 +100,7 @@ body {
   border-radius: 5px;
   color: $gray-900;
   transition: all 0.2s ease;
+  font-size: 1rem;
   outline: none;
   font-family: inherit;
 
@@ -175,8 +176,12 @@ body {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .auth-footer {

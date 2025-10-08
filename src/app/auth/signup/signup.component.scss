@@ -10,10 +10,6 @@ $gray-900: #111827;
 $red: #dc2626;
 $red-light: #fef2f2;
 
-html {
-  font-size: 85%;
-}
-
 body {
   margin: 0;
   padding: 0;
@@ -96,6 +92,7 @@ body {
   width: 100%;
   padding: 8px 16px 8px 44px;
   background: $white;
+  font-size: 1rem;
   border: 1px solid $gray-200;
   border-radius: 5px;
   color: $gray-900;
