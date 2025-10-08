@@ -92,7 +92,8 @@ body {
   width: 100%;
   padding: 8px 16px 8px 44px;
   background: $white;
-  font-size: 1rem;
+  /* La correction était déjà présente ici: font-size: 16px; */
+  font-size: 16px; 
   border: 1px solid $gray-200;
   border-radius: 5px;
   color: $gray-900;

@@ -10,9 +10,10 @@ $gray-900: #111827;
 $red: #dc2626;
 $red-light: #fef2f2;
 
-html {
-  font-size: 85%;
-}
+/* * NOTE DE CORRECTION: J'ai retiré le bloc html { font-size: 85%; } 
+ * pour ne pas impacter globalement les tailles. La correction est appliquée 
+ * directement sur les inputs ci-dessous.
+ */
 
 body {
   margin: 0;
@@ -100,7 +101,8 @@ body {
   border-radius: 5px;
   color: $gray-900;
   transition: all 0.2s ease;
-  font-size: 1rem;
+  /* CORRECTION APPLIQUÉE ICI pour éviter le zoom mobile */
+  font-size: 16px; 
   outline: none;
   font-family: inherit;
 

@@ -1,29 +1,4 @@
-// .modal-overlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   background: rgba(0, 0, 0, 0.6);
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   padding: 1rem;
-//   z-index: 2000;
-//   animation: overlayFadeIn 0.2s ease-out;
-//   backdrop-filter: blur(2px);
-
-//   @keyframes overlayFadeIn {
-//     from {
-//       opacity: 0;
-//       backdrop-filter: blur(0px);
-//     }
-//     to {
-//       opacity: 1;
-//       backdrop-filter: blur(2px);
-//     }
-//   }
-// }
+// Styles du premier formulaire modal (Modale Resource)
 
 .modal-container {
   background: #ffffff;
@@ -126,9 +101,6 @@
   @media (min-width: 768px) {
     padding: 2rem;
   }
-
-  // Smooth scrolling
-  // scroll-behavior: smooth;
   
   // Custom scrollbar
   &::-webkit-scrollbar {
@@ -240,7 +212,6 @@
 .form-textarea {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  font-size: 1rem;
   color: #1f2937;
   background: #ffffff;
   border: 1px solid #d1d5db;
@@ -248,7 +219,9 @@
   transition: all 0.2s ease;
   outline: none;
   font-family: inherit;
-  font-size: 1rem;
+  
+  /* CORRECTION CLÉ : Utiliser 16px pour tous les inputs/selects/textareas pour éviter le zoom */
+  font-size: 16px; 
 
   &::placeholder {
     color: #9ca3af;
@@ -295,8 +268,8 @@
   background-repeat: no-repeat;
   background-size: 1.5rem 1.5rem;
   padding-right: 2.5rem;
-  font-size: 1rem;
-
+  /* L'héritage de font-size: 16px; sur .form-input, .form-select, .form-textarea est suffisant, mais je le laisse pour la clarté */
+  
   option {
     color: #1f2937;
   }
@@ -310,7 +283,7 @@
   resize: vertical;
   min-height: 100px;
   line-height: 1.5;
-  font-size: 1rem;
+  /* L'héritage de font-size: 16px; est suffisant */
 }
 
 .form-hint {

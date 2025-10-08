@@ -1,29 +1,4 @@
-// .modal-overlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   background: rgba(0, 0, 0, 0.6);
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   padding: 1rem;
-//   z-index: 2000;
-//   animation: overlayFadeIn 0.2s ease-out;
-//   backdrop-filter: blur(2px);
-
-//   @keyframes overlayFadeIn {
-//     from {
-//       opacity: 0;
-//       backdrop-filter: blur(0px);
-//     }
-//     to {
-//       opacity: 1;
-//       backdrop-filter: blur(2px);
-//     }
-//   }
-// }
+// Styles du deuxième formulaire modal (Modale Réservation)
 
 .modal-container {
   background: #ffffff;
@@ -133,9 +108,6 @@
     padding: 2rem;
   }
 
-  // Smooth scrolling
-  // scroll-behavior: smooth;
-  
   // Custom scrollbar
   &::-webkit-scrollbar {
     width: 8px;
@@ -246,7 +218,8 @@
 .form-textarea {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  font-size: 1rem;
+  /* CORRECTION CLÉ : Utiliser 16px pour tous les inputs/textareas pour éviter le zoom */
+  font-size: 16px; 
   color: #1f2937;
   background: #ffffff;
   border: 1px solid #d1d5db;
@@ -294,7 +267,8 @@
 
 .form-input[type="datetime-local"] {
   cursor: pointer;
-  font-size: 1rem;
+  /* L'héritage de 16px au-dessus est suffisant, on s'assure juste que le navigateur n'écrase pas */
+  font-size: 16px; 
   
   &::-webkit-calendar-picker-indicator {
     cursor: pointer;
@@ -311,7 +285,7 @@
   resize: vertical;
   min-height: 80px;
   line-height: 1.5;
-  font-size: 1rem;
+  /* L'héritage de 16px au-dessus est suffisant */
 }
 
 .form-error {

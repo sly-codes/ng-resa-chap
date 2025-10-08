@@ -157,14 +157,14 @@
 .form-input {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  font-size: 0.875rem;
+  /* La taille de 16px est déjà en place, c'est parfait pour éviter le zoom */
+  font-size: 16px;
   color: #1f2937;
   background: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 3px;
   transition: all 0.15s ease;
   outline: none;
-  font-size: 1rem;
 
   &::placeholder {
     color: #9ca3af;
