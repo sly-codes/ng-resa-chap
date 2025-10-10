@@ -1,30 +1,62 @@
 <div class="reservations-container">
-  <!-- 📋 En-tête -->
   <h1 class="reservations-title">
     <i class="bx bx-list-check"></i>
     <span>Réservations Reçues</span>
   </h1>
 
-  <!-- 🔄 Loader -->
+  <div class="reservations-controls">
+    <div class="filter-controls-group">
+      <div class="control-group">
+        <label for="status-filter">Statut</label>
+        <select id="status-filter" [formControl]="statusFilter">
+          <option value="ALL">Tous les statuts</option>
+          <option *ngFor="let status of reservationStatuses" [value]="status">
+            {{ getReservationStatusText(status) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="control-group search-control">
+        <i class="bx bx-search"></i>
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Rechercher..."
+          aria-label="Rechercher par ressource ou demandeur"
+        />
+      </div>
+    </div>
+
+    <button
+      class="btn-refresh"
+      (click)="onRefresh()"
+      [disabled]="isLoading"
+      title="Rafraîchir la liste"
+      aria-label="Rafraîchir la liste"
+    >
+      <i
+        class="bx"
+        [ngClass]="{ 'bx-loader-alt bx-spin': isLoading, 'bx-refresh': !isLoading }"
+      ></i>
+      <span class="btn-text">Actualiser</span>
+    </button>
+  </div>
+
   <div *ngIf="isLoading" class="reservations-loader">
     <i class="bx bx-loader-alt bx-spin"></i>
     <p>Chargement des demandes de réservation...</p>
   </div>
 
-  <!-- 🚨 Message d'erreur -->
   <div *ngIf="error" class="reservations-error">
     {{ error }}
   </div>
 
-  <!-- 📊 Liste des réservations -->
   <ng-container *ngIf="reservations$ | async as reservations">
-    <!-- 📭 État vide -->
-    <div *ngIf="reservations.length === 0 && !isLoading" class="reservations-empty">
+    <div *ngIf="reservations.length === 0 && !isLoading && !error" class="reservations-empty">
       <i class="bx bx-check-circle"></i>
-      <p>Vous n'avez aucune demande de réservation en attente.</p>
+      <p>Aucune demande trouvée avec les critères actuels.</p>
     </div>
 
-    <!-- 📊 Tableau des réservations -->
     <div *ngIf="reservations.length > 0" class="reservations-table-wrapper">
       <table class="reservations-table">
         <thead>
@@ -32,21 +64,23 @@
             <th scope="col">Ressource</th>
             <th scope="col">Demandeur</th>
             <th scope="col">Période Demandée</th>
+            <th scope="col">Notes</th>
             <th scope="col">Statut</th>
             <th scope="col" class="text-center">Décision</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let res of reservations">
-            <!-- Ressource -->
             <td>
               <div class="resource-info">
-                <span class="resource-name">{{ res.resource.name }}</span>
-                <span class="resource-type">{{ res.resource.type }}</span>
+                <i [class]="'bx ' + getResourceIcon(res.resource.type)" class="resource-icon"></i>
+                <div class="resource-details">
+                  <span class="resource-name">{{ res.resource.name }}</span>
+                  <span class="resource-type">{{ res.resource.type === 'ROOM' ? 'Salle' : 'Équipement' }}</span>
+                </div>
               </div>
             </td>
 
-            <!-- Demandeur -->
             <td>
               <div class="user-info">
                 <span class="user-email">{{ res.locataire.email }}</span>
@@ -54,20 +88,21 @@
               </div>
             </td>
 
-            <!-- Période -->
             <td>
               <div class="period-info">
-                <span class="period-date"
-                  >{{ res.dateDebut | date : 'dd/MM/yyyy' }} -
-                  {{ res.dateFin | date : 'dd/MM/yyyy' }}</span
-                >
+                <span class="period-date">
+                  {{ res.dateDebut | date : 'dd/MM/yyyy' }} - {{ res.dateFin | date : 'dd/MM/yyyy' }}
+                </span>
                 <span class="period-time">
                   {{ res.dateDebut | date : 'HH:mm' }} - {{ res.dateFin | date : 'HH:mm' }}
                 </span>
               </div>
             </td>
 
-            <!-- Statut -->
+            <td>
+              <span class="notes-text">{{ res.notes || '—' }}</span>
+            </td>
+
             <td>
               <span
                 class="status-badge"
@@ -82,7 +117,6 @@
               </span>
             </td>
 
-            <!-- Actions -->
             <td class="text-center">
               <div *ngIf="res.status === 'PENDING'" class="reservation-actions">
                 <button
@@ -90,6 +124,7 @@
                   class="btn-approve"
                   [disabled]="res.isProcessing"
                   title="Accepter la réservation"
+                  aria-label="Accepter la réservation"
                 >
                   <i
                     class="bx"
@@ -102,6 +137,7 @@
                   class="btn-reject"
                   [disabled]="res.isProcessing"
                   title="Refuser la réservation"
+                  aria-label="Refuser la réservation"
                 >
                   <i class="bx" [ngClass]="res.isProcessing ? 'bx-loader-alt bx-spin' : 'bx-x'"></i>
                   <span>Refuser</span>
@@ -115,5 +151,13 @@
         </tbody>
       </table>
     </div>
+
+    <app-pagination
+      [totalItems]="totalItems"
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"
+      *ngIf="reservations.length > 0 && totalPages > 1"
+    ></app-pagination>
   </ng-container>
 </div>

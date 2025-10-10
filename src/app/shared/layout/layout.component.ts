@@ -10,6 +10,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { ProfileService, UserProfile } from '../../core/services/profile.service';
 import { Observable } from 'rxjs';
+import { ToastComponent } from '../../../common/toast/toast.component';
 
 @Component({
   selector: 'app-layout',
@@ -23,6 +24,7 @@ import { Observable } from 'rxjs';
     NgbDropdownMenu,
     NgbDropdownToggle,
     NgbDropdownItem,
+    ToastComponent,
   ],
 })
 export class LayoutComponent implements OnInit {

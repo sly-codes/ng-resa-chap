@@ -1,18 +1,22 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http'; // ✨ Importer HttpParams
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-// Interfaces de données de base (ajustées pour correspondre à votre backend)
+// ----------------------------------------------------
+// Interfaces de données de base (inchangées)
+// ----------------------------------------------------
+
 export interface CreateReservationDto {
   resourceId: string;
-  dateDebut: string; // Format ISO-8601 (ex: 2025-10-05T09:00)
-  dateFin: string; // Format ISO-8601
+  dateDebut: string;
+  dateFin: string;
   notes?: string;
 }
 
 export type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED' | 'CANCELED';
 
+// Interface de base pour une Réservation
 export interface Reservation {
   id: string;
   resourceId: string;
@@ -21,48 +25,59 @@ export interface Reservation {
   dateFin: string;
   notes?: string;
   status: ReservationStatus;
-
   resource: {
     name: string;
     type: 'ROOM' | 'EQUIPMENT';
-    // Le propriétaire (owner) peut être absent sur certaines routes (non inclus par défaut)
     owner?: { email: string };
   };
-  // Le locataire (locataire) peut être absent sur certaines routes
   locataire?: {
     id: string;
     email: string;
     username: string;
     contactPhone: string;
   };
-  [key: string]: any; // Permet les champs non définis (comme isCancelling)
+  [key: string]: any;
 }
 
 // ----------------------------------------------------
-// NOUVELLES INTERFACES DE VUE (pour résoudre TS4111 et TS2532)
+// NOUVELLES INTERFACES DE VUE & PAGINATION
 // ----------------------------------------------------
 
 // Vue: Mes Réservations (faites par moi)
 export interface MyReservationView extends Reservation {
-  // La route 'made' inclut l'owner
   resource: {
     name: string;
     type: 'ROOM' | 'EQUIPMENT';
-    owner: { email: string }; // Rendu non-optionnel pour cette vue
+    owner: { email: string };
   };
-  isCancelling: boolean; // Ajout du champ pour l'état du bouton
+  isCancelling?: boolean; // Ajout du ? car ce n'est pas dans le DTO initial
 }
 
 // Vue: Réservations Reçues (pour mes ressources)
 export interface ReceivedReservationView extends Reservation {
-  // La route 'received' inclut le locataire
   locataire: {
     id: string;
     email: string;
     username: string;
     contactPhone: string;
   };
-  isProcessing: boolean; // Ajout du champ pour l'état des boutons Accepter/Refuser
+  isProcessing?: boolean; // Ajout du ?
+}
+
+// ✨ Interface pour les paramètres de requête de pagination/filtre (doit correspondre au DTO NestJS)
+export interface ReservationQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: ReservationStatus;
+}
+
+// ✨ Interface pour le format de réponse paginée du backend
+export interface PaginatedReservations<T> {
+  data: T[];
+  total: number;
+  page: number;
+  lastPage: number;
 }
 
 @Injectable({
@@ -77,16 +92,45 @@ export class ReservationService {
     return this.http.post<Reservation>(this.apiUrl, dto);
   }
 
-  // Retourne l'interface de vue spécifique
-  getReservationsMade(): Observable<MyReservationView[]> {
-    // Le backend renvoie Reservation[], nous faisons le cast dans le composant
-    return this.http.get<MyReservationView[]>(`${this.apiUrl}/made`);
+  /**
+   * Récupère la liste des réservations faites par l'utilisateur avec pagination et filtres.
+   */
+  getReservationsMade(
+    query: ReservationQuery = {} // ✨ Accepter les paramètres de requête
+  ): Observable<PaginatedReservations<MyReservationView>> {
+    let params = new HttpParams();
+
+    // Ajouter les paramètres de requête à HttpParams
+    if (query.page) params = params.set('page', query.page.toString());
+    if (query.limit) params = params.set('limit', query.limit.toString());
+    if (query.search) params = params.set('search', query.search);
+    if (query.status) params = params.set('status', query.status);
+
+    // Retourner le format paginé
+    return this.http.get<PaginatedReservations<MyReservationView>>(`${this.apiUrl}/made`, {
+      params,
+    });
   }
 
-  // Retourne l'interface de vue spécifique
-  getReceivedReservations(): Observable<ReceivedReservationView[]> {
-    // Le backend renvoie Reservation[], nous faisons le cast dans le composant
-    return this.http.get<ReceivedReservationView[]>(`${this.apiUrl}/received`);
+  /**
+   * Récupère la liste des réservations reçues par l'utilisateur avec pagination et filtres.
+   */
+  getReceivedReservations(
+    query: ReservationQuery = {} // ✨ Accepter les paramètres de requête
+  ): Observable<PaginatedReservations<ReceivedReservationView>> {
+    let params = new HttpParams();
+
+    // Ajouter les paramètres de requête à HttpParams
+    if (query.page) params = params.set('page', query.page.toString());
+    if (query.limit) params = params.set('limit', query.limit.toString());
+    if (query.search) params = params.set('search', query.search);
+    if (query.status) params = params.set('status', query.status);
+
+    // Retourner le format paginé
+    return this.http.get<PaginatedReservations<ReceivedReservationView>>(
+      `${this.apiUrl}/received`,
+      { params }
+    );
   }
 
   cancelReservation(id: string): Observable<any> {
@@ -97,4 +141,6 @@ export class ReservationService {
     const dto = { status };
     return this.http.patch<Reservation>(`${this.apiUrl}/${id}/status`, dto);
   }
+
+  
 }

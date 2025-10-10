@@ -6,23 +6,19 @@
         <i class="bx bx-collection"></i>
         <span>Catalogue des Ressources</span>
       </h1>
-      <!-- Définition des 'resources' une seule fois, au début. -->
-      <!-- Afficher le compteur si les ressources sont chargées (resources n'est pas null) -->
+      
       <div class="resource-count" *ngIf="resources$ | async as resources">
-        <!-- Utilisation de 'resources' sans refaire l'async pipe -->
         <span class="count-value">{{ resources.length }}</span>
-        <span class="count-label"
-          >ressource{{ resources.length > 1 ? 's' : '' }} disponible{{
-            resources.length > 1 ? 's' : ''
-          }}</span
-        >
+        <span class="count-label">
+          ressource{{ resources.length > 1 ? 's' : '' }} disponible{{ resources.length > 1 ? 's' : '' }}
+        </span>
       </div>
     </div>
   </div>
 
   <!-- Formulaire de filtres moderne -->
   <div class="filter-section">
-    <form [formGroup]="filterForm" class="filter-form">
+    <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="$event.preventDefault()">
       <!-- Champ de recherche principal -->
       <div class="filter-group filter-search">
         <label for="search" class="filter-label">
@@ -37,6 +33,7 @@
             formControlName="search"
             class="filter-input"
             placeholder="Nom, description..."
+            aria-label="Rechercher une ressource"
           />
         </div>
       </div>
@@ -61,9 +58,10 @@
         <button
           type="button"
           class="refresh-btn"
-          (click)="onRefresh()"
+          (click)="onRefresh(); $event.stopPropagation()"
           [disabled]="loading"
           title="Actualiser la liste"
+          aria-label="Actualiser la liste"
         >
           <i class="bx bx-refresh" [class.bx-spin]="loading"></i>
           <span class="btn-text">Actualiser</span>
@@ -79,7 +77,6 @@
   </div>
 
   <!-- Loader -->
-  <!-- Afficher le loader seulement s'il y a un chargement et aucune erreur -->
   <div *ngIf="loading && !error" class="catalogue-loader">
     <div class="loader-content">
       <i class="bx bx-loader-alt bx-spin"></i>
@@ -88,7 +85,6 @@
   </div>
 
   <!-- Contenu principal du catalogue -->
-  <!-- Utilisation du ng-container pour définir 'resources' une seule fois et gérer les conditions d'affichage de la grille -->
   <ng-container *ngIf="resources$ | async as resources">
     <div *ngIf="!loading && !error" class="catalogue-content">
       <!-- Message si aucune ressource -->
@@ -106,7 +102,6 @@
 
       <!-- Grille des cartes -->
       <div class="catalogue-grid" *ngIf="resources.length > 0">
-        <!-- Cartes de ressources -->
         <div *ngFor="let resource of resources" class="resource-card">
           <!-- Badge type en haut -->
           <div class="card-badge">
@@ -124,13 +119,14 @@
 
           <!-- Icône principale -->
           <div class="card-icon">
-            <i
-              [class]="'bx ' + getResourceIcon(resource.type)"
+            <div
               [ngClass]="{
                 'icon-room': resource.type === 'ROOM',
                 'icon-equipment': resource.type === 'EQUIPMENT'
               }"
-            ></i>
+            >
+              <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
+            </div>
           </div>
 
           <!-- En-tête de la carte -->
@@ -146,13 +142,11 @@
           <!-- Métadonnées -->
           <div class="resource-meta">
             <div class="meta-item">
-              <!-- <i class="bx bx-user"></i> -->
-              <span>{{ resource.createdAt }}</span>
+              <i class="bx bx-calendar"></i>
+              <span>{{ resource.createdAt | date: 'dd/MM/yyyy' }}</span>
             </div>
             <div class="meta-item">
               <i class="bx bx-id-card"></i>
-              <!-- Vous devriez utiliser resource.ownerId ici si disponible, 
-                   sinon le slice de l'ID de ressource est correct -->
               <span>{{ resource.id.slice(0, 8) }}...</span>
             </div>
           </div>
@@ -162,6 +156,7 @@
             (click)="onReserve(resource.id, resource.name)"
             class="reserve-btn"
             [disabled]="loading"
+            aria-label="Réserver {{ resource.name }}"
           >
             <i class="bx bx-calendar-plus"></i>
             <span>Réserver Maintenant</span>

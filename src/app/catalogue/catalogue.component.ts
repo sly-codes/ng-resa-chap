@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
-
 import {
   Observable,
   catchError,
@@ -10,6 +9,7 @@ import {
   startWith,
   finalize,
   debounceTime,
+  distinctUntilChanged,
 } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,7 +17,6 @@ import { ReservationFormModalComponent } from '../reservations/reservation-form-
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Resource, ResourceFilters, ResourceService } from '../core/resource.service';
 
-// Définition des types de ressource pour le filtre
 const RESOURCE_TYPES: ('ROOM' | 'EQUIPMENT')[] = ['ROOM', 'EQUIPMENT'];
 
 @Component({
@@ -32,7 +31,7 @@ export class CatalogueComponent implements OnInit {
   private modalService = inject(NgbModal);
 
   resources$!: Observable<Resource[]>;
-  loading = true; // Initialiser à true pour le premier chargement
+  loading = true;
   error: string | null = null;
   resourceTypes = RESOURCE_TYPES;
 
@@ -44,10 +43,10 @@ export class CatalogueComponent implements OnInit {
   ngOnInit(): void {
     this.resources$ = this.filterForm.valueChanges.pipe(
       startWith(this.filterForm.value),
-      debounceTime(300),
-      // 🛑 CORRECTION ICI : Assurer que `loading` passe à true AVANT l'appel API.
+      debounceTime(400),
+      distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
       tap(() => {
-        this.loading = true; // Début du chargement/filtrage
+        this.loading = true;
         this.error = null;
       }),
       switchMap((filters) => {
@@ -60,28 +59,22 @@ export class CatalogueComponent implements OnInit {
         };
 
         return this.resourceService.getAllResources(apiFilters).pipe(
-          // La gestion de `loading = false` est déplacée dans `finalize`
-          // pour s'assurer qu'elle est toujours exécutée, même en cas d'erreur.
           catchError((err) => {
             this.error = 'Erreur lors du chargement ou du filtrage des ressources.';
             console.error(err);
             return of([]);
           }),
           finalize(() => {
-            this.loading = false; // Fin du chargement
+            this.loading = false;
           })
         );
       })
     );
-    // Déclenche le premier chargement
+
     this.filterForm.updateValueAndValidity({ emitEvent: true });
   }
 
-  /**
-   * Déclenche un rafraîchissement forcé sans changer les filtres.
-   */
   onRefresh(): void {
-    // Déclencher simplement le re-traitement de l'Observable `resources$`
     this.filterForm.updateValueAndValidity({ emitEvent: true });
   }
 
@@ -112,16 +105,11 @@ export class CatalogueComponent implements OnInit {
     return type === 'ROOM' ? 'bx-buildings' : 'bx-devices';
   }
 
-  /**
-   * Retourne le label traduit du type de ressource
-   */
   getTypeLabel(type: string): string {
     switch (type) {
       case 'ROOM':
         return 'Salle';
       case 'EQUIPMENT':
-        // J'ai corrigé l'erreur de frappe : c'était 'EQUIPEMENT' dans votre code source original, mais 'EQUIPMENT' dans le type.
-        // Je suppose que 'EQUIPMENT' est la bonne valeur pour la clé.
         return 'Équipement';
       default:
         return type;

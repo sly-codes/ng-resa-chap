@@ -1,58 +1,134 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
-// ✅ Importation de l'interface spécifique ReceivedReservationView
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   ReservationService,
   ReservationStatus,
   ReceivedReservationView,
+  ReservationQuery,
+  PaginatedReservations,
 } from '../reservation.service';
 import { HttpClientModule } from '@angular/common/http';
+import { PaginationComponent } from '../../../common/pagination/pagination.component';
+import { ToastService } from '../../../common/toast/toast.service';
 
 @Component({
   selector: 'app-received-reservations',
   templateUrl: './received-reservations.component.html',
   styleUrl: './received-reservations.component.scss',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, DatePipe],
+  imports: [CommonModule, HttpClientModule, DatePipe, PaginationComponent, ReactiveFormsModule],
 })
 export class ReceivedReservationsComponent implements OnInit {
   private reservationService = inject(ReservationService);
+  private toastService = inject(ToastService);
 
-  // ✅ Utilisation de l'interface spécifique
   private reservationsSubject = new BehaviorSubject<ReceivedReservationView[]>([]);
   reservations$: Observable<ReceivedReservationView[]> = this.reservationsSubject.asObservable();
+
+  totalItems = 0;
+  currentPage = 1;
+  totalPages = 1;
+  limit = 10;
+
+  statusFilter = new FormControl<ReservationStatus | 'ALL'>('ALL');
+  searchControl = new FormControl('');
+  reservationStatuses: ReservationStatus[] = ['PENDING', 'CONFIRMED', 'REJECTED', 'CANCELED'];
 
   isLoading = true;
   error: string | null = null;
 
   ngOnInit(): void {
-    this.loadReceivedReservations();
+    this.statusFilter.valueChanges
+      .pipe(
+        tap(() => (this.currentPage = 1)),
+        switchMap(() => this.loadReceivedReservations())
+      )
+      .subscribe();
+
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        tap(() => (this.currentPage = 1)),
+        switchMap(() => this.loadReceivedReservations())
+      )
+      .subscribe();
+
+    this.loadReceivedReservations().subscribe();
   }
 
-  loadReceivedReservations(): void {
+  loadReceivedReservations(
+    page: number = this.currentPage
+  ): Observable<PaginatedReservations<ReceivedReservationView>> {
     this.isLoading = true;
-    this.reservationService
-      .getReceivedReservations()
-      .pipe(
-        // ✅ Le cast est maintenant plus propre grâce à l'interface
-        map((reservations) =>
-          reservations.map((res) => ({ ...res, isProcessing: false } as ReceivedReservationView))
-        ),
-        tap(() => (this.isLoading = false)),
-        catchError((err) => {
-          this.error = err.error?.message || 'Erreur lors du chargement des demandes reçues.';
-          this.isLoading = false;
-          return of([]);
-        })
-      )
-      .subscribe((data) => this.reservationsSubject.next(data));
+    this.error = null;
+    this.currentPage = page;
+
+    const query: ReservationQuery = {
+      page: this.currentPage,
+      limit: this.limit,
+      search: this.searchControl.value || undefined,
+      status:
+        this.statusFilter.value !== 'ALL'
+          ? (this.statusFilter.value as ReservationStatus)
+          : undefined,
+    };
+
+    const obs = this.reservationService.getReceivedReservations(query).pipe(
+      tap((res) => {
+        this.totalItems = res.total;
+        this.totalPages = res.lastPage;
+        this.currentPage = res.page;
+        this.reservationsSubject.next(
+          res.data.map((r) => ({ ...r, isProcessing: false } as ReceivedReservationView))
+        );
+        this.isLoading = false;
+      }),
+      catchError((err) => {
+        this.error = err.error?.message || 'Erreur lors du chargement des demandes reçues.';
+        this.reservationsSubject.next([]);
+        this.isLoading = false;
+        return of({
+          data: [],
+          total: 0,
+          page: 1,
+          lastPage: 1,
+          limit: this.limit,
+        } as PaginatedReservations<ReceivedReservationView>);
+      })
+    );
+
+    return obs;
+  }
+
+  onPageChange(page: number): void {
+    this.loadReceivedReservations(page).subscribe();
+  }
+
+  onRefresh(): void {
+    this.loadReceivedReservations(this.currentPage).subscribe({
+      next: () => this.toastService.info('Rafraîchissement', 'Liste des réservations mise à jour.'),
+      error: () =>
+        this.toastService.error('Rafraîchissement échoué', 'Impossible de rafraîchir la liste.'),
+    });
   }
 
   private updateStatus(id: string, status: 'CONFIRMED' | 'REJECTED'): void {
     let currentReservations = this.reservationsSubject.getValue();
+    const reservationToUpdate = currentReservations.find((res) => res.id === id);
+
     currentReservations = currentReservations.map((res) =>
-      // ✅ Utilisation de l'interface spécifique
       res.id === id ? ({ ...res, isProcessing: true } as ReceivedReservationView) : res
     );
     this.reservationsSubject.next(currentReservations);
@@ -61,7 +137,6 @@ export class ReceivedReservationsComponent implements OnInit {
       next: (updatedRes) => {
         currentReservations = this.reservationsSubject.getValue().map((res) => {
           if (res.id === id) {
-            // ✅ Utilisation de l'interface spécifique
             return {
               ...res,
               status: updatedRes.status,
@@ -71,9 +146,22 @@ export class ReceivedReservationsComponent implements OnInit {
           return res;
         });
         this.reservationsSubject.next(currentReservations);
+
+        this.toastService.success(
+          'Statut mis à jour',
+          `La réservation pour "${reservationToUpdate?.resource.name}" a été ${
+            status === 'CONFIRMED' ? 'acceptée' : 'refusée'
+          }.`
+        );
+
+        this.loadReceivedReservations(this.currentPage).subscribe();
       },
       error: (err) => {
-        alert(err.error?.message || 'Impossible de mettre à jour le statut de la réservation.');
+        this.toastService.error(
+          'Échec de la mise à jour',
+          err.error?.message || 'Impossible de mettre à jour le statut de la réservation.'
+        );
+
         currentReservations = this.reservationsSubject
           .getValue()
           .map((res) =>
@@ -92,25 +180,10 @@ export class ReceivedReservationsComponent implements OnInit {
     this.updateStatus(id, 'REJECTED');
   }
 
-  // ------------------------------------------------------------------
-  // FONCTIONS D'AFFICHAGE
-  // ------------------------------------------------------------------
   getResourceIcon(type: 'ROOM' | 'EQUIPMENT'): string {
     return type === 'ROOM' ? 'bx-door-open' : 'bx-wrench';
   }
-  getReservationStatusClass(status: ReservationStatus): string {
-    switch (status) {
-      case 'CONFIRMED':
-        return 'text-bg-success';
-      case 'REJECTED':
-      case 'CANCELED':
-        return 'text-bg-danger';
-      case 'PENDING':
-        return 'text-bg-warning';
-      default:
-        return 'text-bg-secondary';
-    }
-  }
+
   getReservationStatusText(status: ReservationStatus): string {
     switch (status) {
       case 'CONFIRMED':
