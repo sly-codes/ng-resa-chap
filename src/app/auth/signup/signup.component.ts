@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; // ⬅️ IMPORT !
 import { Router, RouterLink } from '@angular/router'; // ⬅️ IMPORT !
-import { CommonModule } from '@angular/common'; // ⬅️ IMPORT !
+import { CommonModule, NgIf } from '@angular/common'; // ⬅️ IMPORT !
 import { AuthService } from '../../core/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -11,13 +11,13 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./signup.component.scss'],
   standalone: true, // ✅ Indispensable
   imports: [
-    CommonModule, 
+    CommonModule,
     ReactiveFormsModule,
-    RouterLink // Pour le lien vers signup
-  ], 
+    RouterLink, // Pour le lien vers signup
+    NgIf,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class SignupComponent implements OnInit {
   signupForm!: FormGroup;
   isLoading = false;
@@ -34,6 +34,7 @@ export class SignupComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
+
 
   onSubmit(): void {
     if (this.signupForm.invalid || this.isLoading) {

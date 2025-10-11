@@ -22,6 +22,8 @@ export const MAIN_ROUTES: Routes = [
     title: 'Catalogue | Booking App',
   },
 
+  
+
   // Route 3: Mes Ressources
   {
     path: 'resources/mine',

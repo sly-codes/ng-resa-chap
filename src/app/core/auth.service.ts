@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http'; // Utilisez directement HttpClient pour la simplicité
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 // Interface pour les Tokens renvoyés par le backend
@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   // -----------------------------------------------------------------
-  // Méthodes d'Authentification
+  // Méthodes d'Authentification Classique
   // -----------------------------------------------------------------
 
   signup(credentials: AuthCredentials): Observable<Tokens> {
@@ -77,7 +77,38 @@ export class AuthService {
   }
 
   // -----------------------------------------------------------------
-  // Token Management
+  // 🚀 NOUVEAU : Méthode d'Authentification Google
+  // -----------------------------------------------------------------
+
+  /**
+   * Redirige l'utilisateur vers le point de départ du flux Google OAuth (sur le backend NestJS).
+   */
+  loginWithGoogle(): void {
+    // Le chemin vers le contrôleur Google sur votre backend (par exemple: /api/auth/google)
+    const googleAuthUrl = `${this.apiUrl}/google`;
+    // Redirection simple : le navigateur prend le relais
+    // window.location.href = googleAuthUrl;
+    window.location.href = `${googleAuthUrl}?prompt=select_account`;
+  }
+
+  /**
+   * 🚨 NOUVEAU : Redirige l'utilisateur vers le point de départ du flux GitHub OAuth.
+   */
+  loginWithGithub(): void {
+    const githubAuthUrl = `${this.apiUrl}/github`;
+    window.location.href = githubAuthUrl;
+  }
+
+  /**
+   * Méthode appelée par le AuthCallbackComponent pour stocker les tokens.
+   */
+  handleSocialLogin(tokens: Tokens): void {
+    this.saveTokens(tokens);
+    this.router.navigate(['/']); // Redirection après succès
+  }
+
+  // -----------------------------------------------------------------
+  // Token Management (inchangé)
   // -----------------------------------------------------------------
 
   getAccessToken(): string | null {

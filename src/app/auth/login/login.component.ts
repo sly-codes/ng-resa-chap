@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; // ⬅️ IMPORT !
-import { Router, RouterLink } from '@angular/router'; // ⬅️ IMPORT !
-import { CommonModule } from '@angular/common'; // ⬅️ IMPORT !
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -9,12 +9,8 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  standalone: true, // ✅ Indispensable
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterLink, // Pour le lien vers signup
-  ],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
@@ -30,7 +26,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]], // Pas besoin de minLength ici
+      password: ['', [Validators.required]],
     });
   }
 
@@ -47,12 +43,10 @@ export class LoginComponent implements OnInit {
 
     this.authService.signin(credentials).subscribe({
       next: () => {
-        // Redirection vers la page principale après succès
         this.router.navigate(['/']);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
-        // Typiquement 401 Unauthorized pour les mauvaises identifiants
         if (err.status === 401) {
           this.error = 'Email ou mot de passe incorrect.';
         } else {
@@ -63,5 +57,19 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  /**
+   * Déclenche la redirection vers le backend pour la connexion Google.
+   */
+  loginWithGoogle(): void {
+    this.authService.loginWithGoogle();
+  }
+
+  /**
+   * 🚨 NOUVEAU : Déclenche la redirection vers le backend pour la connexion GitHub.
+   */
+  loginWithGithub(): void {
+    this.authService.loginWithGithub();
   }
 }

@@ -3,6 +3,22 @@
     
     <h2 class="auth-title">Connexion à ResaChap</h2>
 
+     <div class="social-buttons">
+        <button (click)="loginWithGoogle()" class="btn-google">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png" alt="Google Logo" class="social-logo" />
+          <span>Google</span>
+        </button>
+        <button (click)="loginWithGithub()" class="btn-github">
+          <i class="bx bxl-github social-icon"></i>
+          <span>GitHub</span>
+        </button>
+    </div>
+    
+    <!-- Séparateur pour l'option email/mot de passe -->
+    <div class="separator">
+        <span class="separator-text">Ou continuer avec l'email</span>
+    </div>
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       
       <div class="form-group">

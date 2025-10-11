@@ -10,11 +10,6 @@ $gray-900: #111827;
 $red: #dc2626;
 $red-light: #fef2f2;
 
-/* * NOTE DE CORRECTION: J'ai retiré le bloc html { font-size: 85%; } 
- * pour ne pas impacter globalement les tailles. La correction est appliquée 
- * directement sur les inputs ci-dessous.
- */
-
 body {
   margin: 0;
   padding: 0;
@@ -37,7 +32,6 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    // background: rgba(255, 255, 255, 0.7);
   }
 }
 
@@ -194,4 +188,74 @@ body {
   color: $primary-green;
   text-decoration: none;
   font-weight: 500;
+}
+
+// 🚨 NOUVEAU : Conteneur pour les boutons sociaux
+.social-buttons {
+    display: flex;
+    gap: 16px; // Espace entre les boutons
+    margin-bottom: 24px;
+    
+
+    > * {
+        flex: 1; // Distribue l'espace également
+        padding: 8px 12px; // Ajuster le padding
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+}
+
+// 🚨 Mise à jour du style Google pour le rendre plus petit et flexible
+.btn-google {
+    background: #ffffff;
+    border: 1px solid $gray-200;
+    color: $gray-700;
+    border-radius: 5px;
+    // Les autres styles sont repris par .social-buttons > *
+}
+
+.social-logo {
+    width: 18px;
+    height: 18px;
+}
+
+// 🚨 NOUVEAU : Style pour le bouton GitHub
+.btn-github {
+    background: $gray-900; // Couleur sombre de GitHub
+    border: 1px solid $gray-900;
+    color: $white;
+    transition: background 0.2s ease;
+    border-radius: 5px;
+
+    &:hover:not(:disabled) {
+        background: lighten($gray-900, 10%);
+    }
+}
+
+.social-icon {
+    font-size: 18px;
+}
+
+// Style pour le séparateur "Ou continuer avec l'email"
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 24px;
+
+    &::before, &::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid $gray-200;
+    }
+
+    .separator-text {
+        padding: 0 16px;
+        font-size: 14px;
+        color: $gray-400;
+        white-space: nowrap;
+    }
 }

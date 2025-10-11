@@ -1,10 +1,9 @@
 <div class="auth-wrapper">
   <div class="auth-card">
-    
     <h2 class="auth-title">Créer un compte ResaChap</h2>
 
+
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-      
       <div class="form-group">
         <label for="email" class="form-label">Adresse email</label>
         <div class="input-wrapper">
@@ -20,16 +19,12 @@
           />
           <i class="bx bx-mail-send input-icon"></i>
         </div>
-        <div 
+        <div
           *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid"
           class="form-error"
         >
-          <p *ngIf="signupForm.get('email')?.errors?.['required']">
-            L'email est requis
-          </p>
-          <p *ngIf="signupForm.get('email')?.errors?.['email']">
-            Format d'email invalide
-          </p>
+          <p *ngIf="signupForm.get('email')?.errors?.['required']">L'email est requis</p>
+          <p *ngIf="signupForm.get('email')?.errors?.['email']">Format d'email invalide</p>
         </div>
       </div>
 
@@ -48,13 +43,11 @@
           />
           <i class="bx bx-lock-alt input-icon"></i>
         </div>
-        <div 
+        <div
           *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid"
           class="form-error"
         >
-          <p *ngIf="signupForm.get('password')?.errors?.['required']">
-            Le mot de passe est requis
-          </p>
+          <p *ngIf="signupForm.get('password')?.errors?.['required']">Le mot de passe est requis</p>
           <p *ngIf="signupForm.get('password')?.errors?.['minlength']">
             Minimum 6 caractères requis
           </p>
@@ -65,21 +58,14 @@
         {{ error }}
       </div>
 
-      <button 
-        type="submit" 
-        [disabled]="signupForm.invalid || isLoading" 
-        class="btn-submit"
-      >
+      <button type="submit" [disabled]="signupForm.invalid || isLoading" class="btn-submit">
         <i *ngIf="isLoading" class="bx bx-loader-alt bx-spin"></i>
-        <span>{{ isLoading ? 'Création du compte...' : 'S\'inscrire' }}</span>
+        <span>{{ isLoading ? 'Création du compte...' : "S'inscrire" }}</span>
       </button>
 
       <div class="auth-footer">
-        <a [routerLink]="['/auth/login']" class="auth-link">
-          Déjà un compte ? Connectez-vous
-        </a>
+        <a [routerLink]="['/auth/login']" class="auth-link"> Déjà un compte ? Connectez-vous </a>
       </div>
-      
     </form>
   </div>
 </div>

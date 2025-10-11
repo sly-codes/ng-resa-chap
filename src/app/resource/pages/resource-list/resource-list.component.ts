@@ -96,4 +96,5 @@ export class ResourceListComponent implements OnInit {
   getResourceIcon(type: 'ROOM' | 'EQUIPMENT'): string {
     return type === 'ROOM' ? 'bx-buildings' : 'bx-devices';
   }
+
 }
