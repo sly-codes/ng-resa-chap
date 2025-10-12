@@ -22,10 +22,11 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background-image: url('https://asset.gecdesigns.com/img/background-templates/gradient-triangle-abstract-background-template-10032405-1710079376651-cover.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  // background-image: url('https://asset.gecdesigns.com/img/background-templates/gradient-triangle-abstract-background-template-10032405-1710079376651-cover.webp');
+  // background-size: cover;
+  // background-position: center;
+  // background-repeat: no-repeat;
+  background-color: #e5e7eb;
   position: relative;
 
   &::before {
@@ -39,12 +40,12 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   background: $white;
-  border: 1px solid $gray-200;
+  border: 2px solid $gray-200;
   border-radius: 2px;
   padding: 48px 40px;
-  border-radius: 5px;
+  border-radius: 8px;
 
   @media (max-width: 640px) {
     padding: 40px 28px;
@@ -96,7 +97,7 @@ body {
   color: $gray-900;
   transition: all 0.2s ease;
   /* CORRECTION APPLIQUÉE ICI pour éviter le zoom mobile */
-  font-size: 16px; 
+  font-size: 16px;
   outline: none;
   font-family: inherit;
 
@@ -192,70 +193,74 @@ body {
 
 // 🚨 NOUVEAU : Conteneur pour les boutons sociaux
 .social-buttons {
-    display: flex;
-    gap: 16px; // Espace entre les boutons
-    margin-bottom: 24px;
-    
+  display: flex;
+  gap: 16px; // Espace entre les boutons
+  margin-bottom: 24px;
 
-    > * {
-        flex: 1; // Distribue l'espace également
-        padding: 8px 12px; // Ajuster le padding
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
+  > * {
+    flex: 1; // Distribue l'espace également
+    padding: 8px 12px; // Ajuster le padding
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
 }
 
 // 🚨 Mise à jour du style Google pour le rendre plus petit et flexible
 .btn-google {
-    background: #ffffff;
-    border: 1px solid $gray-200;
-    color: $gray-700;
-    border-radius: 5px;
-    // Les autres styles sont repris par .social-buttons > *
+  background-color: #e2ebe8;
+  border: 1px solid $gray-200;
+  color: $gray-700;
+  border-radius: 5px;
+  // Les autres styles sont repris par .social-buttons > *
+
+  &:hover {
+    background-color: #ffffff;
+  }
 }
 
 .social-logo {
-    width: 18px;
-    height: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 // 🚨 NOUVEAU : Style pour le bouton GitHub
 .btn-github {
-    background: $gray-900; // Couleur sombre de GitHub
-    border: 1px solid $gray-900;
-    color: $white;
-    transition: background 0.2s ease;
-    border-radius: 5px;
+  background-color: #e2ebe8;
+  border: 1px solid $gray-200;
+  color: $gray-700;
+  transition: background 0.2s ease;
+  border-radius: 5px;
 
-    &:hover:not(:disabled) {
-        background: lighten($gray-900, 10%);
-    }
+  &:hover {
+    background: #ffffff;
+  }
 }
 
 .social-icon {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 // Style pour le séparateur "Ou continuer avec l'email"
 .separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 24px;
 
-    &::before, &::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid $gray-200;
-    }
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid $gray-200;
+  }
 
-    .separator-text {
-        padding: 0 16px;
-        font-size: 14px;
-        color: $gray-400;
-        white-space: nowrap;
-    }
+  .separator-text {
+    padding: 0 16px;
+    font-size: 14px;
+    color: $gray-400;
+    white-space: nowrap;
+  }
 }

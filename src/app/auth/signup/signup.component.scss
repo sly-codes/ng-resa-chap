@@ -22,10 +22,11 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background-image: url('https://asset.gecdesigns.com/img/background-templates/abstract-navy-red-background-design-sr17012401-1705501852665-cover.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  // background-image: url('https://asset.gecdesigns.com/img/background-templates/abstract-navy-red-background-design-sr17012401-1705501852665-cover.webp');
+  // background-size: cover;
+  // background-position: center;
+  // background-repeat: no-repeat;
+    background-color: #e5e7eb;
   position: relative;
 
   &::before {
@@ -40,12 +41,12 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   background: $white;
-  border: 1px solid $gray-200;
+  border: 2px solid $gray-200;
   border-radius: 2px;
   padding: 48px 40px;
-  border-radius: 5px;
+  border-radius: 8px;
 
   @media (max-width: 640px) {
     padding: 40px 28px;
