@@ -40,7 +40,7 @@
 
   i {
     font-size: 1.125rem;
-    color: #10b981;
+    color: #00ADD8; // ✅ Cyan au lieu de vert
 
     @media (min-width: 768px) {
       font-size: 1.188rem;
@@ -100,8 +100,8 @@
     min-height: 42px;
 
     &:focus {
-      border-color: #10b981;
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      border-color: #00ADD8; // ✅ Cyan focus
+      box-shadow: 0 0 0 3px rgba(0, 173, 216, 0.1); // ✅ Shadow cyan
       outline: none;
     }
 
@@ -213,7 +213,7 @@
 
   i {
     font-size: 2rem;
-    color: #10b981;
+    color: #00ADD8; // ✅ Cyan loader
 
     @media (min-width: 768px) {
       font-size: 2.25rem;
@@ -255,7 +255,7 @@
 
   i {
     font-size: 2.5rem;
-    color: #10b981;
+    color: #00ADD8; // ✅ Cyan empty icon
     margin-bottom: 0.875rem;
 
     @media (min-width: 768px) {
@@ -355,7 +355,7 @@
 
   .resource-icon {
     font-size: 1.5rem;
-    color: #10b981;
+    color: #00ADD8; // ✅ Cyan icon
     flex-shrink: 0;
 
     @media (min-width: 768px) {
@@ -507,15 +507,15 @@
   }
 
   .btn-approve {
-    background: #10b981;
+    background: #00ADD8; // ✅ Cyan button
     color: #ffffff;
 
     &:hover:not(:disabled) {
-      background: #059669;
+      background: #0099BF; // ✅ Cyan foncé hover
     }
 
     &:active:not(:disabled) {
-      background: #047857;
+      background: #0085A6; // ✅ Cyan très foncé active
     }
   }
 

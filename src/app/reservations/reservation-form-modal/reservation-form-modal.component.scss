@@ -1,4 +1,4 @@
-// Styles du deuxième formulaire modal (Modale Réservation)
+// Styles du formulaire modal (Modale Réservation)
 
 .modal-container {
   background: #ffffff;
@@ -57,7 +57,7 @@
 
   i {
     font-size: 1.188rem;
-    color: #10b981;
+    color: #00add8;
     flex-shrink: 0;
 
     @media (min-width: 768px) {
@@ -108,7 +108,6 @@
     padding: 2rem;
   }
 
-  // Custom scrollbar
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -121,7 +120,7 @@
   &::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 4px;
-    
+
     &:hover {
       background: #9ca3af;
     }
@@ -134,7 +133,7 @@
 
   i {
     font-size: 2rem;
-    color: #10b981;
+    color: #00add8;
     margin-bottom: 0.75rem;
   }
 
@@ -159,7 +158,8 @@
   animation: errorShake 0.4s ease;
 
   @keyframes errorShake {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0);
     }
     25% {
@@ -218,8 +218,7 @@
 .form-textarea {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  /* CORRECTION CLÉ : Utiliser 16px pour tous les inputs/textareas pour éviter le zoom */
-  font-size: 16px; 
+  font-size: 1rem;
   color: #1f2937;
   background: #ffffff;
   border: 1px solid #d1d5db;
@@ -227,14 +226,15 @@
   transition: all 0.2s ease;
   outline: none;
   font-family: inherit;
+  min-height: 42px;
 
   &::placeholder {
     color: #9ca3af;
   }
 
   &:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    border-color: #00add8;
+    box-shadow: 0 0 0 3px rgba(0, 173, 216, 0.1);
   }
 
   &:hover:not(:disabled):not(:focus) {
@@ -247,7 +247,8 @@
     animation: inputError 0.3s ease;
 
     @keyframes inputError {
-      0%, 100% {
+      0%,
+      100% {
         transform: translateX(0);
       }
       25% {
@@ -265,16 +266,15 @@
   }
 }
 
-.form-input[type="datetime-local"] {
+.form-input[type='datetime-local'] {
   cursor: pointer;
-  /* L'héritage de 16px au-dessus est suffisant, on s'assure juste que le navigateur n'écrase pas */
-  font-size: 16px; 
-  
+  font-size: 1rem;
+
   &::-webkit-calendar-picker-indicator {
     cursor: pointer;
     filter: opacity(0.6);
     transition: filter 0.15s ease;
-    
+
     &:hover {
       filter: opacity(1);
     }
@@ -285,7 +285,6 @@
   resize: vertical;
   min-height: 80px;
   line-height: 1.5;
-  /* L'héritage de 16px au-dessus est suffisant */
 }
 
 .form-error {
@@ -398,16 +397,16 @@
 }
 
 .btn-submit {
-  background: #10b981;
+  background: #00add8;
   color: #ffffff;
 
   &:hover:not(:disabled) {
-    background: #059669;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    background: #0099bf;
+    box-shadow: 0 4px 12px rgba(0, 173, 216, 0.3);
   }
 
   &:active:not(:disabled) {
-    background: #047857;
+    background: #0088ad;
   }
 }
 

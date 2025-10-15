@@ -1,6 +1,7 @@
 // Variables
-$primary-green: #10b981;
-$dark-green: #059669;
+$primary-cyan: #00ADD8; // ✅ Cyan principal
+$dark-cyan: #0099BF; // ✅ Cyan foncé pour hover
+$darker-cyan: #0085A6; // ✅ Cyan très foncé pour active
 $white: #ffffff;
 $gray-50: #f9fafb;
 $gray-200: #e5e7eb;
@@ -22,18 +23,16 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  // background-image: url('https://asset.gecdesigns.com/img/background-templates/abstract-navy-red-background-design-sr17012401-1705501852665-cover.webp');
-  // background-size: cover;
-  // background-position: center;
-  // background-repeat: no-repeat;
-    background-color: #e5e7eb;
+  background-image: url('https://github.githubassets.com/assets/inbox-zero-dark-377cc25a227f.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   position: relative;
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    // background: rgba(255, 255, 255, 0.7);
   }
 }
 
@@ -44,9 +43,8 @@ body {
   max-width: 450px;
   background: $white;
   border: 2px solid $gray-200;
-  border-radius: 2px;
-  padding: 48px 40px;
   border-radius: 8px;
+  padding: 48px 40px;
 
   @media (max-width: 640px) {
     padding: 40px 28px;
@@ -93,12 +91,11 @@ body {
   width: 100%;
   padding: 8px 16px 8px 44px;
   background: $white;
-  /* La correction était déjà présente ici: font-size: 16px; */
-  font-size: 16px; 
   border: 1px solid $gray-200;
   border-radius: 5px;
   color: $gray-900;
   transition: all 0.2s ease;
+  font-size: 16px; // ✅ 16px minimum pour éviter le zoom sur mobile
   outline: none;
   font-family: inherit;
 
@@ -107,10 +104,10 @@ body {
   }
 
   &:focus {
-    border-color: $primary-green;
+    border-color: $primary-cyan; // ✅ Cyan au focus
 
     ~ .input-icon {
-      color: $primary-green;
+      color: $primary-cyan; // ✅ Icône cyan au focus
     }
   }
 
@@ -148,8 +145,8 @@ body {
 
 .btn-submit {
   width: 100%;
-  background: $primary-green;
-  border: 1px solid $primary-green;
+  background: $primary-cyan; // ✅ Bouton cyan
+  border: 1px solid $primary-cyan;
   border-radius: 5px;
   font-weight: 500;
   padding: 8px 24px;
@@ -163,6 +160,16 @@ body {
   margin-bottom: 24px;
   font-family: inherit;
 
+  &:hover:not(:disabled) {
+    background: $dark-cyan; // ✅ Cyan foncé au hover
+    border-color: $dark-cyan;
+  }
+
+  &:active:not(:disabled) {
+    background: $darker-cyan; // ✅ Cyan très foncé au clic
+    border-color: $darker-cyan;
+  }
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -174,8 +181,12 @@ body {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .auth-footer {
@@ -183,7 +194,85 @@ body {
 }
 
 .auth-link {
-  color: $primary-green;
+  color: $primary-cyan; // ✅ Liens cyan
   text-decoration: none;
   font-weight: 500;
+
+  &:hover {
+    color: $dark-cyan; // ✅ Hover cyan foncé
+  }
+}
+
+// Conteneur pour les boutons sociaux
+.social-buttons {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  > * {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+.btn-google {
+  background-color: #e2ebe8;
+  border: 1px solid $gray-200;
+  color: $gray-700;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background-color: #ffffff;
+  }
+}
+
+.social-logo {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-github {
+  background-color: #e2ebe8;
+  border: 1px solid $gray-200;
+  color: $gray-700;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #ffffff;
+  }
+}
+
+.social-icon {
+  font-size: 18px;
+}
+
+// Séparateur "Ou continuer avec l'email"
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 24px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid $gray-200;
+  }
+
+  .separator-text {
+    padding: 0 16px;
+    font-size: 14px;
+    color: $gray-400;
+    white-space: nowrap;
+  }
 }

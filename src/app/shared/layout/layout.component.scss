@@ -9,7 +9,7 @@
 // ========================================
 .mobile-header {
   display: none;
-  
+
   @media (max-width: 768px) {
     display: flex;
     align-items: center;
@@ -38,27 +38,26 @@
   padding: 0;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   .hamburger-line {
     width: 100%;
     height: 3px;
-    background: #10b981;
+    background: #00add8;
     border-radius: 2px;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     transform-origin: center;
   }
-  
-  // Animation hamburger -> X
+
   &.active {
     .hamburger-line:nth-child(1) {
       transform: translateY(9.5px) rotate(45deg);
     }
-    
+
     .hamburger-line:nth-child(2) {
       opacity: 0;
       transform: scaleX(0);
     }
-    
+
     .hamburger-line:nth-child(3) {
       transform: translateY(-9.5px) rotate(-45deg);
     }
@@ -69,11 +68,11 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #10b981;
+  color: #00add8;
   text-decoration: none;
   font-size: 1.125rem;
   font-weight: 600;
-  
+
   i {
     font-size: 1.5rem;
   }
@@ -85,10 +84,10 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  
+
   i {
     font-size: 1.75rem;
-    color: #10b981;
+    color: #00add8;
   }
 }
 
@@ -97,7 +96,7 @@
 // ========================================
 .mobile-overlay {
   display: none;
-  
+
   @media (max-width: 768px) {
     display: block;
     position: fixed;
@@ -111,7 +110,7 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-    
+
     &.active {
       opacity: 1;
       visibility: visible;
@@ -140,7 +139,7 @@
     transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
     z-index: 1060;
-    
+
     &.mobile-open {
       transform: translateX(0);
     }
@@ -159,7 +158,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #10b981;
+  color: #00add8;
   text-decoration: none;
   font-size: 1.063rem;
   font-weight: 600;
@@ -170,13 +169,13 @@
   }
 
   &:hover {
-    color: #059669;
+    color: #0099bf;
   }
 }
 
 .sidebar-close {
   display: none;
-  
+
   @media (max-width: 768px) {
     display: flex;
     align-items: center;
@@ -189,16 +188,16 @@
     color: #6b7280;
     cursor: pointer;
     transition: all 0.15s ease;
-    
+
     i {
       font-size: 1.5rem;
     }
-    
+
     &:hover {
       background: #f3f4f6;
       color: #374151;
     }
-    
+
     &:active {
       background: #e5e7eb;
     }
@@ -233,13 +232,13 @@
     }
 
     &:hover {
-      background: #f0fdf4;
-      color: #10b981;
+      background: #e6f7fc;
+      color: #00add8;
     }
 
     &.active-link {
-      background: #f0fdf4;
-      color: #10b981;
+      background: #e6f7fc;
+      color: #00add8;
       font-weight: 600;
     }
   }
@@ -257,7 +256,7 @@
         margin-left: auto;
       }
 
-      &[aria-expanded="true"] .chevron-icon {
+      &[aria-expanded='true'] .chevron-icon {
         transform: rotate(180deg);
       }
     }
@@ -290,8 +289,8 @@
     }
 
     &:hover {
-      background: #f0fdf4;
-      color: #10b981;
+      background: #e6f7fc;
+      color: #00add8;
     }
   }
 }
@@ -321,7 +320,7 @@
 
   i.bx-user-circle {
     font-size: 1.375rem;
-    color: #10b981;
+    color: #00add8;
     flex-shrink: 0;
   }
 
@@ -345,7 +344,7 @@
     border-color: #d1d5db;
   }
 
-  &[aria-expanded="true"] .chevron-icon {
+  &[aria-expanded='true'] .chevron-icon {
     transform: rotate(180deg);
   }
 }

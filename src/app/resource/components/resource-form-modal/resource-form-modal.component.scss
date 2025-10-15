@@ -1,4 +1,4 @@
-// Styles du premier formulaire modal (Modale Resource)
+// Styles du formulaire modal (Modale Resource)
 
 .modal-container {
   background: #ffffff;
@@ -56,7 +56,7 @@
 
   i {
     font-size: 1.188rem;
-    color: #10b981;
+    color: #00add8;
 
     @media (min-width: 768px) {
       font-size: 1.25rem;
@@ -101,8 +101,7 @@
   @media (min-width: 768px) {
     padding: 2rem;
   }
-  
-  // Custom scrollbar
+
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -115,7 +114,7 @@
   &::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 4px;
-    
+
     &:hover {
       background: #9ca3af;
     }
@@ -128,7 +127,7 @@
 
   i {
     font-size: 2rem;
-    color: #10b981;
+    color: #00add8;
     margin-bottom: 0.75rem;
   }
 
@@ -153,7 +152,8 @@
   animation: errorShake 0.4s ease;
 
   @keyframes errorShake {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0);
     }
     25% {
@@ -219,17 +219,16 @@
   transition: all 0.2s ease;
   outline: none;
   font-family: inherit;
-  
-  /* CORRECTION CLÉ : Utiliser 16px pour tous les inputs/selects/textareas pour éviter le zoom */
-  font-size: 16px; 
+  font-size: 1rem;
+  min-height: 42px;
 
   &::placeholder {
     color: #9ca3af;
   }
 
   &:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    border-color: #00add8;
+    box-shadow: 0 0 0 3px rgba(0, 173, 216, 0.1);
   }
 
   &:hover:not(:disabled):not(:focus) {
@@ -242,7 +241,8 @@
     animation: inputError 0.3s ease;
 
     @keyframes inputError {
-      0%, 100% {
+      0%,
+      100% {
         transform: translateX(0);
       }
       25% {
@@ -268,8 +268,7 @@
   background-repeat: no-repeat;
   background-size: 1.5rem 1.5rem;
   padding-right: 2.5rem;
-  /* L'héritage de font-size: 16px; sur .form-input, .form-select, .form-textarea est suffisant, mais je le laisse pour la clarté */
-  
+
   option {
     color: #1f2937;
   }
@@ -283,7 +282,6 @@
   resize: vertical;
   min-height: 100px;
   line-height: 1.5;
-  /* L'héritage de font-size: 16px; est suffisant */
 }
 
 .form-hint {
@@ -384,16 +382,16 @@
 }
 
 .btn-submit {
-  background: #10b981;
+  background: #00add8;
   color: #ffffff;
 
   &:hover:not(:disabled) {
-    background: #059669;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    background: #0099bf;
+    box-shadow: 0 4px 12px rgba(0, 173, 216, 0.3);
   }
 
   &:active:not(:disabled) {
-    background: #047857;
+    background: #0088ad;
   }
 }
 

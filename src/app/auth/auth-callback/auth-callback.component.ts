@@ -24,18 +24,32 @@ import { AuthService, Tokens } from '../../core/auth.service';
         text-align: center;
         background-color: #f9fafb; /* $gray-50 */
       }
+
       .bx-spin {
         font-size: 3rem;
-        color: #10b981; /* $primary-green */
+        color: #00add8; /* ✅ $primary-cyan */
         margin-bottom: 1rem;
+        animation: spin 1s linear infinite;
       }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
       p {
         color: #374151; /* $gray-700 */
         font-size: 16px;
       }
+
       .error-message {
         color: #dc2626; /* $red */
         margin-top: 20px;
+        font-weight: 500;
       }
     `,
   ],

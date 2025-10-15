@@ -40,7 +40,7 @@
 
   i {
     font-size: 1.125rem;
-    color: #10b981;
+    color: #00add8;
 
     @media (min-width: 768px) {
       font-size: 1.188rem;
@@ -100,8 +100,8 @@
     min-height: 42px;
 
     &:focus {
-      border-color: #10b981;
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      border-color: #00add8;
+      box-shadow: 0 0 0 3px rgba(0, 173, 216, 0.1);
       outline: none;
     }
 
@@ -213,7 +213,7 @@
 
   i {
     font-size: 2rem;
-    color: #10b981;
+    color: #00add8;
 
     @media (min-width: 768px) {
       font-size: 2.25rem;
@@ -356,7 +356,7 @@
 
   .resource-icon {
     font-size: 1.5rem;
-    color: #10b981;
+    color: #00add8;
     flex-shrink: 0;
 
     @media (min-width: 768px) {
@@ -446,9 +446,9 @@
   }
 
   &.status-approved {
-    background: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    background: #e6f7fc;
+    color: #005f7a;
+    border: 1px solid #b3e5f5;
   }
 
   &.status-rejected {

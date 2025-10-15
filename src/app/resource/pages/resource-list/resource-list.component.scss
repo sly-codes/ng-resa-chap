@@ -51,7 +51,7 @@
 
     i {
       font-size: 1.125rem;
-      color: #10b981;
+      color: #00add8;
 
       @media (min-width: 768px) {
         font-size: 1.188rem;
@@ -61,7 +61,7 @@
 }
 
 .btn-add-resource {
-  background: #10b981;
+  background: #00add8;
   border: none;
   color: #ffffff;
   font-size: 0.813rem;
@@ -86,11 +86,11 @@
   }
 
   &:hover {
-    background: #059669;
+    background: #0099bf;
   }
 
   &:active {
-    background: #047857;
+    background: #0088ad;
   }
 }
 
@@ -118,7 +118,7 @@
 
   i {
     font-size: 2rem;
-    color: #10b981;
+    color: #00add8;
 
     @media (min-width: 768px) {
       font-size: 2.25rem;
@@ -248,9 +248,9 @@
   }
 
   &.badge-room {
-    background: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    background: #e6f7fc;
+    color: #005f7a;
+    border: 1px solid #b3e5f5;
   }
 
   &.badge-equipment {
@@ -307,10 +307,10 @@
     }
 
     &.btn-edit {
-      color: #10b981;
+      color: #00add8;
 
       &:hover {
-        background: #d1fae5;
+        background: #e6f7fc;
       }
     }
 

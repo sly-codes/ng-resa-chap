@@ -40,7 +40,7 @@
 
   i {
     font-size: 1.125rem;
-    color: #10b981;
+    color: #00add8;
 
     @media (min-width: 768px) {
       font-size: 1.188rem;
@@ -58,7 +58,7 @@
 
   i {
     font-size: 2rem;
-    color: #10b981;
+    color: #00add8;
 
     @media (min-width: 768px) {
       font-size: 2.25rem;
@@ -114,10 +114,10 @@
 }
 
 .profile-success {
-  background: #d1fae5;
-  border: 1px solid #a7f3d0;
+  background: #e6f7fc;
+  border: 1px solid #b3e5f5;
   border-radius: 3px;
-  color: #065f46;
+  color: #005f7a;
   font-size: 0.875rem;
   padding: 0.75rem;
   margin-bottom: 1.25rem;
@@ -157,22 +157,22 @@
 .form-input {
   width: 100%;
   padding: 0.625rem 0.75rem;
-  /* La taille de 16px est déjà en place, c'est parfait pour éviter le zoom */
-  font-size: 16px;
+  font-size: 1rem;
   color: #1f2937;
   background: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 3px;
   transition: all 0.15s ease;
   outline: none;
+  min-height: 42px;
 
   &::placeholder {
     color: #9ca3af;
   }
 
   &:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    border-color: #00add8;
+    box-shadow: 0 0 0 3px rgba(0, 173, 216, 0.1);
   }
 
   &:hover:not(:disabled):not(:focus) {
@@ -258,11 +258,12 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: #ffffff;
-  background: #10b981;
+  background: #00add8;
   border: none;
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.15s ease;
+  min-height: 44px;
 
   @media (min-width: 768px) {
     padding: 0.813rem 1.5rem;
@@ -275,15 +276,15 @@
   }
 
   &:hover:not(:disabled) {
-    background: #059669;
+    background: #0099bf;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 173, 216, 0.25);
   }
 
   &:active:not(:disabled) {
-    background: #047857;
+    background: #0088ad;
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 173, 216, 0.2);
   }
 
   &:disabled {

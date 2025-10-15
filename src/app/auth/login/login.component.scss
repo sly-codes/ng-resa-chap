@@ -1,6 +1,7 @@
 // Variables
-$primary-green: #10b981;
-$dark-green: #059669;
+$primary-cyan: #00ADD8; // ✅ Cyan principal
+$dark-cyan: #0099BF; // ✅ Cyan foncé pour hover
+$darker-cyan: #0085A6; // ✅ Cyan très foncé pour active
 $white: #ffffff;
 $gray-50: #f9fafb;
 $gray-200: #e5e7eb;
@@ -22,11 +23,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  // background-image: url('https://asset.gecdesigns.com/img/background-templates/gradient-triangle-abstract-background-template-10032405-1710079376651-cover.webp');
-  // background-size: cover;
-  // background-position: center;
-  // background-repeat: no-repeat;
-  background-color: #e5e7eb;
+  background-image: url('https://github.githubassets.com/assets/inbox-zero-dark-377cc25a227f.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   position: relative;
 
   &::before {
@@ -43,9 +43,8 @@ body {
   max-width: 450px;
   background: $white;
   border: 2px solid $gray-200;
-  border-radius: 2px;
-  padding: 48px 40px;
   border-radius: 8px;
+  padding: 48px 40px;
 
   @media (max-width: 640px) {
     padding: 40px 28px;
@@ -96,8 +95,7 @@ body {
   border-radius: 5px;
   color: $gray-900;
   transition: all 0.2s ease;
-  /* CORRECTION APPLIQUÉE ICI pour éviter le zoom mobile */
-  font-size: 16px;
+  font-size: 16px; // ✅ 16px minimum pour éviter le zoom sur mobile
   outline: none;
   font-family: inherit;
 
@@ -106,10 +104,10 @@ body {
   }
 
   &:focus {
-    border-color: $primary-green;
+    border-color: $primary-cyan; // ✅ Cyan au focus
 
     ~ .input-icon {
-      color: $primary-green;
+      color: $primary-cyan; // ✅ Icône cyan au focus
     }
   }
 
@@ -147,8 +145,8 @@ body {
 
 .btn-submit {
   width: 100%;
-  background: $primary-green;
-  border: 1px solid $primary-green;
+  background: $primary-cyan; // ✅ Bouton cyan
+  border: 1px solid $primary-cyan;
   border-radius: 5px;
   font-weight: 500;
   padding: 8px 24px;
@@ -161,6 +159,16 @@ body {
   gap: 8px;
   margin-bottom: 24px;
   font-family: inherit;
+
+  &:hover:not(:disabled) {
+    background: $dark-cyan; // ✅ Cyan foncé au hover
+    border-color: $dark-cyan;
+  }
+
+  &:active:not(:disabled) {
+    background: $darker-cyan; // ✅ Cyan très foncé au clic
+    border-color: $darker-cyan;
+  }
 
   &:disabled {
     opacity: 0.6;
@@ -186,20 +194,24 @@ body {
 }
 
 .auth-link {
-  color: $primary-green;
+  color: $primary-cyan; // ✅ Liens cyan
   text-decoration: none;
   font-weight: 500;
+
+  &:hover {
+    color: $dark-cyan; // ✅ Hover cyan foncé
+  }
 }
 
-// 🚨 NOUVEAU : Conteneur pour les boutons sociaux
+// Conteneur pour les boutons sociaux
 .social-buttons {
   display: flex;
-  gap: 16px; // Espace entre les boutons
+  gap: 16px;
   margin-bottom: 24px;
 
   > * {
-    flex: 1; // Distribue l'espace également
-    padding: 8px 12px; // Ajuster le padding
+    flex: 1;
+    padding: 8px 12px;
     font-size: 14px;
     display: flex;
     align-items: center;
@@ -208,13 +220,13 @@ body {
   }
 }
 
-// 🚨 Mise à jour du style Google pour le rendre plus petit et flexible
 .btn-google {
   background-color: #e2ebe8;
   border: 1px solid $gray-200;
   color: $gray-700;
   border-radius: 5px;
-  // Les autres styles sont repris par .social-buttons > *
+  cursor: pointer;
+  transition: background 0.2s ease;
 
   &:hover {
     background-color: #ffffff;
@@ -226,13 +238,13 @@ body {
   height: 18px;
 }
 
-// 🚨 NOUVEAU : Style pour le bouton GitHub
 .btn-github {
   background-color: #e2ebe8;
   border: 1px solid $gray-200;
   color: $gray-700;
-  transition: background 0.2s ease;
   border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
 
   &:hover {
     background: #ffffff;
@@ -243,7 +255,7 @@ body {
   font-size: 18px;
 }
 
-// Style pour le séparateur "Ou continuer avec l'email"
+// Séparateur "Ou continuer avec l'email"
 .separator {
   display: flex;
   align-items: center;
