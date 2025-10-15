@@ -57,19 +57,25 @@
         padding: 0.5rem 0.875rem;
 
         &.active {
-            background: #10b981;
-            border-color: #10b981;
+            background: #00ADD8; // ✅ Cyan
+            border-color: #00ADD8;
             color: #ffffff;
             font-weight: 600;
 
             &:hover {
-                background: #059669;
-                border-color: #059669;
+                background: #0099BF; // ✅ Cyan foncé
+                border-color: #0099BF;
+            }
+
+            &:active {
+                background: #0085A6; // ✅ Cyan très foncé
+                border-color: #0085A6;
             }
         }
     }
 
-    .btn-prev i, .btn-next i {
+    .btn-prev i, 
+    .btn-next i {
         font-size: 1rem;
     }
 

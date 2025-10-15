@@ -421,7 +421,7 @@
   }
 
   @media (min-width: 1536px) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -542,32 +542,53 @@
   overflow: hidden;
 }
 
+// 💡 NOUVEAU STYLE pour une meilleure organisation des métadonnées
 .resource-meta {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
+  flex-direction: column; /* Utiliser une colonne pour empiler les infos */
+  gap: 0.5rem;
   padding-top: 1rem;
   border-top: 1px solid #f3f4f6;
   margin-bottom: 1.25rem;
+}
 
-  .meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.75rem;
+.meta-item,
+.meta-item-owner,
+.meta-item-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Augmenté l'espacement pour la lisibilité */
+  font-size: 0.75rem;
 
-    i {
-      font-size: 0.938rem;
-      color: #00add8;
-      flex-shrink: 0;
-    }
-
-    span {
-      color: #6b7280;
-      font-weight: 500;
-    }
+  i {
+    font-size: 0.938rem;
+    color: #00add8;
+    flex-shrink: 0;
   }
+
+  span {
+    color: #6b7280;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+}
+
+.meta-item-owner {
+  .owner-name {
+    font-weight: 600;
+    color: #1f2937; /* Rendre le nom plus visible */
+  }
+}
+
+.meta-item-contact {
+  .contact-value {
+    /* Maintenir la couleur par défaut pour les valeurs */
+  }
+}
+
+.meta-item:last-child {
+  padding-top: 0.5rem;
+  border-top: 1px dashed #e5e7eb; /* Séparer la date des infos contact */
 }
 
 .reserve-btn {

@@ -47,117 +47,122 @@
     <p>Chargement des demandes de réservation...</p>
   </div>
 
-  <div *ngIf="error" class="reservations-error">
-    {{ error }}
-  </div>
-
-  <ng-container *ngIf="reservations$ | async as reservations">
-    <div *ngIf="reservations.length === 0 && !isLoading && !error" class="reservations-empty">
-      <i class="bx bx-check-circle"></i>
-      <p>Aucune demande trouvée avec les critères actuels.</p>
+  <ng-container *ngIf="!isLoading">
+    <div *ngIf="error" class="reservations-error">
+      {{ error }}
     </div>
 
-    <div *ngIf="reservations.length > 0" class="reservations-table-wrapper">
-      <table class="reservations-table">
-        <thead>
-          <tr>
-            <th scope="col">Ressource</th>
-            <th scope="col">Demandeur</th>
-            <th scope="col">Période Demandée</th>
-            <th scope="col">Notes</th>
-            <th scope="col">Statut</th>
-            <th scope="col" class="text-center">Décision</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let res of reservations">
-            <td>
-              <div class="resource-info">
-                <i [class]="'bx ' + getResourceIcon(res.resource.type)" class="resource-icon"></i>
-                <div class="resource-details">
-                  <span class="resource-name">{{ res.resource.name }}</span>
-                  <span class="resource-type">{{ res.resource.type === 'ROOM' ? 'Salle' : 'Équipement' }}</span>
+    <ng-container *ngIf="reservations$ | async as reservations">
+      <div *ngIf="reservations.length === 0 && !error" class="reservations-empty">
+        <i class="bx bx-check-circle"></i>
+        <p>Aucune demande trouvée avec les critères actuels.</p>
+      </div>
+
+      <div *ngIf="reservations.length > 0" class="reservations-table-wrapper">
+        <table class="reservations-table">
+          <thead>
+            <tr>
+              <th scope="col">Ressource</th>
+              <th scope="col">Demandeur</th>
+              <th scope="col">Période Demandée</th>
+              <th scope="col">Notes</th>
+              <th scope="col">Statut</th>
+              <th scope="col" class="text-center">Décision</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let res of reservations">
+              <td>
+                <div class="resource-info">
+                  <i [class]="'bx ' + getResourceIcon(res.resource.type)" class="resource-icon"></i>
+                  <div class="resource-details">
+                    <span class="resource-name">{{ res.resource.name }}</span>
+                    <span class="resource-type">{{
+                      res.resource.type === 'ROOM' ? 'Salle' : 'Équipement'
+                    }}</span>
+                  </div>
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <td>
-              <div class="user-info">
-                <span class="user-email">{{ res.locataire.email }}</span>
-                <span class="user-name">{{ res.locataire.username }}</span>
-              </div>
-            </td>
+              <td>
+                <div class="user-info">
+                  <span class="user-email">{{ res.locataire.email }}</span>
+                  <span class="user-name">{{ res.locataire.username }}</span>
+                </div>
+              </td>
 
-            <td>
-              <div class="period-info">
-                <span class="period-date">
-                  {{ res.dateDebut | date : 'dd/MM/yyyy' }} - {{ res.dateFin | date : 'dd/MM/yyyy' }}
-                </span>
-                <span class="period-time">
-                  {{ res.dateDebut | date : 'HH:mm' }} - {{ res.dateFin | date : 'HH:mm' }}
-                </span>
-              </div>
-            </td>
+              <td>
+                <div class="period-info">
+                  <span class="period-date">
+                    {{ res.dateDebut | date : 'dd/MM/yyyy' }} -
+                    {{ res.dateFin | date : 'dd/MM/yyyy' }}
+                  </span>
+                  <span class="period-time">
+                    {{ res.dateDebut | date : 'HH:mm' }} - {{ res.dateFin | date : 'HH:mm' }}
+                  </span>
+                </div>
+              </td>
 
-            <td>
-              <span class="notes-text">{{ res.notes || '—' }}</span>
-            </td>
+              <td>
+                <span class="notes-text">{{ res.notes || '—' }}</span>
+              </td>
 
-            <td>
-              <span
-                class="status-badge"
-                [ngClass]="{
-                  'status-pending': res.status === 'PENDING',
-                  'status-approved': res.status === 'CONFIRMED',
-                  'status-rejected': res.status === 'REJECTED',
-                  'status-cancelled': res.status === 'CANCELED'
-                }"
-              >
-                {{ getReservationStatusText(res.status) }}
-              </span>
-            </td>
-
-            <td class="text-center">
-              <div *ngIf="res.status === 'PENDING'" class="reservation-actions">
-                <button
-                  (click)="onApprove(res.id)"
-                  class="btn-approve"
-                  [disabled]="res.isProcessing"
-                  title="Accepter la réservation"
-                  aria-label="Accepter la réservation"
+              <td>
+                <span
+                  class="status-badge"
+                  [ngClass]="{
+                    'status-pending': res.status === 'PENDING',
+                    'status-approved': res.status === 'CONFIRMED',
+                    'status-rejected': res.status === 'REJECTED',
+                    'status-cancelled': res.status === 'CANCELED'
+                  }"
                 >
-                  <i
-                    class="bx"
-                    [ngClass]="res.isProcessing ? 'bx-loader-alt bx-spin' : 'bx-check'"
-                  ></i>
-                  <span>Accepter</span>
-                </button>
-                <button
-                  (click)="onReject(res.id)"
-                  class="btn-reject"
-                  [disabled]="res.isProcessing"
-                  title="Refuser la réservation"
-                  aria-label="Refuser la réservation"
-                >
-                  <i class="bx" [ngClass]="res.isProcessing ? 'bx-loader-alt bx-spin' : 'bx-x'"></i>
-                  <span>Refuser</span>
-                </button>
-              </div>
-              <div *ngIf="res.status !== 'PENDING'" class="reservation-status-final">
-                <span class="text-muted">—</span>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                  {{ getReservationStatusText(res.status) }}
+                </span>
+              </td>
 
-    <app-pagination
-      [totalItems]="totalItems"
-      [currentPage]="currentPage"
-      [totalPages]="totalPages"
-      (pageChange)="onPageChange($event)"
-      *ngIf="reservations.length > 0 && totalPages > 1"
-    ></app-pagination>
+              <td class="text-center">
+                <div *ngIf="res.status === 'PENDING'" class="reservation-actions">
+                  <button
+                    (click)="onApprove(res.id)"
+                    class="btn-approve"
+                    [disabled]="res.isApproving || res.isRejecting"
+                    title="Accepter la réservation"
+                    aria-label="Accepter la réservation"
+                  >
+                    <i
+                      class="bx"
+                      [ngClass]="res.isApproving ? 'bx-loader-alt bx-spin' : 'bx-check'"
+                    ></i>
+                    <span>Accepter</span>
+                  </button>
+                  <button
+                    (click)="onReject(res.id)"
+                    class="btn-reject"
+                    [disabled]="res.isApproving || res.isRejecting"
+                    title="Refuser la réservation"
+                    aria-label="Refuser la réservation"
+                  >
+                    <i class="bx" [ngClass]="res.isRejecting ? 'bx-loader-alt bx-spin' : 'bx-x'"></i>
+                    <span>Refuser</span>
+                  </button>
+                </div>
+                <div *ngIf="res.status !== 'PENDING'" class="reservation-status-final">
+                  <span class="text-muted">—</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <app-pagination
+        [totalItems]="totalItems"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="onPageChange($event)"
+        *ngIf="reservations.length > 0 && totalPages > 1"
+      ></app-pagination>
+    </ng-container>
   </ng-container>
 </div>

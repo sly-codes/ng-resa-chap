@@ -61,7 +61,9 @@ export interface ReceivedReservationView extends Reservation {
     username: string;
     contactPhone: string;
   };
-  isProcessing?: boolean; // Ajout du ?
+  // Remplacer isProcessing par ces deux champs
+  isApproving?: boolean; // NOUVEAU: Pour le bouton Accepter
+  isRejecting?: boolean; // NOUVEAU: Pour le bouton Refuser
 }
 
 // ✨ Interface pour les paramètres de requête de pagination/filtre (doit correspondre au DTO NestJS)

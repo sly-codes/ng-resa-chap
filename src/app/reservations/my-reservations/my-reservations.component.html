@@ -41,105 +41,107 @@
       <span class="btn-text">Actualiser</span>
     </button>
   </div>
-
+  
   <div *ngIf="isLoading" class="reservations-loader">
     <i class="bx bx-loader-alt bx-spin"></i>
     <p>Chargement de vos réservations...</p>
   </div>
 
-  <div *ngIf="error" class="reservations-error">
-    {{ error }}
-  </div>
-
-  <ng-container *ngIf="reservations$ | async as reservations">
-    <div *ngIf="reservations.length === 0 && !isLoading && !error" class="reservations-empty">
-      <i class="bx bx-calendar-minus"></i>
-      <p>Aucune réservation trouvée avec les critères actuels.</p>
+  <ng-container *ngIf="!isLoading">
+    <div *ngIf="error" class="reservations-error">
+      {{ error }}
     </div>
 
-    <div *ngIf="reservations.length > 0" class="reservations-table-wrapper">
-      <table class="reservations-table">
-        <thead>
-          <tr>
-            <th scope="col">Ressource Réservée</th>
-            <th scope="col">Période</th>
-            <th scope="col">Notes</th>
-            <th scope="col">Statut</th>
-            <th scope="col" class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let res of reservations">
-            <td>
-              <div class="resource-info-row">
-                <i [class]="'bx ' + getResourceIcon(res.resource.type)" class="resource-icon"></i>
-                <div class="resource-details">
-                  <span class="resource-name">{{ res.resource.name }}</span>
-                  <span class="resource-owner">Locateur: {{ res.resource.owner.email }}</span>
+    <ng-container *ngIf="reservations$ | async as reservations">
+      <div *ngIf="reservations.length === 0 && !error" class="reservations-empty">
+        <i class="bx bx-calendar-minus"></i>
+        <p>Aucune réservation trouvée avec les critères actuels.</p>
+      </div>
+
+      <div *ngIf="reservations.length > 0" class="reservations-table-wrapper">
+        <table class="reservations-table">
+          <thead>
+            <tr>
+              <th scope="col">Ressource Réservée</th>
+              <th scope="col">Période</th>
+              <th scope="col">Notes</th>
+              <th scope="col">Statut</th>
+              <th scope="col" class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let res of reservations">
+              <td>
+                <div class="resource-info-row">
+                  <i [class]="'bx ' + getResourceIcon(res.resource.type)" class="resource-icon"></i>
+                  <div class="resource-details">
+                    <span class="resource-name">{{ res.resource.name }}</span>
+                    <span class="resource-owner">Locateur: {{ res.resource.owner.email }}</span>
+                  </div>
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <td>
-              <div class="period-info">
-                <span class="period-date">
-                  {{ res.dateDebut | date : 'dd/MM/yyyy' }} -
-                  {{ res.dateFin | date : 'dd/MM/yyyy' }}
-                </span>
-                <span class="period-time">
-                  {{ res.dateDebut | date : 'HH:mm' }} -
-                  {{ res.dateFin | date : 'HH:mm' }}
-                </span>
-              </div>
-            </td>
+              <td>
+                <div class="period-info">
+                  <span class="period-date">
+                    {{ res.dateDebut | date : 'dd/MM/yyyy' }} -
+                    {{ res.dateFin | date : 'dd/MM/yyyy' }}
+                  </span>
+                  <span class="period-time">
+                    {{ res.dateDebut | date : 'HH:mm' }} -
+                    {{ res.dateFin | date : 'HH:mm' }}
+                  </span>
+                </div>
+              </td>
 
-            <td>
-              <span class="notes-text">{{ res.notes || '—' }}</span>
-            </td>
+              <td>
+                <span class="notes-text">{{ res.notes || '—' }}</span>
+              </td>
 
-            <td>
-              <span
-                class="status-badge"
-                [ngClass]="{
-                  'status-pending': res.status === 'PENDING',
-                  'status-approved': res.status === 'CONFIRMED',
-                  'status-rejected': res.status === 'REJECTED',
-                  'status-cancelled': res.status === 'CANCELED'
-                }"
-              >
-                {{ getReservationStatusText(res.status) }}
-              </span>
-            </td>
-
-            <td class="text-center">
-              <div class="reservation-actions">
-                <button
-                  *ngIf="res.status === 'PENDING'"
-                  (click)="onCancelReservation(res.id)"
-                  class="btn-cancel"
-                  [disabled]="res.isCancelling"
-                  title="Annuler la réservation"
-                  aria-label="Annuler la réservation"
+              <td>
+                <span
+                  class="status-badge"
+                  [ngClass]="{
+                    'status-pending': res.status === 'PENDING',
+                    'status-approved': res.status === 'CONFIRMED',
+                    'status-rejected': res.status === 'REJECTED',
+                    'status-cancelled': res.status === 'CANCELED'
+                  }"
                 >
-                  <i class="bx" [ngClass]="res.isCancelling ? 'bx-loader-alt bx-spin' : 'bx-x'"></i>
-                  <span>Annuler</span>
-                </button>
-                <div *ngIf="res.status !== 'PENDING'" class="reservation-status-final">
-                  <span class="text-muted">—</span>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                  {{ getReservationStatusText(res.status) }}
+                </span>
+              </td>
 
-    <app-pagination
-      [totalItems]="totalItems"
-      [currentPage]="currentPage"
-      [totalPages]="totalPages"
-      (pageChange)="onPageChange($event)"
-      *ngIf="reservations.length > 0 && totalPages > 1"
-    ></app-pagination>
+              <td class="text-center">
+                <div class="reservation-actions">
+                  <button
+                    *ngIf="res.status === 'PENDING'"
+                    (click)="onCancelReservation(res.id)"
+                    class="btn-cancel"
+                    [disabled]="res.isCancelling"
+                    title="Annuler la réservation"
+                    aria-label="Annuler la réservation"
+                  >
+                    <i class="bx" [ngClass]="res.isCancelling ? 'bx-loader-alt bx-spin' : 'bx-x'"></i>
+                    <span>Annuler</span>
+                  </button>
+                  <div *ngIf="res.status !== 'PENDING'" class="reservation-status-final">
+                    <span class="text-muted">—</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <app-pagination
+        [totalItems]="totalItems"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChange)="onPageChange($event)"
+        *ngIf="reservations.length > 0 && totalPages > 1"
+      ></app-pagination>
+    </ng-container>
   </ng-container>
 </div>
