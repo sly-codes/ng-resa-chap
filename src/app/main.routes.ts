@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import { ProfileComponent } from './profile/profile.component';
 import { MyReservationsComponent } from './reservations/my-reservations/my-reservations.component';
 import { ReceivedReservationsComponent } from './reservations/received-reservations/received-reservations.component';
-import { DashboardComponent } from './dashboard/dashboard.component'; 
-// Importez le composant
 
 export const MAIN_ROUTES: Routes = [
   // Route 1: Le Tableau de Bord (Dashboard)
@@ -11,7 +9,7 @@ export const MAIN_ROUTES: Routes = [
     path: 'dashboard',
     loadComponent: () =>
       import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
-    title: 'Tableau de Bord | Booking App',
+    title: 'Tableau de Bord | Resa Chap',
   },
 
   // Route 2: Catalogue
@@ -19,10 +17,8 @@ export const MAIN_ROUTES: Routes = [
     path: 'catalogue',
     loadComponent: () =>
       import('./catalogue/catalogue.component').then((m) => m.CatalogueComponent),
-    title: 'Catalogue | Booking App',
+    title: 'Catalogue | Resa Chap',
   },
-
-  
 
   // Route 3: Mes Ressources
   {
@@ -31,21 +27,21 @@ export const MAIN_ROUTES: Routes = [
       import('./resource/pages/resource-list/resource-list.component').then(
         (m) => m.ResourceListComponent
       ),
-    title: 'Mes Ressources | Booking App',
+    title: 'Mes Ressources | Resa Chap',
   },
 
   // Route 4: Mes Réservations faites (Locataire)
   {
     path: 'reservations/made',
     component: MyReservationsComponent,
-    title: 'Mes Réservations | Booking App',
+    title: 'Mes Réservations | Resa Chap',
   },
 
   // Route 5: Réservations Reçues (Locateur)
   {
     path: 'reservations/received',
     component: ReceivedReservationsComponent,
-    title: 'Réservations Reçues | Booking App',
+    title: 'Réservations Reçues | Resa Chap',
   },
 
   // Route 6: Profil Utilisateur
@@ -55,6 +51,7 @@ export const MAIN_ROUTES: Routes = [
     title: 'Profil utilisateur',
   },
 
-  // Redirection par défaut : rediriger l'URL vide vers le dashboard plutôt que le catalogue
+  // 🚀 NOUVEAU : Redirection interne de la zone protégée vers le dashboard
+  // Si l'utilisateur est connecté et va sur /<empty>, il va au dashboard.
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 ];

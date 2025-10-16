@@ -1,0 +1,358 @@
+<!-- Navigation -->
+<header class="navbar">
+  <div class="logo">
+    <i class="bx bx-calendar-check"></i>
+    <span>ResaChap</span>
+  </div>
+  <nav class="nav-links">
+    <a href="#features">Fonctionnalités</a>
+    <a href="#how-it-works">Comment ça marche</a>
+    <a href="#benefits">Avantages</a>
+  </nav>
+  <a [routerLink]="['/auth/login']" class="btn-nav">
+    <i class="bx bx-log-in"></i>
+    <span>Se Connecter</span>
+  </a>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <i class="bx bx-check-shield"></i>
+      <span>Gestion intelligente de ressources</span>
+    </div>
+    <h1 class="hero-title">
+      Gérez vos <span class="highlight">ressources partagées</span> sans effort
+    </h1>
+    <p class="hero-subtitle">
+      Réservation de salles, d'équipements simplifiée pour les équipes modernes. Finis les conflits
+      de planning et les doubles réservations.
+    </p>
+    <div class="hero-actions">
+      <a [routerLink]="['/auth/login']" class="btn-primary">
+        <span>Démarrer Gratuitement</span>
+        <i class="bx bx-right-arrow-alt"></i>
+      </a>
+      <a href="#features" class="btn-secondary">
+        <i class="bx bx-play-circle"></i>
+        <span>Voir Comment</span>
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <i class="bx bx-user-check"></i>
+        <div>
+          <strong>Gratuit</strong>
+          <span>Aucun frais</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <i class="bx bx-time-five"></i>
+        <div>
+          <strong>Instantané</strong>
+          <span>Notifications en temps réel</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <i class="bx bx-lock-alt"></i>
+        <div>
+          <strong>Sécurisé</strong>
+          <span>OAuth Google & GitHub</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="visual-card card-1">
+      <i class="bx bx-calendar-check"></i>
+      <div class="card-content">
+        <span class="card-label">Réservation confirmée</span>
+        <span class="card-status status-success">Confirmée</span>
+      </div>
+    </div>
+    <div class="visual-card card-2">
+      <i class="bx bx-bell"></i>
+      <div class="card-content">
+        <span class="card-label">Nouvelle demande</span>
+        <span class="card-status status-pending">En attente</span>
+      </div>
+    </div>
+    <div class="visual-card card-3">
+      <i class="bx bx-collection"></i>
+      <div class="card-content">
+        <span class="card-label">12 ressources</span>
+        <span class="card-status status-info">Disponibles</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features">
+  <div class="section-header">
+    <span class="section-tag">Fonctionnalités</span>
+    <h2>Tout ce dont vous avez besoin</h2>
+    <p>Une plateforme complète pour gérer vos ressources efficacement</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon icon-cyan">
+        <i class="bx bx-collection"></i>
+      </div>
+      <h3>Catalogue Centralisé</h3>
+      <p>
+        Visualisez toutes vos ressources (salles, matériel, véhicules) en temps réel avec leur
+        disponibilité.
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-blue">
+        <i class="bx bx-bell"></i>
+      </div>
+      <h3>Notifications Intelligentes</h3>
+      <p>
+        Recevez des emails instantanés pour chaque demande, acceptation ou refus de réservation.
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-purple">
+        <i class="bx bx-check-circle"></i>
+      </div>
+      <h3>Validation Simplifiée</h3>
+      <p>Approuvez ou refusez les demandes en un clic depuis votre tableau de bord.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-green">
+        <i class="bx bx-filter-alt"></i>
+      </div>
+      <h3>Filtres Avancés</h3>
+      <p>Recherchez et filtrez les ressources par type, disponibilité et période.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-orange">
+        <i class="bx bx-history"></i>
+      </div>
+      <h3>Historique Complet</h3>
+      <p>Consultez l'historique de toutes les réservations pour audit et reporting.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-red">
+        <i class="bx bx-shield-alt-2"></i>
+      </div>
+      <h3>Sécurité OAuth</h3>
+      <p>Connexion sécurisée via Google et GitHub sans mot de passe à retenir.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section id="how-it-works" class="workflow">
+  <div class="section-header">
+    <span class="section-tag">Processus</span>
+    <h2>Comment ça fonctionne ?</h2>
+    <p>Un processus simple en 3 étapes</p>
+  </div>
+  <div class="workflow-steps">
+    <div class="step-card">
+      <div class="step-number">01</div>
+      <div class="step-icon">
+        <i class="bx bx-search-alt"></i>
+      </div>
+      <h3>Parcourir le Catalogue</h3>
+      <p>
+        Le <strong>locataire</strong> explore le catalogue de ressources disponibles et sélectionne
+        celle dont il a besoin pour une période spécifique.
+      </p>
+      <div class="step-arrow">
+        <i class="bx bx-right-arrow-alt"></i>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">02</div>
+      <div class="step-icon">
+        <i class="bx bx-calendar-plus"></i>
+      </div>
+      <h3>Soumettre une Demande</h3>
+      <p>
+        Une demande de réservation est créée avec la période souhaitée et des notes optionnelles. Le
+        propriétaire est notifié instantanément par email.
+      </p>
+      <div class="step-arrow">
+        <i class="bx bx-right-arrow-alt"></i>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">03</div>
+      <div class="step-icon">
+        <i class="bx bx-check-circle"></i>
+      </div>
+      <h3>Validation & Suivi</h3>
+      <p>
+        Le <strong>locateur</strong> approuve ou refuse la demande en un clic. Les deux parties
+        suivent le statut en temps réel depuis leur dashboard.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section id="benefits" class="benefits">
+  <div class="benefits-content">
+    <div class="benefits-text">
+      <span class="section-tag-light">Avantages</span>
+      <h2>Pourquoi choisir ResaChap ?</h2>
+      <p class="benefits-intro">
+        Optimisez la gestion de vos ressources partagées et éliminez les conflits de planning une
+        fois pour toutes.
+      </p>
+      <ul class="benefits-list">
+        <li>
+          <i class="bx bx-check-circle"></i>
+          <div>
+            <strong>Zéro conflit de planning</strong>
+            <span>Système automatique de détection des chevauchements</span>
+          </div>
+        </li>
+        <li>
+          <i class="bx bx-check-circle"></i>
+          <div>
+            <strong>Gain de temps considérable</strong>
+            <span>Plus besoin d'emails ou d'appels pour réserver</span>
+          </div>
+        </li>
+        <li>
+          <i class="bx bx-check-circle"></i>
+          <div>
+            <strong>Traçabilité complète</strong>
+            <span>Historique détaillé pour audit et reporting</span>
+          </div>
+        </li>
+        <li>
+          <i class="bx bx-check-circle"></i>
+          <div>
+            <strong>Notifications en temps réel</strong>
+            <span>Restez informé par email à chaque étape</span>
+          </div>
+        </li>
+        <li>
+          <i class="bx bx-check-circle"></i>
+          <div>
+            <strong>Optimisation des ressources</strong>
+            <span>Maximisez l'utilisation de vos espaces et équipements</span>
+          </div>
+        </li>
+        <li>
+          <i class="bx bx-check-circle"></i>
+          <div>
+            <strong>Accès sécurisé</strong>
+            <span>Authentification OAuth Google et GitHub</span>
+          </div>
+        </li>
+      </ul>
+      <a [routerLink]="['/auth/login']" class="btn-primary">
+        <span>Commencer Maintenant</span>
+        <i class="bx bx-right-arrow-alt"></i>
+      </a>
+    </div>
+    <div class="benefits-visual">
+      <div class="benefit-metric">
+        <i class="bx bx-time-five"></i>
+        <strong>70%</strong>
+        <span>Temps gagné</span>
+      </div>
+      <div class="benefit-metric">
+        <i class="bx bx-error-circle"></i>
+        <strong>0</strong>
+        <span>Double réservation</span>
+      </div>
+      <div class="benefit-metric">
+        <i class="bx bx-trending-up"></i>
+        <strong>+45%</strong>
+        <span>Utilisation optimisée</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tech Stack Section -->
+<section class="tech-stack">
+  <div class="section-header">
+    <span class="section-tag">Technologies</span>
+    <h2>Construit avec les meilleures technologies</h2>
+    <p>Une stack moderne et performante</p>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-item">
+      <i class="bx bxl-angular"></i>
+      <span>Angular</span>
+    </div>
+    <div class="tech-item">
+      <i class="bxl bx-nest-js"></i>
+      <span>NestJS</span>
+    </div>
+    <div class="tech-item">
+      <i class="bxl bx-postgresql"></i>
+      <span>PostgreSQL</span>
+    </div>
+    <div class="tech-item">
+      <i class="bx bx-envelope"></i>
+      <span>Brevo Mail</span>
+    </div>
+    <div class="tech-item">
+      <i class="bxl bx-bootstrap"></i>
+      <span>Bootstrap</span>
+    </div>
+    <div class="tech-item">
+      <i class="bxl bx-sass"></i>
+      <span>Scss</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Final Section -->
+<section class="cta-final">
+  <div class="cta-content">
+    <h2>Prêt à optimiser votre gestion de ressources ?</h2>
+    <p>Rejoignez ResaChap dès aujourd'hui et simplifiez vos réservations</p>
+    <a [routerLink]="['/auth/login']" class="btn-primary btn-large">
+      <span>Démarrer Gratuitement</span>
+      <i class="bx bx-right-arrow-alt"></i>
+    </a>
+    <span class="cta-note">Gratuit • Aucune carte requise • Setup en 2 minutes</span>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <div class="logo">
+        <i class="bx bx-calendar-check"></i>
+        <span>ResaChap</span>
+      </div>
+      <p>Gestion intelligente de ressources partagées pour les équipes modernes.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Produit</h4>
+        <a href="#features">Fonctionnalités</a>
+        <a href="#how-it-works">Comment ça marche</a>
+        <a href="#benefits">Avantages</a>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <a href="/privacy">Confidentialité</a>
+        <a href="/terms">Conditions</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:contact@resachap.com">Email</a>
+        <a href="#">Support</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 ResaChap. Tous droits réservés.</p>
+  </div>
+</footer>

@@ -26,6 +26,10 @@ export class AuthService {
   public isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
+  // 🚀 NOUVEAU : État pour l'UX - Vrai si l'application vérifie l'auth ou rafraîchit
+  public isCheckingAuthSubject = new BehaviorSubject<boolean>(false);
+  isCheckingAuth$ = this.isCheckingAuthSubject.asObservable();
+
   constructor(private http: HttpClient, private router: Router) {}
 
   /**
@@ -73,42 +77,30 @@ export class AuthService {
 
     localStorage.clear();
     this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/']); // 🚀 CORRECTION : Rediriger vers la Landing Page
   }
 
   // -----------------------------------------------------------------
-  // 🚀 NOUVEAU : Méthode d'Authentification Google
+  // Méthodes d'Authentification Sociale
   // -----------------------------------------------------------------
 
-  /**
-   * Redirige l'utilisateur vers le point de départ du flux Google OAuth (sur le backend NestJS).
-   */
   loginWithGoogle(): void {
-    // Le chemin vers le contrôleur Google sur votre backend (par exemple: /api/auth/google)
     const googleAuthUrl = `${this.apiUrl}/google`;
-    // Redirection simple : le navigateur prend le relais
-    // window.location.href = googleAuthUrl;
     window.location.href = `${googleAuthUrl}?prompt=select_account`;
   }
 
-  /**
-   * 🚨 NOUVEAU : Redirige l'utilisateur vers le point de départ du flux GitHub OAuth.
-   */
   loginWithGithub(): void {
     const githubAuthUrl = `${this.apiUrl}/github`;
     window.location.href = githubAuthUrl;
   }
 
-  /**
-   * Méthode appelée par le AuthCallbackComponent pour stocker les tokens.
-   */
   handleSocialLogin(tokens: Tokens): void {
     this.saveTokens(tokens);
-    this.router.navigate(['/']); // Redirection après succès
+    this.router.navigate(['/dashboard']); // Redirection après succès vers le Dashboard
   }
 
   // -----------------------------------------------------------------
-  // Token Management (inchangé)
+  // Token Management
   // -----------------------------------------------------------------
 
   getAccessToken(): string | null {
@@ -141,9 +133,16 @@ export class AuthService {
     const rt = this.getRefreshToken();
     if (!rt) return new Observable((observer) => observer.error('Refresh token missing'));
 
-    // L'intercepteur doit gérer l'ajout du RT dans le header
-    return this.http
-      .post<Tokens>(`${this.apiUrl}/refresh`, {})
-      .pipe(tap((tokens) => this.saveTokens(tokens)));
+    // 🚀 NOUVEAU : Activer le flag de rafraîchissement pour l'UX
+    this.isCheckingAuthSubject.next(true);
+
+    return this.http.post<Tokens>(`${this.apiUrl}/refresh`, {}).pipe(
+      tap((tokens) => this.saveTokens(tokens)),
+      // 🚀 NOUVEAU : Désactiver le flag, qu'il y ait succès ou erreur
+      tap({
+        next: () => this.isCheckingAuthSubject.next(false),
+        error: () => this.isCheckingAuthSubject.next(false),
+      })
+    );
   }
 }

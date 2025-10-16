@@ -1,30 +1,41 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './shared/layout/layout.component';
-import { AuthGuard } from './core/auth-guard'; // Assurez-vous que le chemin est correct
+import { AuthGuard } from './core/auth-guard'; // Garde pour routes protégées
+import { PublicGuard } from './guards/public-guard'; // 🚀 NOUVEAU : Garde pour routes publiques
 
 const routes: Routes = [
-  // 1. Routes PUBLIQUES (Authentification)
+  // 1. Route PUBLIQUE par défaut (LANDING PAGE)
+  {
+    path: '', // URL racine (resachap.sly.codes/)
+    loadComponent: () =>
+      import('./landing-page/landing-page.component').then((m) => m.LandingPageComponent),
+    canActivate: [PublicGuard], // Bloque l'accès si déjà connecté
+    title: 'Accueil | Resa Chap',
+  },
+
+  // 2. Routes D'AUTHENTIFICATION (Login, Signup, Callback)
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
 
-  // 2. Routes PROTÉGÉES (Application principale)
+  // 3. Routes PROTÉGÉES (Application principale - Dashboard, Catalogue, etc.)
+  // Ces routes sont activées si l'utilisateur est connecté.
   {
-    path: '', // Ce chemin sert de point d'entrée pour la Layout et la Guard
+    path: '', // Utilise le path vide pour encapsuler les MAIN_ROUTES
     component: LayoutComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard], // Protection principale
     children: [
       {
-        // Le path vide ici signifie que les routes de MAIN_ROUTES seront chargées
-        // directement sous le contexte de '/'.
         path: '',
         loadChildren: () => import('./main.routes').then((mod) => mod.MAIN_ROUTES),
       },
     ],
   },
 
+  // 4. WILD CARD (Redirection si route inconnue)
+  // Redirige les erreurs 404 vers la Landing Page
   { path: '**', redirectTo: '' },
 ];
 
