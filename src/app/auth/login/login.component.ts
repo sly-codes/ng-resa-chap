@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../../common/toast/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -16,59 +23,74 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = false;
-  error: string | null = null;
 
-  // Injection des dépendances
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
+  private cdr = inject(ChangeDetectorRef); // Injecter ChangeDetectorRef
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
   onSubmit(): void {
     if (this.loginForm.invalid || this.isLoading) {
       this.loginForm.markAllAsTouched();
+      this.toastService.warning(
+        'Formulaire Invalide',
+        'Veuillez corriger les champs obligatoires.'
+      );
       return;
     }
 
     this.isLoading = true;
-    this.error = null;
+    this.cdr.detectChanges(); // Force l'affichage du spinner
 
     const credentials = this.loginForm.value;
 
     this.authService.signin(credentials).subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        // Succès : Annuler l'état et effacer les champs
+        this.isLoading = false;
+        this.loginForm.reset(); // 🚨 EFFACER LES CHAMPS UNIQUEMENT EN CAS DE SUCCÈS
+        this.cdr.detectChanges(); // Force la détection
+        this.toastService.success('Connexion Réussie', 'Bienvenue sur Resa Chap !');
+        this.router.navigate(['/dashboard']);
       },
       error: (err: HttpErrorResponse) => {
+        // Échec : Annuler l'état, mais CONSERVER les champs pour la correction
         this.isLoading = false;
-        if (err.status === 401) {
-          this.error = 'Email ou mot de passe incorrect.';
-        } else {
-          this.error = err.error?.message || 'Erreur de connexion. Veuillez réessayer.';
+        this.cdr.detectChanges(); // 🚨 CORRECTION CLÉ : Débloquer le bouton immédiatement
+
+        let errorMessage = 'Erreur serveur inconnue. Veuillez réessayer plus tard.';
+
+        if (err.error && err.error.message) {
+          const backendMessage = Array.isArray(err.error.message)
+            ? err.error.message.join(', ')
+            : err.error.message;
+
+          if (backendMessage && typeof backendMessage === 'string') {
+            errorMessage = backendMessage;
+          }
+        } else if (err.status === 403) {
+          errorMessage = 'Email ou mot de passe incorrect.';
+        } else if (err.status >= 500) {
+          errorMessage = 'Erreur serveur. Veuillez réessayer.';
         }
-      },
-      complete: () => {
-        this.isLoading = false;
+
+        this.toastService.error('Échec de la connexion', errorMessage);
       },
     });
   }
 
-  /**
-   * Déclenche la redirection vers le backend pour la connexion Google.
-   */
   loginWithGoogle(): void {
     this.authService.loginWithGoogle();
   }
 
-  /**
-   * 🚨 NOUVEAU : Déclenche la redirection vers le backend pour la connexion GitHub.
-   */
   loginWithGithub(): void {
     this.authService.loginWithGithub();
   }

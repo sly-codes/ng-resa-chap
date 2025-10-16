@@ -415,10 +415,10 @@ body {
   }
 
   .section-tag-light {
+    color: $white;
     @extend .section-tag;
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    color: $white;
   }
 
   h2 {
@@ -667,7 +667,7 @@ body {
     color: $white;
 
     @media (max-width: 768px) {
-      font-size: 2rem;
+      font-size: 1.6rem;
     }
   }
 

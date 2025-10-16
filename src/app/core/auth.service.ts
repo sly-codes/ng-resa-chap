@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { ToastService } from '../../common/toast/toast.service'; // 💡 IMPORT
 
 // Interface pour les Tokens renvoyés par le backend
 export interface Tokens {
@@ -21,6 +22,7 @@ export interface AuthCredentials {
 })
 export class AuthService {
   private readonly apiUrl = environment.apiUrl + '/auth';
+  private toastService = inject(ToastService); // 💡 INJECTION
 
   // Sujet pour l'état d'authentification (utilisé par Guards et l'UI)
   public isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
@@ -77,7 +79,7 @@ export class AuthService {
 
     localStorage.clear();
     this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/']); // 🚀 CORRECTION : Rediriger vers la Landing Page
+    this.router.navigate(['/']); // Rediriger vers la Landing Page
   }
 
   // -----------------------------------------------------------------
@@ -85,18 +87,22 @@ export class AuthService {
   // -----------------------------------------------------------------
 
   loginWithGoogle(): void {
+    // 💡 Pas de toast ici, car c'est une redirection immédiate
     const googleAuthUrl = `${this.apiUrl}/google`;
     window.location.href = `${googleAuthUrl}?prompt=select_account`;
   }
 
   loginWithGithub(): void {
+    // 💡 Pas de toast ici, car c'est une redirection immédiate
     const githubAuthUrl = `${this.apiUrl}/github`;
     window.location.href = githubAuthUrl;
   }
 
+  // 🚨 CORRECTION : Affiche le toast de succès LORSQUE le token est géré
   handleSocialLogin(tokens: Tokens): void {
     this.saveTokens(tokens);
-    this.router.navigate(['/dashboard']); // Redirection après succès vers le Dashboard
+    this.toastService.success('Connexion Sociale Réussie', 'Bienvenue sur Resa Chap !'); // 💡 TOAST SUCCÈS
+    this.router.navigate(['/dashboard']);
   }
 
   // -----------------------------------------------------------------

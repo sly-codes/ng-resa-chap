@@ -16,10 +16,6 @@
       <i class="bx bx-calendar-check"></i>
       <span>ResaChap</span>
     </a>
-
-    <!-- <div class="mobile-user" *ngIf="profile$ | async as profile">
-      <i class="bx bx-user-circle"></i>
-    </div> -->
   </header>
 
   <!-- Overlay pour mobile -->
@@ -83,7 +79,7 @@
         <a class="nav-link dropdown-toggle" id="reservationsDropdown" ngbDropdownToggle>
           <i class="bx bx-calendar"></i>
           <span>Réservations</span>
-          <i class="bx bx-chevron-down chevron-icon"></i>
+          <!-- <i class="bx bx-chevron-down chevron-icon"></i> -->
         </a>
 
         <div ngbDropdownMenu aria-labelledby="reservationsDropdown" class="dropdown-menu">
@@ -117,7 +113,7 @@
           <span class="user-name">{{
             profile.firstName || profile.username || profile.email
           }}</span>
-          <i class="bx bx-chevron-up chevron-icon"></i>
+          <!-- <i class="bx bx-chevron-up chevron-icon"></i> -->
         </button>
 
         <div ngbDropdownMenu class="dropdown-menu dropdown-menu-top">

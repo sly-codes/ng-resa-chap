@@ -2,6 +2,24 @@
   <div class="auth-card">
     <h2 class="auth-title">Créer un compte ResaChap</h2>
 
+    <div class="social-buttons">
+      <button (click)="loginWithGoogle()" class="btn-google">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
+          alt="Google Logo"
+          class="social-logo"
+        />
+        <span>Google</span>
+      </button>
+      <button (click)="loginWithGithub()" class="btn-github">
+        <i class="bx bxl-github social-icon"></i>
+        <span>GitHub</span>
+      </button>
+    </div>
+
+    <div class="separator">
+      <span class="separator-text">Ou continuer avec l'email</span>
+    </div>
 
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
@@ -54,17 +72,13 @@
         </div>
       </div>
 
-      <div *ngIf="error" class="alert-error">
-        {{ error }}
-      </div>
-
       <button type="submit" [disabled]="signupForm.invalid || isLoading" class="btn-submit">
         <i *ngIf="isLoading" class="bx bx-loader-alt bx-spin"></i>
-        <span>{{ isLoading ? 'Création du compte...' : "S'inscrire" }}</span>
+        <span>{{ isLoading ? 'Création...' : "S'inscrire" }}</span>
       </button>
 
       <div class="auth-footer">
-        <a [routerLink]="['/auth/login']" class="auth-link"> Déjà un compte ? Connectez-vous </a>
+        <a [routerLink]="['/auth/login']" class="auth-link"> Déjà un compte ? Se connecter </a>
       </div>
     </form>
   </div>

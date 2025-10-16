@@ -1,26 +1,27 @@
 <div class="auth-wrapper">
   <div class="auth-card">
-    
     <h2 class="auth-title">Connexion à ResaChap</h2>
 
-     <div class="social-buttons">
-        <button (click)="loginWithGoogle()" class="btn-google">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png" alt="Google Logo" class="social-logo" />
-          <span>Google</span>
-        </button>
-        <button (click)="loginWithGithub()" class="btn-github">
-          <i class="bx bxl-github social-icon"></i>
-          <span>GitHub</span>
-        </button>
+    <div class="social-buttons">
+      <button (click)="loginWithGoogle()" class="btn-google">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
+          alt="Google Logo"
+          class="social-logo"
+        />
+        <span>Google</span>
+      </button>
+      <button (click)="loginWithGithub()" class="btn-github">
+        <i class="bx bxl-github social-icon"></i>
+        <span>GitHub</span>
+      </button>
     </div>
-    
-    <!-- Séparateur pour l'option email/mot de passe -->
+
     <div class="separator">
-        <span class="separator-text">Ou continuer avec l'email</span>
+      <span class="separator-text">Ou continuer avec l'email</span>
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      
       <div class="form-group">
         <label for="email" class="form-label">Adresse email</label>
         <div class="input-wrapper">
@@ -36,16 +37,12 @@
           />
           <i class="bx bx-mail-send input-icon"></i>
         </div>
-        <div 
-          *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" 
+        <div
+          *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
           class="form-error"
         >
-          <p *ngIf="loginForm.get('email')?.errors?.['required']">
-            L'email est requis
-          </p>
-          <p *ngIf="loginForm.get('email')?.errors?.['email']">
-            Format d'email invalide
-          </p>
+          <p *ngIf="loginForm.get('email')?.errors?.['required']">L'email est requis</p>
+          <p *ngIf="loginForm.get('email')?.errors?.['email']">Format d'email invalide</p>
         </div>
       </div>
 
@@ -64,38 +61,25 @@
           />
           <i class="bx bx-lock-alt input-icon"></i>
         </div>
-        <div 
-          *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" 
+        <div
+          *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
           class="form-error"
         >
-          <p *ngIf="loginForm.get('password')?.errors?.['required']">
-            Le mot de passe est requis
-          </p>
+          <p *ngIf="loginForm.get('password')?.errors?.['required']">Le mot de passe est requis</p>
           <p *ngIf="loginForm.get('password')?.errors?.['minlength']">
             Minimum 6 caractères requis
           </p>
         </div>
       </div>
 
-      <div *ngIf="error" class="alert-error">
-        {{ error }}
-      </div>
-
-      <button 
-        type="submit" 
-        [disabled]="loginForm.invalid || isLoading" 
-        class="btn-submit"
-      >
+      <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-submit">
         <i *ngIf="isLoading" class="bx bx-loader-alt bx-spin"></i>
         <span>{{ isLoading ? 'Connexion...' : 'Se connecter' }}</span>
       </button>
 
       <div class="auth-footer">
-        <a [routerLink]="['/auth/signup']" class="auth-link">
-          Pas de compte ? S'inscrire
-        </a>
+        <a [routerLink]="['/auth/signup']" class="auth-link"> Pas de compte ? S'inscrire </a>
       </div>
-      
     </form>
   </div>
 </div>
