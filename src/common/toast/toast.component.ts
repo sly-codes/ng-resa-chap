@@ -1,3 +1,4 @@
+// toast.component.ts
 import {
   Component,
   OnDestroy,
@@ -6,7 +7,7 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToastMessage, ToastService } from './toast.service'; // Assurez-vous d'avoir le bon chemin d'import
+import { ToastMessage, ToastService } from './toast.service';
 import { Subscription, timer } from 'rxjs';
 
 @Component({
@@ -24,7 +25,7 @@ import { Subscription, timer } from 'rxjs';
           <div class="toast-title">{{ currentToast.title }}</div>
           <div class="toast-message">{{ currentToast.message }}</div>
         </div>
-        <button class="toast-close" (click)="closeToast()">
+        <button class="toast-close" (click)="closeToast()" aria-label="Fermer la notification">
           <i class="bx bx-x"></i>
         </button>
       </div>
@@ -33,22 +34,20 @@ import { Subscription, timer } from 'rxjs';
   styleUrls: ['./toast.component.scss'],
   standalone: true,
   imports: [CommonModule],
-  // Utilisation de OnPush pour optimiser, nécessite ChangeDetectorRef pour mettre à jour
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastComponent implements OnInit, OnDestroy {
   currentToast: ToastMessage | null = null;
   private toastSubscription!: Subscription;
   private timerSubscription?: Subscription;
-  private readonly DISPLAY_TIME = 4000; // 4 secondes
+  private readonly DISPLAY_TIME = 4000;
 
   constructor(private toastService: ToastService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    // S'abonne au flux de messages du service
     this.toastSubscription = this.toastService.toast$.subscribe((toast) => {
       this.currentToast = toast;
-      this.cdr.detectChanges(); // Met à jour la vue (nécessaire avec OnPush)
+      this.cdr.detectChanges();
       this.startTimer();
     });
   }
@@ -59,7 +58,7 @@ export class ToastComponent implements OnInit, OnDestroy {
   }
 
   startTimer(): void {
-    this.timerSubscription?.unsubscribe(); // Annule le précédent si un nouveau arrive
+    this.timerSubscription?.unsubscribe();
     this.timerSubscription = timer(this.DISPLAY_TIME).subscribe(() => {
       this.closeToast();
     });
@@ -68,6 +67,6 @@ export class ToastComponent implements OnInit, OnDestroy {
   closeToast(): void {
     this.currentToast = null;
     this.timerSubscription?.unsubscribe();
-    this.cdr.detectChanges(); // Met à jour la vue
+    this.cdr.detectChanges();
   }
 }

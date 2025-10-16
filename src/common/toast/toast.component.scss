@@ -1,80 +1,160 @@
+// toast.component.scss
 .toast-container {
   position: fixed;
-  top: 20px; /* En haut de l'écran */
-  right: 20px; /* À droite de l'écran */
-  z-index: 10000; /* Assurez-vous qu'il est au-dessus de tout */
-  pointer-events: none; /* Pour que les clics passent à travers quand vide */
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 
+  @media (max-width: 640px) {
+    top: 70px; // Pour éviter le header mobile
+    right: 10px;
+    left: 10px;
+  }
+
   &.show {
     opacity: 1;
-    pointer-events: all; /* Rendre cliquable quand il y a un message */
+    pointer-events: all;
   }
 }
 
 .toast-item {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  max-width: 350px;
-  background-color: white; /* Fond par défaut */
-  color: #333;
-  animation: slideIn 0.5s forwards;
+  padding: 0.875rem 1rem;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 400px;
+  background-color: #ffffff;
+  color: #1f2937;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #e5e7eb;
+
+  @media (max-width: 640px) {
+    max-width: 100%;
+    padding: 0.75rem 0.875rem;
+  }
 }
 
 @keyframes slideIn {
   from {
-    transform: translateX(100%);
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
   }
   to {
-    transform: translateX(0);
+    opacity: 1;
+    transform: translateX(0) scale(1);
   }
 }
 
 .toast-icon {
-  font-size: 24px;
-  margin-right: 15px;
+  font-size: 1.25rem;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    line-height: 1;
+  }
 }
 
 .toast-content {
   flex-grow: 1;
+  min-width: 0;
 }
 
 .toast-title {
-  font-weight: bold;
-  margin-bottom: 2px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.125rem;
+  color: #111827;
+  line-height: 1.4;
 }
 
 .toast-message {
-  font-size: 0.9em;
+  font-size: 0.813rem;
+  color: #6b7280;
+  line-height: 1.5;
 }
 
 .toast-close {
-  background: none;
+  background: transparent;
   border: none;
-  font-size: 20px;
-  margin-left: 15px;
+  font-size: 1.25rem;
+  margin-left: 0.75rem;
   cursor: pointer;
-  color: inherit; /* Utilise la couleur du toast */
+  color: #9ca3af;
+  padding: 0.25rem;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    line-height: 1;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+
+  &:active {
+    background: #e5e7eb;
+  }
 }
 
-/* Couleurs spécifiques */
+// Couleurs spécifiques avec thème cyan
 .toast-success {
-  border-left: 5px solid #4CAF50;
-  .toast-icon { color: #4CAF50; }
+  border-left: 3px solid #00add8;
+
+  .toast-icon {
+    color: #00add8;
+  }
+
+  .toast-title {
+    color: #005f7a;
+  }
 }
+
 .toast-error {
-  border-left: 5px solid #F44336;
-  .toast-icon { color: #F44336; }
+  border-left: 3px solid #dc2626;
+
+  .toast-icon {
+    color: #dc2626;
+  }
+
+  .toast-title {
+    color: #991b1b;
+  }
 }
+
 .toast-warning {
-  border-left: 5px solid #FF9800;
-  .toast-icon { color: #FF9800; }
+  border-left: 3px solid #f59e0b;
+
+  .toast-icon {
+    color: #f59e0b;
+  }
+
+  .toast-title {
+    color: #92400e;
+  }
 }
+
 .toast-info {
-  border-left: 5px solid #2196F3;
-  .toast-icon { color: #2196F3; }
+  border-left: 3px solid #3b82f6;
+
+  .toast-icon {
+    color: #3b82f6;
+  }
+
+  .toast-title {
+    color: #1e40af;
+  }
 }
