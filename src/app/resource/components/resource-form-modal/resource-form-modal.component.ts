@@ -10,6 +10,12 @@ import {
 import { catchError, of, take, finalize, Subscription, Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
+// 💡 NOUVEAU TYPE pour l'affichage des unités de prix
+interface PriceUnitDisplay {
+  value: PriceUnit; // La valeur réelle (HOUR, DAY, ...) envoyée au backend
+  label: string; // Le texte affiché (Heure, Jour, ...)
+}
+
 @Component({
   selector: 'app-resource-form-modal',
   templateUrl: './resource-form-modal.component.html',
@@ -23,32 +29,36 @@ export class ResourceFormModalComponent implements OnInit, OnDestroy {
   private activeModal = inject(NgbActiveModal);
 
   @Input() resourceId: string | null = null;
-  // 🚨 NOUVEAU: Référence à l'input de fichier
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   resourceForm!: FormGroup;
   isEditMode = false;
   isLoading = false;
   error: string | null = null;
-  priceUnits: PriceUnit[] = ['HOUR', 'DAY', 'WEEK', 'MONTH'];
-  imagePreview: string | ArrayBuffer | null = null; // Pour l'aperçu de l'image
-  currentImageUrl: string | null = null; // Pour l'image existante en mode édition
+
+  // 💡 CORRECTION : Liste des unités de prix avec libellés FR
+  priceUnitsDisplay: PriceUnitDisplay[] = [
+    { value: 'HOUR', label: 'Heure' },
+    { value: 'DAY', label: 'Jour' },
+    { value: 'WEEK', label: 'Semaine' },
+    { value: 'MONTH', label: 'Mois' },
+  ];
+
+  imagePreview: string | ArrayBuffer | null = null;
+  currentImageUrl: string | null = null;
 
   private subscriptions = new Subscription();
 
   ngOnInit(): void {
-    // 🚨 AJOUT des nouveaux contrôles avec validations appropriées
     this.resourceForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       type: ['ROOM', [Validators.required]],
       description: ['', [Validators.maxLength(500)]],
-      // Nouveaux champs
       price: [0, [Validators.required, Validators.min(0.01)]],
       priceUnit: ['HOUR', [Validators.required]],
-      country: ["Côte d'ivoire", [Validators.required, Validators.maxLength(50)]], // Valeur par défaut
+      country: ["Côte d'ivoire", [Validators.required, Validators.maxLength(50)]],
       city: ['', [Validators.required, Validators.maxLength(50)]],
       address: ['', [Validators.maxLength(100)]],
-      // Champ virtuel pour le fichier (pas de validation requise ici, on la gère au submit)
       mainImageFile: [null],
     });
 
@@ -74,7 +84,6 @@ export class ResourceFormModalComponent implements OnInit, OnDestroy {
       )
       .subscribe((resource: Resource | null) => {
         if (resource) {
-          // Utiliser patchValue avec les champs existants
           this.resourceForm.patchValue({
             name: resource.name,
             type: resource.type,
@@ -84,29 +93,25 @@ export class ResourceFormModalComponent implements OnInit, OnDestroy {
             country: resource.country,
             city: resource.city,
             address: resource.address,
-            // Ne pas patcher le champ mainImageFile, car c'est un File
           });
-          this.currentImageUrl = resource.mainImage; // Stocker l'URL pour l'affichage
+          this.currentImageUrl = resource.mainImage;
         }
       });
     this.subscriptions.add(sub);
   }
 
-  // 🚨 NOUVEAU: Gère la sélection du fichier et l'aperçu
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
 
-      // Mise à jour du FormControl pour la soumission
       this.resourceForm.patchValue({ mainImageFile: file });
       this.resourceForm.get('mainImageFile')?.updateValueAndValidity();
 
-      // Créer l'aperçu
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
-        this.currentImageUrl = null; // Masquer l'ancienne image si une nouvelle est sélectionnée
+        this.currentImageUrl = null;
       };
       reader.readAsDataURL(file);
     }
@@ -130,7 +135,6 @@ export class ResourceFormModalComponent implements OnInit, OnDestroy {
 
     const formValue = this.resourceForm.value;
 
-    // 🚨 Conversion du FormValue en DTO de soumission
     const resourceData: Partial<CreateResourceDTO> = {
       name: formValue.name,
       type: formValue.type,
@@ -146,8 +150,6 @@ export class ResourceFormModalComponent implements OnInit, OnDestroy {
     let operation: Observable<Resource>;
 
     if (this.isEditMode && this.resourceId) {
-      // Pour l'édition, on n'envoie que les champs que nous voulons modifier.
-      // Dans ce cas, on envoie tous les champs pour simplifier.
       operation = this.resourceService.updateResource(this.resourceId, resourceData);
     } else {
       operation = this.resourceService.createResource(resourceData as CreateResourceDTO);

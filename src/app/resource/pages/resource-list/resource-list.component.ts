@@ -120,7 +120,7 @@ export class ResourceListComponent implements OnInit {
 
   private openResourceModal(resourceId: string | null): void {
     const modalRef = this.modalService.open(ResourceFormModalComponent, {
-      size: 'xl', // 🚨 Mise à jour en 'xl' pour accueillir plus de champs
+      size: 'lg', // 🚨 Mise à jour en 'xl' pour accueillir plus de champs
       centered: true,
       backdrop: 'static',
     });

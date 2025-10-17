@@ -47,18 +47,18 @@
               accept="image/*"
             />
             <div class="image-preview" [ngClass]="{'has-image': imagePreview || currentImageUrl}">
-                <img [src]="imagePreview || currentImageUrl" *ngIf="imagePreview || currentImageUrl" alt="Aperçu de l'image" />
-                <div class="image-placeholder" *ngIf="!imagePreview && !currentImageUrl">
-                    <i class='bx bx-image-add'></i>
-                    <p>Cliquez ou glissez une image ici</p>
-                </div>
+              <img [src]="imagePreview || currentImageUrl" *ngIf="imagePreview || currentImageUrl" alt="Aperçu de l'image" />
+              <div class="image-placeholder" *ngIf="!imagePreview && !currentImageUrl">
+                <i class='bx bx-image-add'></i>
+                <p>Cliquez ou glissez une image ici</p>
+              </div>
             </div>
             <div
-                *ngIf="resourceForm!.get('mainImageFile')?.errors?.['required'] && (resourceForm!.get('mainImageFile')?.dirty || resourceForm!.get('mainImageFile')?.touched)"
-                class="form-error"
+              *ngIf="resourceForm!.get('mainImageFile')?.errors?.['required'] && (resourceForm!.get('mainImageFile')?.dirty || resourceForm!.get('mainImageFile')?.touched)"
+              class="form-error"
             >
-                <i class="bx bx-error-circle"></i>
-                <span>L'image principale est requise.</span>
+              <i class="bx bx-error-circle"></i>
+              <span>L'image principale est requise.</span>
             </div>
           </div>
         </div>
@@ -208,7 +208,7 @@
         <div class="two-columns-group">
           <div class="form-group">
             <label for="price" class="form-label">
-              Prix (EUR)
+              Prix (FCFA)
               <span class="label-required">*</span>
             </label>
             <input
@@ -255,8 +255,8 @@
                 (resourceForm!.get('priceUnit')?.dirty || resourceForm!.get('priceUnit')?.touched)
               "
             >
-              <option *ngFor="let unit of priceUnits" [value]="unit">
-                / {{ unit | lowercase }}
+              <option *ngFor="let unit of priceUnitsDisplay" [value]="unit.value">
+                / {{ unit.label }}
               </option>
             </select>
             <div
