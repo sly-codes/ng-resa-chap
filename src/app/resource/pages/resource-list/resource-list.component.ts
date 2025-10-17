@@ -1,25 +1,25 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Resource, ResourceService, ResourceFilters } from '../../../core/resource.service';
+import { NgbDropdownModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
-  Observable,
+  BehaviorSubject,
   catchError,
-  of,
-  Subject,
-  switchMap,
-  startWith,
-  tap,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
   map,
-  BehaviorSubject,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  switchMap,
+  tap,
 } from 'rxjs';
-import { NgbModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { ResourceFormModalComponent } from '../../components/resource-form-modal/resource-form-modal.component';
-import { ToastService } from '../../../../common/toast/toast.service';
 import { DeleteConfirmationModalComponent } from '../../../../common/delete-confirmation-modal/delete-confirmation-modal.component';
+import { ToastService } from '../../../../common/toast/toast.service';
+import { Resource, ResourceFilters, ResourceService } from '../../../core/resource.service';
+import { ResourceFormModalComponent } from '../../components/resource-form-modal/resource-form-modal.component';
 
 // Interface étendue pour la vue du tableau (pour le chargement du bouton)
 interface ManagedResourceView extends Resource {
@@ -44,12 +44,10 @@ export class ResourceListComponent implements OnInit {
   resources$: Observable<ManagedResourceView[]> = this.resourcesSubject.asObservable();
 
   error: string | null = null;
-  loading = true;
+  loading = true; // Contrôles de filtre et recherche
 
-  // Contrôles de filtre et recherche
   typeFilter = new FormControl<'ALL' | 'ROOM' | 'EQUIPMENT'>('ALL', { nonNullable: true });
-  searchControl = new FormControl('', { nonNullable: true });
-  // 🚨 NOUVEAU: Contrôle pour le filtre par ville
+  searchControl = new FormControl('', { nonNullable: true }); // 🚨 NOUVEAU: Contrôle pour le filtre par ville
   cityFilter = new FormControl('', { nonNullable: true });
 
   ngOnInit(): void {
@@ -63,9 +61,8 @@ export class ResourceListComponent implements OnInit {
       debounceTime(400),
       distinctUntilChanged(),
       map((value) => value as string)
-    );
+    ); // 🚨 NOUVEAU: Observables pour le filtre par ville
 
-    // 🚨 NOUVEAU: Observables pour le filtre par ville
     const cityFilter$ = this.cityFilter.valueChanges.pipe(
       startWith(this.cityFilter.value),
       debounceTime(400),
@@ -78,9 +75,8 @@ export class ResourceListComponent implements OnInit {
       searchControl$,
       cityFilter$, // 🚨 NOUVEAU: Ajout du filtre de ville
       this.refresh$.pipe(startWith(undefined)),
-    ]);
+    ]); // Subscription principale pour charger les données et remplir le Subject
 
-    // Subscription principale pour charger les données et remplir le Subject
     filterAndSearch$
       .pipe(
         switchMap(([type, search, city, _]) => {
@@ -89,8 +85,7 @@ export class ResourceListComponent implements OnInit {
 
           const filters: ResourceFilters = {
             search: search || undefined,
-            type: type === 'ALL' ? undefined : type,
-            // 🚨 NOUVEAU: Ajout du filtre city
+            type: type === 'ALL' ? undefined : type, // 🚨 NOUVEAU: Ajout du filtre city
             city: city || undefined,
           };
 
@@ -201,5 +196,25 @@ export class ResourceListComponent implements OnInit {
 
   getResourceIcon(type: 'ROOM' | 'EQUIPMENT'): string {
     return type === 'ROOM' ? 'bx-buildings' : 'bx-devices';
+  }
+
+  /**
+   * 💡 NOUVELLE MÉTHODE : Traduit l'unité de prix (HOUR, DAY, etc.) en français (Heure, Jour, etc.)
+   * @param unit L'unité de prix en majuscule (ex: "HOUR")
+   * @returns Le libellé en français.
+   */
+  getUnitDisplayLabel(unit: string): string {
+    switch (unit) {
+      case 'HOUR':
+        return 'Heure';
+      case 'DAY':
+        return 'Jour';
+      case 'WEEK':
+        return 'Semaine';
+      case 'MONTH':
+        return 'Mois';
+      default:
+        return unit; // Retourne l'unité originale si elle n'est pas trouvée
+    }
   }
 }

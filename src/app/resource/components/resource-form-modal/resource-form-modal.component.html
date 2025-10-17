@@ -170,7 +170,7 @@
               id="city"
               formControlName="city"
               class="form-input"
-              placeholder="Ex: Montréal"
+              placeholder="Ex: Abidjan"
               [class.input-error]="
                 resourceForm!.get('city')?.invalid &&
                 (resourceForm!.get('city')?.dirty || resourceForm!.get('city')?.touched)
@@ -200,7 +200,7 @@
               id="address"
               formControlName="address"
               class="form-input"
-              placeholder="Ex: 123 Rue de la Réserve"
+              placeholder="Ex: Treichville Rue 12"
             />
           </div>
         </div>
@@ -216,7 +216,7 @@
               id="price"
               formControlName="price"
               class="form-input"
-              placeholder="Ex: 50.00"
+              placeholder="Ex: 1500"
               min="0.01"
               step="0.01"
               [class.input-error]="

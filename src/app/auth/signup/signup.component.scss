@@ -1,7 +1,7 @@
-// Variables
-$primary-cyan: #00ADD8; // ✅ Cyan principal
-$dark-cyan: #0099BF; // ✅ Cyan foncé pour hover
-$darker-cyan: #0085A6; // ✅ Cyan très foncé pour active
+// 🎨 Variables de couleur
+$primary-cyan: #00add8; // Cyan principal
+$dark-cyan: #0099bf; // Cyan foncé (hover)
+$darker-cyan: #0085a6; // Cyan très foncé (active)
 $white: #ffffff;
 $gray-50: #f9fafb;
 $gray-200: #e5e7eb;
@@ -11,12 +11,14 @@ $gray-900: #111827;
 $red: #dc2626;
 $red-light: #fef2f2;
 
+// 🌐 Global
 body {
   margin: 0;
   padding: 0;
   color: $gray-900;
 }
 
+// 🧱 Wrapper principal
 .auth-wrapper {
   min-height: 100vh;
   display: flex;
@@ -36,6 +38,7 @@ body {
   }
 }
 
+// 📦 Carte d’authentification
 .auth-card {
   position: relative;
   z-index: 1;
@@ -45,13 +48,44 @@ body {
   border: 2px solid $gray-200;
   border-radius: 8px;
   padding: 48px 40px;
+  padding-top: 60px;
 
   @media (max-width: 640px) {
     padding: 40px 28px;
+    padding-top: 60px;
     max-width: 100%;
   }
 }
 
+// 🔙 Bouton de retour
+.btn-back {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: transparent;
+  border: none;
+  color: $gray-700;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    background: $gray-50;
+    color: $primary-cyan;
+  }
+
+  .bx {
+    font-size: 18px;
+  }
+}
+
+// 🏷️ Titres
 .auth-title {
   font-size: 18px;
   font-weight: 600;
@@ -61,6 +95,7 @@ body {
   letter-spacing: -0.02em;
 }
 
+// 📋 Champs de formulaire
 .form-group {
   margin-bottom: 24px;
 }
@@ -95,7 +130,7 @@ body {
   border-radius: 5px;
   color: $gray-900;
   transition: all 0.2s ease;
-  font-size: 16px; // ✅ 16px minimum pour éviter le zoom sur mobile
+  font-size: 16px;
   outline: none;
   font-family: inherit;
 
@@ -104,10 +139,10 @@ body {
   }
 
   &:focus {
-    border-color: $primary-cyan; // ✅ Cyan au focus
+    border-color: $primary-cyan;
 
     ~ .input-icon {
-      color: $primary-cyan; // ✅ Icône cyan au focus
+      color: $primary-cyan;
     }
   }
 
@@ -118,6 +153,7 @@ body {
   }
 }
 
+// ⚠️ Messages d’erreur
 .form-error {
   margin-top: 8px;
 
@@ -143,9 +179,10 @@ body {
   margin-bottom: 24px;
 }
 
+// 🚀 Bouton principal
 .btn-submit {
   width: 100%;
-  background: $primary-cyan; // ✅ Bouton cyan
+  background: $primary-cyan;
   border: 1px solid $primary-cyan;
   border-radius: 5px;
   font-weight: 500;
@@ -161,12 +198,12 @@ body {
   font-family: inherit;
 
   &:hover:not(:disabled) {
-    background: $dark-cyan; // ✅ Cyan foncé au hover
+    background: $dark-cyan;
     border-color: $dark-cyan;
   }
 
   &:active:not(:disabled) {
-    background: $darker-cyan; // ✅ Cyan très foncé au clic
+    background: $darker-cyan;
     border-color: $darker-cyan;
   }
 
@@ -180,6 +217,7 @@ body {
   }
 }
 
+// 🔄 Animation de chargement
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -189,21 +227,22 @@ body {
   }
 }
 
+// 📎 Pied de page
 .auth-footer {
   text-align: center;
 }
 
 .auth-link {
-  color: $primary-cyan; // ✅ Liens cyan
+  color: $primary-cyan;
   text-decoration: none;
   font-weight: 500;
 
   &:hover {
-    color: $dark-cyan; // ✅ Hover cyan foncé
+    color: $dark-cyan;
   }
 }
 
-// Conteneur pour les boutons sociaux
+// 🌍 Boutons sociaux
 .social-buttons {
   display: flex;
   gap: 16px;
@@ -220,7 +259,8 @@ body {
   }
 }
 
-.btn-google {
+.btn-google,
+.btn-github {
   background-color: #e2ebe8;
   border: 1px solid $gray-200;
   color: $gray-700;
@@ -238,24 +278,11 @@ body {
   height: 18px;
 }
 
-.btn-github {
-  background-color: #e2ebe8;
-  border: 1px solid $gray-200;
-  color: $gray-700;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: #ffffff;
-  }
-}
-
 .social-icon {
   font-size: 18px;
 }
 
-// Séparateur "Ou continuer avec l'email"
+// ➖ Séparateur
 .separator {
   display: flex;
   align-items: center;

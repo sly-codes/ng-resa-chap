@@ -110,7 +110,7 @@
             </td>
 
             <td class="resource-price d-none d-md-table-cell">
-              {{ resource.price | currency : 'FCFA' }}/ {{ resource.priceUnit | lowercase }}
+              {{ resource.price | currency : 'FCFA' }} / {{ getUnitDisplayLabel(resource.priceUnit) }}
             </td>
 
             <td class="resource-description d-none d-md-table-cell">

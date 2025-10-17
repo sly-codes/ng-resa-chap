@@ -1,5 +1,10 @@
 <div class="auth-wrapper">
   <div class="auth-card">
+    <button (click)="goToLandingPage()" class="btn-back" aria-label="Retour à la page d'accueil">
+      <i class="bx bx-arrow-back"></i>
+      <span>Retour</span>
+    </button>
+    
     <h2 class="auth-title">Créer un compte ResaChap</h2>
 
     <div class="social-buttons">
@@ -11,11 +16,7 @@
         />
         <span>Google</span>
       </button>
-      <!-- <button (click)="loginWithGithub()" class="btn-github">
-        <i class="bx bxl-github social-icon"></i>
-        <span>GitHub</span>
-      </button> -->
-    </div>
+      </div>
 
     <div class="separator">
       <span class="separator-text">Ou continuer avec l'email</span>

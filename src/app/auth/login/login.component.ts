@@ -94,4 +94,11 @@ export class LoginComponent implements OnInit {
   loginWithGithub(): void {
     this.authService.loginWithGithub();
   }
+
+  /**
+   * Navigue vers la page d'accueil (landing page).
+   */
+  goToLandingPage(): void {
+    this.router.navigate(['/']);
+  }
 }

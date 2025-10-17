@@ -90,6 +90,13 @@ export class SignupComponent implements OnInit {
     });
   }
 
+  /**
+   * Navigue vers la page d'accueil (landing page).
+   */
+  goToLandingPage(): void {
+    this.router.navigate(['/']);
+  }
+
   loginWithGoogle(): void {
     this.authService.loginWithGoogle();
   }
