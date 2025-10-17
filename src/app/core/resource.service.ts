@@ -10,6 +10,9 @@ export interface Owner {
   contactPhone: string;
 }
 
+// Type pour l'unité de prix
+export type PriceUnit = 'HOUR' | 'DAY' | 'WEEK' | 'MONTH';
+
 export interface Resource {
   id: string;
   name: string;
@@ -17,12 +20,33 @@ export interface Resource {
   description: string;
   ownerId: string;
   createdAt: Date;
-  owner: Owner;
+  owner: Owner; // NOUVEAUX CHAMPS (confirmés par le backend)
+  price: number;
+  priceUnit: PriceUnit;
+  country: string;
+  city: string;
+  address: string;
+  mainImage: string; // URL de l'image Cloudinary
 }
 
+// Interface pour les filtres étendus
 export interface ResourceFilters {
   search?: string;
   type?: 'ROOM' | 'EQUIPMENT';
+  city?: string; // Filtre par ville (Nécessaire pour le Catalogue)
+}
+
+// DTO pour la soumission du formulaire (inclut le fichier)
+export interface CreateResourceDTO {
+  name: string;
+  type: 'ROOM' | 'EQUIPMENT';
+  description: string;
+  price: number;
+  priceUnit: PriceUnit;
+  country: string;
+  city: string;
+  address: string;
+  mainImage: File | null; // Le fichier image
 }
 
 @Injectable({
@@ -31,10 +55,10 @@ export interface ResourceFilters {
 export class ResourceService {
   private readonly apiUrl = environment.apiUrl + '/resources';
   private http = inject(HttpClient);
-
   /**
-   * Ajoute les filtres search et type aux HttpParams
+   * Ajoute les filtres search, type et city aux HttpParams
    */
+
   private buildFilterParams(filters?: ResourceFilters): HttpParams {
     let params = new HttpParams();
 
@@ -44,57 +68,80 @@ export class ResourceService {
       }
       if (filters.type) {
         params = params.set('type', filters.type);
+      } // Ajout du filtre city
+      if (filters.city) {
+        params = params.set('city', filters.city);
       }
     }
     return params;
   }
+  /**
+   * Construit l'objet FormData requis par le backend.
+   */
 
+  private buildFormData(data: Partial<CreateResourceDTO>): FormData {
+    const formData = new FormData(); // Ajouter les champs de texte
+
+    if (data.name) formData.append('name', data.name);
+    if (data.type) formData.append('type', data.type);
+    if (data.description) formData.append('description', data.description); // Convertir les nombres en chaîne
+    if (data.price !== undefined && data.price !== null)
+      formData.append('price', data.price.toString());
+    if (data.priceUnit) formData.append('priceUnit', data.priceUnit);
+    if (data.country) formData.append('country', data.country);
+    if (data.city) formData.append('city', data.city);
+    if (data.address) formData.append('address', data.address); // Ajouter l'image si elle est présente (pour la création et l'édition)
+
+    if (data.mainImage) {
+      formData.append('mainImage', data.mainImage, data.mainImage.name);
+    }
+
+    return formData;
+  }
   /**
    * Liste toutes les ressources disponibles (Catalogue public) avec filtres.
    */
+
   getAllResources(filters?: ResourceFilters): Observable<Resource[]> {
-    const params = this.buildFilterParams(filters);
+    const params = this.buildFilterParams(filters); // Le backend renvoie l'owner avec les champs requis
     return this.http.get<Resource[]>(this.apiUrl, { params });
   }
-
   /**
-   * 🚨 CORRECTION : Récupère les ressources appartenant à l'utilisateur connecté (Gestion).
+   * Récupère les ressources appartenant à l'utilisateur connecté (Gestion).
    * Appelle GET /resources/mine avec filtres.
    */
+
   getMyResources(filters?: ResourceFilters): Observable<Resource[]> {
     const params = this.buildFilterParams(filters);
     return this.http.get<Resource[]>(`${this.apiUrl}/mine`, { params });
   }
-
   /**
-   * Récupère une ressource par son ID
+   * Récupère une ressource par son ID (Détail)
    */
+
   getResourceById(id: string): Observable<Resource> {
     return this.http.get<Resource>(`${this.apiUrl}/${id}`);
   }
-
   /**
-   * Crée une nouvelle ressource
+   * Crée une nouvelle ressource en utilisant FormData (multipart/form-data)
    */
-  createResource(
-    resourceData: Omit<Resource, 'id' | 'ownerId' | 'createdAt' | 'owner'>
-  ): Observable<Resource> {
-    return this.http.post<Resource>(this.apiUrl, resourceData);
-  }
 
+  createResource(resourceData: CreateResourceDTO): Observable<Resource> {
+    const formData = this.buildFormData(resourceData);
+    return this.http.post<Resource>(this.apiUrl, formData);
+  }
   /**
-   * Met à jour une ressource existante
+   * Met à jour une ressource existante en utilisant FormData
    */
-  updateResource(
-    id: string,
-    resourceData: Partial<Omit<Resource, 'id' | 'ownerId' | 'createdAt' | 'owner'>>
-  ): Observable<Resource> {
-    return this.http.patch<Resource>(`${this.apiUrl}/${id}`, resourceData);
-  }
 
+  updateResource(id: string, resourceData: Partial<CreateResourceDTO>): Observable<Resource> {
+    const formData = this.buildFormData(resourceData);
+    return this.http.patch<Resource>(`${this.apiUrl}/${id}`, formData);
+  }
   /**
    * Supprime une ressource
    */
+
   deleteResource(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

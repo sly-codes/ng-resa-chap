@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ProfileComponent } from './profile/profile.component';
 import { MyReservationsComponent } from './reservations/my-reservations/my-reservations.component';
 import { ReceivedReservationsComponent } from './reservations/received-reservations/received-reservations.component';
+import { ResourceDetailComponent } from './catalogue/resource-detail/resource-detail.component';
 
 export const MAIN_ROUTES: Routes = [
   // Route 1: Le Tableau de Bord (Dashboard)
@@ -18,6 +19,10 @@ export const MAIN_ROUTES: Routes = [
     loadComponent: () =>
       import('./catalogue/catalogue.component').then((m) => m.CatalogueComponent),
     title: 'Catalogue | Resa Chap',
+  },
+  {
+    path: 'catalogue/:id', // 💡 NOUVELLE ROUTE POUR LE DÉTAIL
+    component: ResourceDetailComponent, // Assurez-vous d'avoir un canActivate si l'utilisateur doit être connecté
   },
 
   // Route 3: Mes Ressources

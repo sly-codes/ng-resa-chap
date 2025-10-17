@@ -23,8 +23,9 @@
     }
   }
 
+  // 🚨 ADAPTATION pour plus de contenu
   @media (min-width: 768px) {
-    max-width: 600px;
+    max-width: 700px;
   }
 }
 
@@ -180,6 +181,18 @@
   }
 }
 
+// 🚨 NOUVEAU: Layout 2 colonnes pour les petits champs
+.two-columns-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @media (min-width: 500px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -316,6 +329,77 @@
     flex-shrink: 0;
   }
 }
+
+// 🚨 NOUVEAU: Styles pour l'upload d'image
+.image-upload-area {
+    position: relative;
+    border: 2px dashed #d1d5db;
+    border-radius: 4px;
+    padding: 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background: #f9fafb;
+
+    &:hover {
+        border-color: #00add8;
+        background: #f0faff;
+    }
+}
+
+.form-input-file {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.image-preview {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    border-radius: 3px;
+    background: #f9fafb;
+    color: #9ca3af;
+
+    &.has-image {
+        background: #ffffff;
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain; // Utiliser contain pour ne pas déformer si nécessaire, ou cover
+    }
+}
+
+.image-placeholder {
+    text-align: center;
+    padding: 1rem;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        font-size: 0.875rem;
+        margin: 0;
+    }
+}
+
 
 .modal-footer {
   display: flex;

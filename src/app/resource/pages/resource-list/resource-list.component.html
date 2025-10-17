@@ -21,6 +21,17 @@
         </select>
       </div>
 
+      <div class="control-group city-filter-control">
+        <label for="city-filter">Ville</label>
+        <input
+          type="text"
+          id="city-filter"
+          [formControl]="cityFilter"
+          placeholder="Filtrer par ville..."
+          aria-label="Filtrer par ville"
+        />
+      </div>
+
       <div class="control-group search-control">
         <i class="bx bx-search"></i>
         <input
@@ -67,6 +78,8 @@
           <tr>
             <th scope="col">Nom</th>
             <th scope="col">Type</th>
+            <th scope="col" class="d-none d-lg-table-cell">Ville</th>
+            <th scope="col" class="d-none d-md-table-cell">Prix</th>
             <th scope="col" class="d-none d-md-table-cell">Description</th>
             <th scope="col">
               <span>Actions</span>
@@ -90,6 +103,14 @@
                 <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
                 <span>{{ resource.type }}</span>
               </span>
+            </td>
+
+            <td class="resource-city d-none d-lg-table-cell">
+              {{ resource.city || 'N/A' }}
+            </td>
+
+            <td class="resource-price d-none d-md-table-cell">
+              {{ resource.price | currency : 'FCFA' }}/ {{ resource.priceUnit | lowercase }}
             </td>
 
             <td class="resource-description d-none d-md-table-cell">

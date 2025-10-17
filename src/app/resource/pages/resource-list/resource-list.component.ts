@@ -16,10 +16,10 @@ import {
   map,
   BehaviorSubject,
 } from 'rxjs';
-import { NgbModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap'; // 🚨 Ajout NgbDropdownModule
+import { NgbModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { ResourceFormModalComponent } from '../../components/resource-form-modal/resource-form-modal.component';
 import { ToastService } from '../../../../common/toast/toast.service';
-import { DeleteConfirmationModalComponent } from '../../../../common/delete-confirmation-modal/delete-confirmation-modal.component'; // 🚨 NOUVEAU: Import Modale
+import { DeleteConfirmationModalComponent } from '../../../../common/delete-confirmation-modal/delete-confirmation-modal.component';
 
 // Interface étendue pour la vue du tableau (pour le chargement du bouton)
 interface ManagedResourceView extends Resource {
@@ -31,7 +31,7 @@ interface ManagedResourceView extends Resource {
   templateUrl: './resource-list.component.html',
   styleUrls: ['./resource-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgClass, NgIf, ReactiveFormsModule, NgbDropdownModule], // 🚨 Ajout NgbDropdownModule
+  imports: [CommonModule, NgClass, NgIf, ReactiveFormsModule, NgbDropdownModule],
 })
 export class ResourceListComponent implements OnInit {
   private resourceService = inject(ResourceService);
@@ -40,7 +40,6 @@ export class ResourceListComponent implements OnInit {
 
   private refresh$ = new Subject<void>();
 
-  // 🚨 BehaviorSubject pour la gestion d'état local et de l'icône de chargement
   private resourcesSubject = new BehaviorSubject<ManagedResourceView[]>([]);
   resources$: Observable<ManagedResourceView[]> = this.resourcesSubject.asObservable();
 
@@ -50,6 +49,8 @@ export class ResourceListComponent implements OnInit {
   // Contrôles de filtre et recherche
   typeFilter = new FormControl<'ALL' | 'ROOM' | 'EQUIPMENT'>('ALL', { nonNullable: true });
   searchControl = new FormControl('', { nonNullable: true });
+  // 🚨 NOUVEAU: Contrôle pour le filtre par ville
+  cityFilter = new FormControl('', { nonNullable: true });
 
   ngOnInit(): void {
     const typeFilter$ = this.typeFilter.valueChanges.pipe(
@@ -64,29 +65,38 @@ export class ResourceListComponent implements OnInit {
       map((value) => value as string)
     );
 
+    // 🚨 NOUVEAU: Observables pour le filtre par ville
+    const cityFilter$ = this.cityFilter.valueChanges.pipe(
+      startWith(this.cityFilter.value),
+      debounceTime(400),
+      distinctUntilChanged(),
+      map((value) => value.trim() as string)
+    );
+
     const filterAndSearch$ = combineLatest([
       typeFilter$,
       searchControl$,
+      cityFilter$, // 🚨 NOUVEAU: Ajout du filtre de ville
       this.refresh$.pipe(startWith(undefined)),
     ]);
 
     // Subscription principale pour charger les données et remplir le Subject
     filterAndSearch$
       .pipe(
-        switchMap(([type, search, _]) => {
+        switchMap(([type, search, city, _]) => {
           this.loading = true;
           this.error = null;
 
           const filters: ResourceFilters = {
             search: search || undefined,
             type: type === 'ALL' ? undefined : type,
+            // 🚨 NOUVEAU: Ajout du filtre city
+            city: city || undefined,
           };
 
-          // 🚨 CORRECTION : Utiliser getMyResources() pour n'afficher que les ressources du locateur
           return this.resourceService.getMyResources(filters).pipe(
             tap((res) => {
               this.loading = false;
-              // Mettre à jour le Subject avec les nouvelles données et l'état isDeleting initialisé
               this.resourcesSubject.next(
                 res.map((r) => ({ ...r, isDeleting: false } as ManagedResourceView))
               );
@@ -94,7 +104,7 @@ export class ResourceListComponent implements OnInit {
             catchError((err) => {
               this.loading = false;
               this.error = err.error?.message || 'Erreur lors du chargement de vos ressources.';
-              this.resourcesSubject.next([]); // Vider la liste en cas d'erreur
+              this.resourcesSubject.next([]);
               return of([]);
             })
           );
@@ -110,7 +120,7 @@ export class ResourceListComponent implements OnInit {
 
   private openResourceModal(resourceId: string | null): void {
     const modalRef = this.modalService.open(ResourceFormModalComponent, {
-      size: 'md',
+      size: 'xl', // 🚨 Mise à jour en 'xl' pour accueillir plus de champs
       centered: true,
       backdrop: 'static',
     });
@@ -141,7 +151,6 @@ export class ResourceListComponent implements OnInit {
     this.openResourceModal(resourceId);
   }
 
-  // Ouvre la modale de confirmation (appelé par le menu dropdown)
   onDeleteRequest(resource: ManagedResourceView): void {
     const modalRef = this.modalService.open(DeleteConfirmationModalComponent, {
       size: 'md',
@@ -163,7 +172,6 @@ export class ResourceListComponent implements OnInit {
     );
   }
 
-  // Exécute la suppression après confirmation de la modale
   private executeDelete(resource: ManagedResourceView): void {
     this.updateResourceLoading(resource.id, true);
 
@@ -173,7 +181,7 @@ export class ResourceListComponent implements OnInit {
           'Suppression réussie',
           `La ressource "${resource.name}" a été supprimée.`
         );
-        this.refresh$.next(); // Le refresh recharge la liste (et enlève l'élément)
+        this.refresh$.next();
       },
       error: (err) => {
         this.toastService.error(
@@ -185,7 +193,6 @@ export class ResourceListComponent implements OnInit {
     });
   }
 
-  // Fonction utilitaire pour gérer l'état de chargement local via le Subject
   private updateResourceLoading(resourceId: string, isDeleting: boolean): void {
     const current = this.resourcesSubject.getValue();
     const updated = current.map((r) => (r.id === resourceId ? { ...r, isDeleting } : r));

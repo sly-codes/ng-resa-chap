@@ -1,141 +1,315 @@
 <div class="modal-overlay">
-    <div class="modal-container">
-        
-        <!-- En-tête de la modale -->
-        <div class="modal-header">
-            <h2 class="modal-title">
-                <i class='bx' [ngClass]="isEditMode ? 'bx-edit' : 'bx-plus-circle'"></i>
-                <span>{{ isEditMode ? 'Modifier la ressource' : 'Ajouter une ressource' }}</span>
-            </h2>
-            <button 
-                type="button" 
-                class="modal-close" 
-                (click)="onCancel()"
-                aria-label="Fermer la modale"
-            >
-                <i class='bx bx-x'></i>
-            </button>
-        </div>
-
-        <!-- Corps de la modale -->
-        <div class="modal-body">
-            
-            <!-- Loader -->
-            <div *ngIf="isLoading" class="modal-loader">
-                <i class='bx bx-loader-alt bx-spin'></i>
-                <p>Chargement...</p>
-            </div>
-
-            <!-- Formulaire -->
-            <form 
-                *ngIf="!isLoading" 
-                [formGroup]="resourceForm!" 
-                (ngSubmit)="onSubmit()" 
-                class="resource-form"
-            >
-                
-                <!-- Messages d'erreur -->
-                <div *ngIf="error" class="modal-error">
-                    <i class='bx bx-error-circle'></i>
-                    <span>{{ error }}</span>
-                </div>
-
-                <!-- Champ Nom -->
-                <div class="form-group">
-                    <label for="name" class="form-label">
-                        Nom de la ressource
-                        <span class="label-required">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        formControlName="name" 
-                        class="form-input" 
-                        placeholder="Ex: Salle de réunion A"
-                        autocomplete="off"
-                        [class.input-error]="resourceForm!.get('name')?.invalid && (resourceForm!.get('name')?.dirty || resourceForm!.get('name')?.touched)"
-                    >
-                    <div 
-                        *ngIf="resourceForm!.get('name')?.invalid && (resourceForm!.get('name')?.dirty || resourceForm!.get('name')?.touched)" 
-                        class="form-error"
-                    >
-                        <i class='bx bx-error-circle'></i>
-                        <span *ngIf="resourceForm!.get('name')?.errors?.['required']">
-                            Le nom est requis.
-                        </span>
-                        <span *ngIf="resourceForm!.get('name')?.errors?.['maxlength']">
-                            Le nom ne doit pas dépasser 100 caractères.
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Champ Type -->
-                <div class="form-group">
-                    <label for="type" class="form-label">
-                        Type de ressource
-                        <span class="label-required">*</span>
-                    </label>
-                    <select 
-                        id="type" 
-                        formControlName="type" 
-                        class="form-select"
-                        [class.input-error]="resourceForm!.get('type')?.invalid && (resourceForm!.get('type')?.dirty || resourceForm!.get('type')?.touched)"
-                    >
-                        <option value="" disabled>Sélectionnez un type</option>
-                        <option value="ROOM">Salle</option>
-                        <option value="EQUIPMENT">Équipement</option>
-                    </select>
-                    <div 
-                        *ngIf="resourceForm!.get('type')?.invalid && (resourceForm!.get('type')?.dirty || resourceForm!.get('type')?.touched)" 
-                        class="form-error"
-                    >
-                        <i class='bx bx-error-circle'></i>
-                        Le type est requis.
-                    </div>
-                </div>
-
-                <!-- Champ Description -->
-                <div class="form-group">
-                    <label for="description" class="form-label">
-                        Description
-                        <span class="label-optional">(Optionnel)</span>
-                    </label>
-                    <textarea 
-                        id="description" 
-                        formControlName="description" 
-                        class="form-textarea" 
-                        placeholder="Décrivez la ressource..."
-                        rows="4"
-                    ></textarea>
-                    <div class="form-hint">
-                        Détails, capacités, emplacement...
-                    </div>
-                </div>
-
-            </form>
-        </div>
-
-        <!-- Pied de la modale -->
-        <div class="modal-footer">
-            <button 
-                type="button" 
-                class="btn-cancel" 
-                (click)="onCancel()"
-                [disabled]="isLoading"
-            >
-                <i class='bx bx-x'></i>
-                <span>Annuler</span>
-            </button>
-            <button 
-                type="submit" 
-                class="btn-submit" 
-                (click)="onSubmit()"
-                [disabled]="resourceForm!.invalid || isLoading"
-            >
-                <i class='bx' [ngClass]="isLoading ? 'bx-loader-alt bx-spin' : 'bx-save'"></i>
-                <span>{{ isLoading ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Créer') }}</span>
-            </button>
-        </div>
-
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i class="bx" [ngClass]="isEditMode ? 'bx-edit' : 'bx-plus-circle'"></i>
+        <span>{{ isEditMode ? 'Modifier la ressource' : 'Ajouter une ressource' }}</span>
+      </h2>
+      <button
+        type="button"
+        class="modal-close"
+        (click)="onCancel()"
+        aria-label="Fermer la modale"
+      >
+        <i class="bx bx-x"></i>
+      </button>
     </div>
+
+    <div class="modal-body">
+      <div *ngIf="isLoading" class="modal-loader">
+        <i class="bx bx-loader-alt bx-spin"></i>
+        <p>Chargement...</p>
+      </div>
+
+      <form
+        *ngIf="!isLoading"
+        [formGroup]="resourceForm!"
+        (ngSubmit)="onSubmit()"
+        class="resource-form"
+      >
+        <div *ngIf="error" class="modal-error">
+          <i class="bx bx-error-circle"></i>
+          <span>{{ error }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="mainImageFile" class="form-label">
+            Image Principale
+            <span class="label-required">*</span>
+          </label>
+          <div class="image-upload-area">
+            <input
+              type="file"
+              #fileInput
+              id="mainImageFile"
+              (change)="onFileSelected($event)"
+              class="form-input-file"
+              accept="image/*"
+            />
+            <div class="image-preview" [ngClass]="{'has-image': imagePreview || currentImageUrl}">
+                <img [src]="imagePreview || currentImageUrl" *ngIf="imagePreview || currentImageUrl" alt="Aperçu de l'image" />
+                <div class="image-placeholder" *ngIf="!imagePreview && !currentImageUrl">
+                    <i class='bx bx-image-add'></i>
+                    <p>Cliquez ou glissez une image ici</p>
+                </div>
+            </div>
+            <div
+                *ngIf="resourceForm!.get('mainImageFile')?.errors?.['required'] && (resourceForm!.get('mainImageFile')?.dirty || resourceForm!.get('mainImageFile')?.touched)"
+                class="form-error"
+            >
+                <i class="bx bx-error-circle"></i>
+                <span>L'image principale est requise.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="name" class="form-label">
+            Nom de la ressource
+            <span class="label-required">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            class="form-input"
+            placeholder="Ex: Salle de réunion A"
+            autocomplete="off"
+            [class.input-error]="
+              resourceForm!.get('name')?.invalid &&
+              (resourceForm!.get('name')?.dirty || resourceForm!.get('name')?.touched)
+            "
+          />
+          <div
+            *ngIf="
+              resourceForm!.get('name')?.invalid &&
+              (resourceForm!.get('name')?.dirty || resourceForm!.get('name')?.touched)
+            "
+            class="form-error"
+          >
+            <i class="bx bx-error-circle"></i>
+            <span *ngIf="resourceForm!.get('name')?.errors?.['required']">
+              Le nom est requis.
+            </span>
+            <span *ngIf="resourceForm!.get('name')?.errors?.['maxlength']">
+              Le nom ne doit pas dépasser 100 caractères.
+            </span>
+          </div>
+        </div>
+
+        <div class="two-columns-group">
+          <div class="form-group">
+            <label for="type" class="form-label">
+              Type de ressource
+              <span class="label-required">*</span>
+            </label>
+            <select
+              id="type"
+              formControlName="type"
+              class="form-select"
+              [class.input-error]="
+                resourceForm!.get('type')?.invalid &&
+                (resourceForm!.get('type')?.dirty || resourceForm!.get('type')?.touched)
+              "
+            >
+              <option value="" disabled>Sélectionnez un type</option>
+              <option value="ROOM">Salle</option>
+              <option value="EQUIPMENT">Équipement</option>
+            </select>
+            <div
+              *ngIf="
+                resourceForm!.get('type')?.invalid &&
+                (resourceForm!.get('type')?.dirty || resourceForm!.get('type')?.touched)
+              "
+              class="form-error"
+            >
+              <i class="bx bx-error-circle"></i>
+              Le type est requis.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="country" class="form-label">
+              Pays
+              <span class="label-required">*</span>
+            </label>
+            <input
+              type="text"
+              id="country"
+              formControlName="country"
+              class="form-input"
+              placeholder="Ex: Canada"
+              [class.input-error]="
+                resourceForm!.get('country')?.invalid &&
+                (resourceForm!.get('country')?.dirty || resourceForm!.get('country')?.touched)
+              "
+            />
+            <div
+              *ngIf="
+                resourceForm!.get('country')?.invalid &&
+                (resourceForm!.get('country')?.dirty || resourceForm!.get('country')?.touched)
+              "
+              class="form-error"
+            >
+              <i class="bx bx-error-circle"></i>
+              <span *ngIf="resourceForm!.get('country')?.errors?.['required']">
+                Le pays est requis.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-columns-group">
+          <div class="form-group">
+            <label for="city" class="form-label">
+              Ville
+              <span class="label-required">*</span>
+            </label>
+            <input
+              type="text"
+              id="city"
+              formControlName="city"
+              class="form-input"
+              placeholder="Ex: Montréal"
+              [class.input-error]="
+                resourceForm!.get('city')?.invalid &&
+                (resourceForm!.get('city')?.dirty || resourceForm!.get('city')?.touched)
+              "
+            />
+            <div
+              *ngIf="
+                resourceForm!.get('city')?.invalid &&
+                (resourceForm!.get('city')?.dirty || resourceForm!.get('city')?.touched)
+              "
+              class="form-error"
+            >
+              <i class="bx bx-error-circle"></i>
+              <span *ngIf="resourceForm!.get('city')?.errors?.['required']">
+                La ville est requise.
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address" class="form-label">
+              Adresse
+              <span class="label-optional">(Optionnel)</span>
+            </label>
+            <input
+              type="text"
+              id="address"
+              formControlName="address"
+              class="form-input"
+              placeholder="Ex: 123 Rue de la Réserve"
+            />
+          </div>
+        </div>
+
+        <div class="two-columns-group">
+          <div class="form-group">
+            <label for="price" class="form-label">
+              Prix (EUR)
+              <span class="label-required">*</span>
+            </label>
+            <input
+              type="number"
+              id="price"
+              formControlName="price"
+              class="form-input"
+              placeholder="Ex: 50.00"
+              min="0.01"
+              step="0.01"
+              [class.input-error]="
+                resourceForm!.get('price')?.invalid &&
+                (resourceForm!.get('price')?.dirty || resourceForm!.get('price')?.touched)
+              "
+            />
+            <div
+              *ngIf="
+                resourceForm!.get('price')?.invalid &&
+                (resourceForm!.get('price')?.dirty || resourceForm!.get('price')?.touched)
+              "
+              class="form-error"
+            >
+              <i class="bx bx-error-circle"></i>
+              <span *ngIf="resourceForm!.get('price')?.errors?.['required']">
+                Le prix est requis.
+              </span>
+              <span *ngIf="resourceForm!.get('price')?.errors?.['min']">
+                Le prix doit être supérieur à 0.
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="priceUnit" class="form-label">
+              Unité de Prix
+              <span class="label-required">*</span>
+            </label>
+            <select
+              id="priceUnit"
+              formControlName="priceUnit"
+              class="form-select"
+              [class.input-error]="
+                resourceForm!.get('priceUnit')?.invalid &&
+                (resourceForm!.get('priceUnit')?.dirty || resourceForm!.get('priceUnit')?.touched)
+              "
+            >
+              <option *ngFor="let unit of priceUnits" [value]="unit">
+                / {{ unit | lowercase }}
+              </option>
+            </select>
+            <div
+              *ngIf="
+                resourceForm!.get('priceUnit')?.invalid &&
+                (resourceForm!.get('priceUnit')?.dirty || resourceForm!.get('priceUnit')?.touched)
+              "
+              class="form-error"
+            >
+              <i class="bx bx-error-circle"></i>
+              L'unité de prix est requise.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">
+            Description
+            <span class="label-optional">(Optionnel)</span>
+          </label>
+          <textarea
+            id="description"
+            formControlName="description"
+            class="form-textarea"
+            placeholder="Décrivez la ressource, ses capacités, et autres détails pertinents..."
+            rows="4"
+          ></textarea>
+          <div class="form-hint">
+            Détails, capacités, emplacement... (max 500 caractères)
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn-cancel"
+        (click)="onCancel()"
+        [disabled]="isLoading"
+      >
+        <i class="bx bx-x"></i>
+        <span>Annuler</span>
+      </button>
+      <button
+        type="submit"
+        class="btn-submit"
+        (click)="onSubmit()"
+        [disabled]="resourceForm!.invalid || isLoading"
+      >
+        <i class="bx" [ngClass]="isLoading ? 'bx-loader-alt bx-spin' : 'bx-save'"></i>
+        <span>{{ isLoading ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Créer') }}</span>
+      </button>
+    </div>
+  </div>
 </div>

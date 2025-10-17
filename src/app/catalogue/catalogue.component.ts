@@ -13,7 +13,7 @@ import {
   Subject,
   merge,
 } from 'rxjs';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router'; // 💡 Ajout de Router pour la navigation
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReservationFormModalComponent } from '../reservations/reservation-form-modal/reservation-form-modal.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -26,13 +26,14 @@ const RESOURCE_TYPES: ('ROOM' | 'EQUIPMENT')[] = ['ROOM', 'EQUIPMENT'];
   selector: 'app-catalogue',
   templateUrl: './catalogue.component.html',
   styleUrls: ['./catalogue.component.scss'],
-  standalone: true,
+  standalone: true, // 💡 Ajout de ResourceDetailComponent à importer/déclarer si c'est un module partagé
   imports: [CommonModule, RouterModule, NgIf, ReactiveFormsModule],
 })
 export class CatalogueComponent implements OnInit {
   private resourceService = inject(ResourceService);
   private modalService = inject(NgbModal);
   private toastService = inject(ToastService);
+  private router = inject(Router); // 💡 Injection de Router
 
   resources$!: Observable<Resource[]>;
   loading = true;
@@ -42,15 +43,15 @@ export class CatalogueComponent implements OnInit {
   private refreshTrigger = new Subject<boolean>();
 
   filterForm = new FormGroup({
-    // ✅ CORRECTION : Suppression du 'new' en trop
     search: new FormControl<string>(''),
     type: new FormControl<'ROOM' | 'EQUIPMENT' | ''>(''),
+    city: new FormControl<string>(''), // 💡 AJOUT DU CONTRÔLE CITY
   });
 
   ngOnInit(): void {
     const filterChanges$ = this.filterForm.valueChanges.pipe(
       startWith(this.filterForm.value),
-      debounceTime(400),
+      debounceTime(400), // Ajout de city dans le distinctUntilChanged
       distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
     );
 
@@ -69,10 +70,12 @@ export class CatalogueComponent implements OnInit {
       switchMap(({ filters, isManual }) => {
         const searchParam = filters.search ?? undefined;
         const typeParam = filters.type ?? '';
+        const cityParam = filters.city ?? undefined; // 💡 Récupération de City
 
         const apiFilters: ResourceFilters = {
           search: searchParam || undefined,
           type: typeParam === '' ? undefined : (typeParam as 'ROOM' | 'EQUIPMENT'),
+          city: cityParam || undefined, // 💡 Passage de City au service
         };
 
         return this.resourceService.getAllResources(apiFilters).pipe(
@@ -101,8 +104,12 @@ export class CatalogueComponent implements OnInit {
   onRefresh(): void {
     this.refreshTrigger.next(true);
   }
+  /**
+   * Ouvre la modale de réservation
+   */
 
   onReserve(resourceId: string, resourceName: string): void {
+    // ... (Logique de réservation inchangée) ...
     const modalRef = this.modalService.open(ReservationFormModalComponent, {
       size: 'md',
       centered: true,
@@ -135,6 +142,14 @@ export class CatalogueComponent implements OnInit {
       }
     );
   }
+  /**
+   * 💡 NOUVEAU: Navigue vers la page de détails de la ressource.
+   */
+
+  onViewDetails(resourceId: string): void {
+    // Assurez-vous que la route '/catalogue/:id' est configurée dans votre routing module
+    this.router.navigate(['/catalogue', resourceId]);
+  }
 
   getResourceIcon(type: 'ROOM' | 'EQUIPMENT'): string {
     return type === 'ROOM' ? 'bx-buildings' : 'bx-devices';
@@ -148,6 +163,21 @@ export class CatalogueComponent implements OnInit {
         return 'Équipement';
       default:
         return type;
+    }
+  }
+
+  getPriceUnitLabel(unit: 'HOUR' | 'DAY' | 'WEEK' | 'MONTH'): string {
+    switch (unit) {
+      case 'HOUR':
+        return 'h';
+      case 'DAY':
+        return 'j';
+      case 'WEEK':
+        return 'sem.';
+      case 'MONTH':
+        return 'mois';
+      default:
+        return '';
     }
   }
 }

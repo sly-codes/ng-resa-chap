@@ -1,0 +1,125 @@
+<div class="detail-container">
+  <div *ngIf="loading && !error" class="loader-section">
+    <i class="bx bx-loader-alt bx-spin"></i>
+    <p>Chargement des détails de la ressource...</p>
+  </div>
+
+  <div *ngIf="error" class="error-section">
+    <i class="bx bx-error-circle"></i>
+    <span>{{ error }}</span>
+    <button class="back-btn" [routerLink]="['/catalogue']">
+      <i class="bx bx-left-arrow-alt"></i> Retour au catalogue
+    </button>
+  </div>
+
+  <ng-container *ngIf="resource$ | async as resource">
+    <div *ngIf="!loading && resource" class="resource-content">
+      <div class="resource-header-section">
+        <div class="breadcrumb">
+          <a [routerLink]="['/catalogue']">Catalogue</a> /
+          <span>{{ resource.name }}</span>
+        </div>
+
+        <div class="header-main-info">
+          <h1 class="resource-title">{{ resource.name }}</h1>
+          <span
+            class="type-badge"
+            [ngClass]="{
+              'badge-room': resource.type === 'ROOM',
+              'badge-equipment': resource.type === 'EQUIPMENT'
+            }"
+          >
+            <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
+            <span>{{ getTypeLabel(resource.type) }}</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="left-column">
+          <div class="image-wrapper">
+            <img
+              [src]="resource.mainImage || 'assets/placeholder-resource.jpg'"
+              [alt]="'Image de ' + resource.name"
+              class="resource-image"
+              onError="this.src='assets/placeholder-resource.jpg';"
+            />
+          </div>
+
+          <div class="description-section card-block">
+            <h2>Description Complète</h2>
+            <p>
+              {{ resource.description || 'Aucune description détaillée n’est disponible pour cette ressource.' }}
+            </p>
+          </div>
+
+          <div class="location-section card-block">
+            <h2>Localisation</h2>
+            <div class="meta-item">
+              <i class="bx bx-map-pin"></i>
+              <span>{{ resource.address }}, {{ resource.city }}, {{ resource.country }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="reservation-box">
+            <p class="price-display">
+              <span class="price-value">
+                {{ resource.price | currency: 'FCFA': 'symbol': '1.0-0' }}
+              </span>
+              <span class="price-unit">
+                / {{ getPriceUnitLabel(resource.priceUnit) }}
+              </span>
+            </p>
+            <button
+              (click)="onReserve(resource.id, resource.name)"
+              class="reserve-btn-large"
+            >
+              <i class="bx bx-calendar-plus"></i>
+              Réserver Maintenant
+            </button>
+          </div>
+
+          <div class="owner-box card-block">
+            <h3>Informations du Propriétaire</h3>
+            <div class="owner-info">
+              <i class="bx bx-user-circle"></i>
+              <div class="owner-details">
+                <span class="owner-name">
+                  {{ resource.owner.firstName }} {{ resource.owner.lastName }}
+                </span>
+                <span class="owner-label">Propriétaire de la ressource</span>
+              </div>
+            </div>
+
+            <div class="contact-meta">
+              <div class="meta-item">
+                <i class="bx bx-envelope"></i>
+                <span title="Email">{{ resource.owner.email }}</span>
+              </div>
+              <div class="meta-item">
+                <i class="bx bx-phone"></i>
+                <span title="Téléphone">
+                  {{ resource.owner.contactPhone || 'Non spécifié' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-generale card-block">
+            <h3>Détails</h3>
+            <div class="meta-item">
+              <i class="bx bx-calendar"></i>
+              <span>Créé le: {{ resource.createdAt | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="bx bx-tag"></i>
+              <span>Unité de Prix: {{ getPriceUnitLabel(resource.priceUnit) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
