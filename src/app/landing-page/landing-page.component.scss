@@ -1,9 +1,9 @@
 // ========================================
 // VARIABLES
 // ========================================
-$primary-cyan: #00ADD8;
-$dark-cyan: #0099BF;
-$darker-cyan: #0085A6;
+$primary-cyan: #00add8;
+$dark-cyan: #0099bf;
+$darker-cyan: #0085a6;
 $white: #ffffff;
 $gray-50: #f9fafb;
 $gray-100: #f3f4f6;
@@ -28,7 +28,8 @@ $gray-900: #111827;
 }
 
 body {
-  font-family: "Ubuntu", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
   color: $gray-900;
   line-height: 1.6;
 }
@@ -387,7 +388,8 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -925,8 +927,13 @@ body {
   padding-top: 2rem;
   text-align: center;
 
-  p {
+  p,
+  a {
     font-size: 0.875rem;
     color: $gray-400;
+  }
+
+  a {
+    cursor: pointer;
   }
 }
