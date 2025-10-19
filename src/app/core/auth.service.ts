@@ -102,7 +102,7 @@ export class AuthService {
   handleSocialLogin(tokens: Tokens): void {
     this.saveTokens(tokens);
     this.toastService.success('Connexion Sociale Réussie', 'Bienvenue sur Resa Chap !'); // 💡 TOAST SUCCÈS
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/catalogue']);
   }
 
   // -----------------------------------------------------------------

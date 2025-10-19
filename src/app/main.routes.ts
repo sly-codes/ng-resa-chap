@@ -58,5 +58,5 @@ export const MAIN_ROUTES: Routes = [
 
   // 🚀 NOUVEAU : Redirection interne de la zone protégée vers le dashboard
   // Si l'utilisateur est connecté et va sur /<empty>, il va au dashboard.
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'catalogue', pathMatch: 'full' },
 ];

@@ -62,7 +62,7 @@ export class SignupComponent implements OnInit {
           'Inscription Réussie',
           'Votre compte a été créé et vous êtes connecté !'
         );
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/catalogue']);
       },
       error: (err: HttpErrorResponse) => {
         // Échec : Annuler l'état, mais CONSERVER les champs pour la correction

@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
         this.loginForm.reset(); // 🚨 EFFACER LES CHAMPS UNIQUEMENT EN CAS DE SUCCÈS
         this.cdr.detectChanges(); // Force la détection
         this.toastService.success('Connexion Réussie', 'Bienvenue sur Resa Chap !');
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/catalogue']);
       },
       error: (err: HttpErrorResponse) => {
         // Échec : Annuler l'état, mais CONSERVER les champs pour la correction
