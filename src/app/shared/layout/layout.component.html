@@ -1,5 +1,4 @@
 <div class="layout-wrapper">
-  <!-- Mobile Header avec Menu Hamburger -->
   <header class="mobile-header">
     <button
       class="mobile-menu-toggle"
@@ -18,29 +17,24 @@
     </a>
   </header>
 
-  <!-- Overlay pour mobile -->
   <div
     class="mobile-overlay"
     [class.active]="isMobileSidebarOpen"
     (click)="closeMobileSidebar()"
   ></div>
 
-  <!-- Sidebar -->
   <aside class="sidebar" [class.mobile-open]="isMobileSidebarOpen">
-    <!-- Logo -->
     <div class="sidebar-header">
       <a [routerLink]="['/catalogue']" class="sidebar-brand" (click)="closeMobileSidebar()">
         <i class="bx bx-calendar-check"></i>
         <span>ResaChap</span>
       </a>
 
-      <!-- Bouton fermer mobile -->
       <button class="sidebar-close" (click)="closeMobileSidebar()" aria-label="Fermer le menu">
         <i class="bx bx-x"></i>
       </button>
     </div>
 
-    <!-- Navigation -->
     <nav class="sidebar-nav">
       <a
         [routerLink]="['/dashboard']"
@@ -50,7 +44,7 @@
         (click)="closeMobileSidebar()"
       >
         <i class="bx bx-home-alt"></i>
-        <span>Dashboard</span>
+        <span>Tableau de Bord</span>
       </a>
       <a
         [routerLink]="['/catalogue']"
@@ -74,13 +68,11 @@
         <span>Mes Ressources</span>
       </a>
 
-      <!-- Dropdown Réservations -->
       <div ngbDropdown class="nav-dropdown" autoClose="true">
         <a class="nav-link dropdown-toggle" id="reservationsDropdown" ngbDropdownToggle>
           <i class="bx bx-calendar"></i>
           <span>Réservations</span>
-          <!-- <i class="bx bx-chevron-down chevron-icon"></i> -->
-        </a>
+          </a>
 
         <div ngbDropdownMenu aria-labelledby="reservationsDropdown" class="dropdown-menu">
           <a
@@ -103,9 +95,22 @@
           </a>
         </div>
       </div>
+      
+      <div *ngIf="isSuperAdmin()">
+        <hr class="sidebar-divider" />
+        <a
+          [routerLink]="['/admin/dashboard']"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="nav-link admin-link"
+          (click)="closeMobileSidebar()"
+        >
+          <i class="bx bx-shield-alt-2"></i>
+          <span>Dashboard Admin</span>
+        </a>
+      </div>
     </nav>
 
-    <!-- User Profile -->
     <div class="sidebar-footer">
       <div ngbDropdown class="user-dropdown" *ngIf="profile$ | async as profile" autoClose="true">
         <button class="user-button" ngbDropdownToggle>
@@ -113,8 +118,7 @@
           <span class="user-name">{{
             profile.firstName || profile.username || profile.email
           }}</span>
-          <!-- <i class="bx bx-chevron-up chevron-icon"></i> -->
-        </button>
+          </button>
 
         <div ngbDropdownMenu class="dropdown-menu dropdown-menu-top">
           <div class="dropdown-header">
@@ -142,7 +146,6 @@
     </div>
   </aside>
 
-  <!-- Main Content -->
   <main class="main-content">
     <router-outlet></router-outlet>
   </main>

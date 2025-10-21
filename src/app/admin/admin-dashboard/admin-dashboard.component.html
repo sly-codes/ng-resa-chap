@@ -1,130 +1,203 @@
-<div class="container-fluid py-4" *ngIf="dashboardState$ | async as state">
-  <h2 class="mb-4">Tableau de Bord Super Admin</h2>
-
-  <div *ngIf="state.loading" class="text-center my-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Chargement...</span>
+<div class="admin-dashboard" *ngIf="dashboardState$ | async as state">
+  
+  <!-- En-tête -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        <i class='bx bx-bar-chart-alt-2'></i>
+        <span>Tableau de Bord Administration</span>
+      </h1>
+      <span class="admin-badge">
+        <i class='bx bx-shield-quarter'></i>
+        Super Admin
+      </span>
     </div>
-    <p class="mt-2">Chargement des données...</p>
   </div>
 
-  <div *ngIf="state.error" class="alert alert-danger" role="alert">
-    Erreur lors du chargement des métriques. Vérifiez les logs du backend ou les permissions.
+  <!-- Loader -->
+  <div *ngIf="state.loading" class="dashboard-loader">
+    <i class='bx bx-loader-alt bx-spin'></i>
+    <p>Chargement des statistiques...</p>
   </div>
 
-  <div *ngIf="state.metrics" class="dashboard-content">
+  <!-- Erreur -->
+  <div *ngIf="state.error" class="alert alert-error">
+    <i class='bx bx-error-circle'></i>
+    <span>Erreur lors du chargement des métriques. Vérifiez les logs du backend ou les permissions.</span>
+  </div>
 
-    <div class="row mb-4">
+  <!-- Contenu du Dashboard -->
+  <div *ngIf="state.metrics && !state.loading" class="dashboard-content">
+
+    <!-- Cards de statistiques principales -->
+    <div class="stats-grid">
       
-      <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card shadow-sm border-start border-primary border-4 h-100 p-3">
-          <div class="card-body">
-            <h5 class="card-title text-muted text-uppercase">Utilisateurs Totaux</h5>
-            <div class="h2 mb-0">{{ state.metrics.users.total | number }}</div>
-            <p class="text-success mb-0">
-              <small>{{ state.metrics.users.verified | number }} vérifiés</small>
-            </p>
+      <!-- Utilisateurs -->
+      <div class="stat-card stat-primary">
+        <div class="stat-icon">
+          <i class='bx bx-user'></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-label">Utilisateurs Totaux</h3>
+          <div class="stat-value">{{ state.metrics.users.total | number }}</div>
+          <div class="stat-details">
+            <i class='bx bx-check-circle'></i>
+            <span>{{ state.metrics.users.verified | number }} vérifiés</span>
           </div>
         </div>
       </div>
       
-      <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card shadow-sm border-start border-warning border-4 h-100 p-3">
-          <div class="card-body">
-            <h5 class="card-title text-muted text-uppercase">Ressources en Ligne</h5>
-            <div class="h2 mb-0">{{ state.metrics.resources.total | number }}</div>
-            <p class="text-info mb-0">
-              <small>{{ state.metrics.resources.recentLastWeek | number }} créées la semaine dernière</small>
-            </p>
+      <!-- Ressources -->
+      <div class="stat-card stat-warning">
+        <div class="stat-icon">
+          <i class='bx bx-sitemap'></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-label">Ressources Actives</h3>
+          <div class="stat-value">{{ state.metrics.resources.total | number }}</div>
+          <div class="stat-details">
+            <i class='bx bx-trending-up'></i>
+            <span>{{ state.metrics.resources.recentLastWeek | number }} cette semaine</span>
           </div>
         </div>
       </div>
       
-      <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card shadow-sm border-start border-info border-4 h-100 p-3">
-          <div class="card-body">
-            <h5 class="card-title text-muted text-uppercase">Réservations Totales</h5>
-            <div class="h2 mb-0">{{ state.metrics.reservations.total | number }}</div>
-            <p class="text-danger mb-0">
-              <small>{{ state.metrics.reservations.pending | number }} en attente</small>
-            </p>
+      <!-- Réservations -->
+      <div class="stat-card stat-info">
+        <div class="stat-icon">
+          <i class='bx bx-calendar-check'></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-label">Réservations</h3>
+          <div class="stat-value">{{ state.metrics.reservations.total | number }}</div>
+          <div class="stat-details">
+            <i class='bx bx-time-five'></i>
+            <span>{{ state.metrics.reservations.pending | number }} en attente</span>
           </div>
         </div>
       </div>
 
-      <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card shadow-sm border-start border-success border-4 h-100 p-3">
-          <div class="card-body">
-            <h5 class="card-title text-muted text-uppercase">Revenu Potentiel</h5>
-            <div class="h2 mb-0">{{ formatCurrency(state.metrics.finance.potentialRevenueFromConfirmedReservations) }}</div>
-            <p class="text-secondary mb-0">
-              <small>Basé sur les réservations confirmées</small>
-            </p>
+      <!-- Revenus -->
+      <div class="stat-card stat-success">
+        <div class="stat-icon">
+          <i class='bx bx-euro'></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-label">Revenu Potentiel</h3>
+          <div class="stat-value">{{ formatCurrency(state.metrics.finance.potentialRevenueFromConfirmedReservations) }}</div>
+          <div class="stat-details">
+            <i class='bx bx-info-circle'></i>
+            <span>Réservations confirmées</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row">
+    <!-- Sections détaillées -->
+    <div class="details-grid">
       
-      <div class="col-lg-6 mb-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-light">
-            <h6 class="mb-0">5 Derniers Utilisateurs Enregistrés</h6>
+      <!-- Utilisateurs récents -->
+      <div class="detail-card">
+        <div class="card-header">
+          <div class="header-left">
+            <i class='bx bx-user-plus'></i>
+            <h2>Derniers Utilisateurs</h2>
           </div>
-          <div class="card-body p-0">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let user of state.metrics.users.recent">
-                <span>{{ user.email }}</span>
-                <span class="badge text-bg-secondary">{{ user.provider }}</span>
-                <span class="text-muted small">{{ user.createdAt | date:'shortDate' }}</span>
-              </li>
-              <li class="list-group-item text-center text-muted" *ngIf="state.metrics.users.recent.length === 0">Aucun utilisateur récent.</li>
-            </ul>
-          </div>
+          <span class="header-count">{{ state.metrics.users.recent.length }}</span>
         </div>
-      </div>
-
-      <div class="col-lg-6 mb-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-light">
-            <h6 class="mb-0">5 Dernières Réservations</h6>
-          </div>
-          <div class="card-body p-0">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let res of state.metrics.reservations.recent">
-                <div>
-                  <small class="text-muted">{{ res.locataireEmail }}</small>
-                  <p class="mb-0 fw-bold">{{ res.resourceName }}</p>
+        <div class="card-body">
+          <div class="user-list">
+            <div class="user-item" *ngFor="let user of state.metrics.users.recent">
+              <div class="user-info">
+                <div class="user-avatar">
+                  <i class='bx bx-user-circle'></i>
                 </div>
-                <span class="badge" [ngClass]="{'bg-warning': res.status === 'PENDING', 'bg-success': res.status === 'CONFIRMED'}">
-                    {{ res.status }}
-                </span>
-                <span class="text-primary fw-bold">{{ res.resourcePrice | currency:'EUR' }}</span>
-              </li>
-              <li class="list-group-item text-center text-muted" *ngIf="state.metrics.reservations.recent.length === 0">Aucune réservation récente.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-light">
-                    <h6 class="mb-0">Répartition des Ressources par Type</h6>
+                <div class="user-details">
+                  <span class="user-email">{{ user.email }}</span>
+                  <span class="user-date">
+                    <i class='bx bx-calendar'></i>
+                    {{ user.createdAt | date:'dd/MM/yyyy' }}
+                  </span>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex flex-wrap">
-                        <div class="p-3 border rounded m-2 text-center" *ngFor="let type of state.metrics.resources.typesCount">
-                            <h4 class="text-primary mb-0">{{ type.count }}</h4>
-                            <small class="text-muted">{{ type.type }}</small>
-                        </div>
-                    </div>
-                </div>
+              </div>
+              <span class="user-provider" [class.provider-local]="user.provider === 'LOCAL'" [class.provider-google]="user.provider === 'GOOGLE'">
+                {{ user.provider === 'LOCAL' ? 'Email' : 'Google' }}
+              </span>
             </div>
+            <div class="empty-state" *ngIf="state.metrics.users.recent.length === 0">
+              <i class='bx bx-info-circle'></i>
+              <p>Aucun utilisateur récent</p>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Réservations récentes -->
+      <div class="detail-card">
+        <div class="card-header">
+          <div class="header-left">
+            <i class='bx bx-list-ul'></i>
+            <h2>Dernières Réservations</h2>
+          </div>
+          <span class="header-count">{{ state.metrics.reservations.recent.length }}</span>
+        </div>
+        <div class="card-body">
+          <div class="reservation-list">
+            <div class="reservation-item" *ngFor="let res of state.metrics.reservations.recent">
+              <div class="reservation-info">
+                <span class="reservation-resource">{{ res.resourceName }}</span>
+                <span class="reservation-user">
+                  <i class='bx bx-user'></i>
+                  {{ res.locataireEmail }}
+                </span>
+              </div>
+              <div class="reservation-meta">
+                <span class="reservation-status" 
+                      [class.status-pending]="res.status === 'PENDING'"
+                      [class.status-confirmed]="res.status === 'CONFIRMED'"
+                      [class.status-cancelled]="res.status === 'CANCELLED'">
+                  {{ getStatusLabel(res.status) }}
+                </span>
+                <span class="reservation-price">{{ res.resourcePrice | currency:'XOF' }}</span>
+              </div>
+            </div>
+            <div class="empty-state" *ngIf="state.metrics.reservations.recent.length === 0">
+              <i class='bx bx-info-circle'></i>
+              <p>Aucune réservation récente</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Répartition des ressources -->
+    <div class="resources-section">
+      <div class="detail-card">
+        <div class="card-header">
+          <div class="header-left">
+            <i class='bx bx-pie-chart-alt-2'></i>
+            <h2>Répartition des Ressources</h2>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="resource-types-grid">
+            <div class="resource-type-card" *ngFor="let type of state.metrics.resources.typesCount">
+              <div class="type-icon" [class.type-room]="type.type === 'ROOM'" [class.type-equipment]="type.type === 'EQUIPMENT'">
+                <i class='bx' [ngClass]="type.type === 'ROOM' ? 'bx-buildings' : 'bx-devices'"></i>
+              </div>
+              <div class="type-info">
+                <span class="type-count">{{ type.count }}</span>
+                <span class="type-label">{{ getResourceTypeLabel(type.type) }}</span>
+              </div>
+            </div>
+            <div class="empty-state" *ngIf="state.metrics.resources.typesCount.length === 0">
+              <i class='bx bx-info-circle'></i>
+              <p>Aucune ressource disponible</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

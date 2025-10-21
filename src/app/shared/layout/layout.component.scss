@@ -428,3 +428,36 @@
     }
   }
 }
+
+.sidebar-divider {
+  height: 1px;
+  margin: 0.75rem 0.75rem;
+  background: #e5e7eb;
+  border: none;
+}
+
+.admin-link {
+  // Rend le lien Admin plus visible ou distinct
+  // Utilise une couleur d'accentuation (rouge/danger pour l'Admin est courant)
+  color: #dc2626 !important; // Tailwind red-600
+
+  &:hover {
+    background: #fef2f2 !important; // Tailwind red-50
+    color: #dc2626 !important;
+  }
+
+  &.active-link {
+    background: #fef2f2 !important;
+    color: #dc2626 !important;
+
+    i {
+      // S'assurer que l'icône reste de la bonne couleur
+      color: #dc2626 !important;
+    }
+  }
+
+  // Le badge/icône dans le lien Admin
+  i {
+    color: #dc2626 !important;
+  }
+}
