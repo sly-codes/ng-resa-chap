@@ -3,6 +3,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { MyReservationsComponent } from './reservations/my-reservations/my-reservations.component';
 import { ReceivedReservationsComponent } from './reservations/received-reservations/received-reservations.component';
 import { ResourceDetailComponent } from './catalogue/resource-detail/resource-detail.component';
+import { AdminGuard } from './core/admin.guard';
 
 export const MAIN_ROUTES: Routes = [
   // Route 1: Le Tableau de Bord (Dashboard)
@@ -11,6 +12,17 @@ export const MAIN_ROUTES: Routes = [
     loadComponent: () =>
       import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
     title: 'Tableau de Bord | Resa Chap',
+  },
+
+  // 🚀 NOUVELLE ROUTE : DASHBOARD ADMIN (Sécurisée)
+  {
+    path: 'admin/dashboard',
+    loadComponent: () =>
+      import('./admin/admin-dashboard/admin-dashboard.component').then(
+        (m) => m.AdminDashboardComponent
+      ),
+    canActivate: [AdminGuard], // 💡 Protection par le nouveau Guard
+    title: 'Dashboard Admin | Resa Chap',
   },
 
   // Route 2: Catalogue

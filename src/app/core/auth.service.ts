@@ -17,6 +17,9 @@ export interface AuthCredentials {
   password: string;
 }
 
+// Type pour le rôle utilisateur
+export type UserRole = 'SUPER_ADMIN' | 'LOCATEUR' | 'LOCATAIRE';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -127,6 +130,24 @@ export class AuthService {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.id;
     } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * Décode l'Access Token pour obtenir le RÔLE de l'utilisateur.
+   * @returns Le rôle de l'utilisateur ou null.
+   */
+  getRoleFromToken(): UserRole | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    try {
+      // Le payload est la 2e partie du JWT
+      const payload = JSON.parse(atob(token.split('.')[1])); // 💡 Le champ 'role' est injecté dans le backend !
+      return payload.role as UserRole;
+    } catch (e) {
+      console.error('Erreur lors du décodage du rôle du token:', e);
       return null;
     }
   }
