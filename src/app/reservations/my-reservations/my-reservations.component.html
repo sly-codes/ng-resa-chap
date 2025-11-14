@@ -95,7 +95,17 @@
               </td>
 
               <td>
-                <span class="notes-text">{{ res.notes || '—' }}</span>
+                <button
+                placement="bottom"
+                type="button"
+                tabindex="0"
+                class="btn-desc"
+                data-bs-trigger="focus"
+                [ngbPopover]="res.notes || 'Aucune notes'"
+                popoverTitle="Description"
+              >
+                Voir notes
+              </button>
               </td>
 
               <td>

@@ -25,13 +25,21 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { PaginationComponent } from '../../../common/pagination/pagination.component';
 import { ToastService } from '../../../common/toast/toast.service';
+import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-my-reservations',
   templateUrl: './my-reservations.component.html',
   styleUrl: './my-reservations.component.scss',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, DatePipe, PaginationComponent, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    DatePipe,
+    PaginationComponent,
+    ReactiveFormsModule,
+    NgbPopoverModule,
+],
 })
 export class MyReservationsComponent implements OnInit {
   private reservationService = inject(ReservationService);

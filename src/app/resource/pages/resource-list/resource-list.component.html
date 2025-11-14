@@ -110,11 +110,22 @@
             </td>
 
             <td class="resource-price d-none d-md-table-cell">
-              {{ resource.price | currency : 'FCFA' }} / {{ getUnitDisplayLabel(resource.priceUnit) }}
+              {{ resource.price | currency : 'FCFA' }} /
+              {{ getUnitDisplayLabel(resource.priceUnit) }}
             </td>
 
             <td class="resource-description d-none d-md-table-cell">
-              {{ resource.description || 'Aucune description' }}
+              <button
+                placement="top"
+                type="button"
+                tabindex="0"
+                class="btn-desc"
+                data-bs-trigger="focus"
+                [ngbPopover]="resource.description || 'Aucune description'"
+                popoverTitle="Description"
+              >
+                Voir description
+              </button>
             </td>
 
             <td class="actions-cell">

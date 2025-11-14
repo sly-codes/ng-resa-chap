@@ -1,4 +1,4 @@
-/* Styles existants de .resources-container, .resources-header, h1, .btn-add-resource... */
+
 .resources-container {
   max-width: 100%;
   padding: 1.5rem 1rem;
@@ -19,6 +19,16 @@
     padding: 2.5rem 3rem;
   }
 }
+
+.btn-desc {
+  border: 1px solid rgb(230, 224, 224);
+  outline: none;
+  padding: 5px 10px ;
+  border-radius: 5px;
+  font-size: 0.6rem;
+  background-color: transparent;
+}
+
 
 .resources-header {
   display: flex;

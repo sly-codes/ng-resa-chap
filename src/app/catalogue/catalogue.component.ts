@@ -14,7 +14,7 @@ import {
   merge,
 } from 'rxjs';
 import { RouterModule, Router } from '@angular/router'; // 💡 Ajout de Router pour la navigation
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReservationFormModalComponent } from '../reservations/reservation-form-modal/reservation-form-modal.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Resource, ResourceFilters, ResourceService } from '../core/resource.service';
@@ -27,7 +27,7 @@ const RESOURCE_TYPES: ('ROOM' | 'EQUIPMENT')[] = ['ROOM', 'EQUIPMENT'];
   templateUrl: './catalogue.component.html',
   styleUrls: ['./catalogue.component.scss'],
   standalone: true, // 💡 Ajout de ResourceDetailComponent à importer/déclarer si c'est un module partagé
-  imports: [CommonModule, RouterModule, NgIf, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, NgIf, ReactiveFormsModule, NgbPopoverModule],
 })
 export class CatalogueComponent implements OnInit {
   private resourceService = inject(ResourceService);

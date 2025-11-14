@@ -157,7 +157,17 @@
             </p>
 
             <p class="card-description">
-              {{ resource.description || 'Aucune description fournie.' }}
+              <button
+                placement="bottom"
+                type="button"
+                tabindex="0"
+                class="btn-desc"
+                data-bs-trigger="focus"
+                [ngbPopover]="resource.description || 'Aucune description'"
+                popoverTitle="Description"
+              >
+                Voir description
+              </button>
             </p>
 
             <div class="resource-meta">

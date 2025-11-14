@@ -1,7 +1,7 @@
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NgbDropdownModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModal, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import {
   BehaviorSubject,
   catchError,
@@ -31,7 +31,7 @@ interface ManagedResourceView extends Resource {
   templateUrl: './resource-list.component.html',
   styleUrls: ['./resource-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgClass, NgIf, ReactiveFormsModule, NgbDropdownModule],
+  imports: [CommonModule, NgClass, NgIf, ReactiveFormsModule, NgbDropdownModule, NgbPopoverModule],
 })
 export class ResourceListComponent implements OnInit {
   private resourceService = inject(ResourceService);
