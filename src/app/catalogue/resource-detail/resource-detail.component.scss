@@ -193,24 +193,13 @@
   overflow: hidden;
   margin-bottom: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  
-  /* Fixer une hauteur pour le conteneur d'image typique des cartes */
-  height: 300px; /* Exemple de hauteur */
-  
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Centrer l'image horizontalement et verticalement */
-}
 
-.image-wrapper .resource-image {
-  width: 100%;
-  height: 100%; /* Utilise 100% de la hauteur du wrapper */
-  
-  /* 🥇 Correction : Garantit que l'image entière est visible. */
-  object-fit: contain; 
-  
-  max-height: 540px; /* Conserve votre max-height si le conteneur est plus grand */
-  object-position: center center;
+  .resource-image {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+  }
 }
 
 // ========================================
