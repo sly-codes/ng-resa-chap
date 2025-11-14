@@ -198,6 +198,17 @@ export class ResourceListComponent implements OnInit {
     return type === 'ROOM' ? 'bx-buildings' : 'bx-devices';
   }
 
+  getTypeLabel(type: string): string {
+    switch (type) {
+      case 'ROOM':
+        return 'Salle';
+      case 'EQUIPMENT':
+        return 'Équipement';
+      default:
+        return type;
+    }
+  }
+
   /**
    * 💡 NOUVELLE MÉTHODE : Traduit l'unité de prix (HOUR, DAY, etc.) en français (Heure, Jour, etc.)
    * @param unit L'unité de prix en majuscule (ex: "HOUR")
