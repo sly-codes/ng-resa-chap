@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LayoutComponent } from './shared/layout/layout.component';
 import { AuthGuard } from './core/auth-guard'; // Garde pour routes protégées
 import { PublicGuard } from './guards/public-guard'; // 🚀 NOUVEAU : Garde pour routes publiques
+import { LayoutComponent } from './shared/layout/layout.component';
 
 const routes: Routes = [
   // 1. Route PUBLIQUE par défaut (LANDING PAGE)
@@ -32,6 +32,11 @@ const routes: Routes = [
         loadChildren: () => import('./main.routes').then((mod) => mod.MAIN_ROUTES),
       },
     ],
+  },
+
+  {
+    path: 'preview',
+    loadChildren: () => import('./preview/preview.module').then((m) => m.PreviewModule),
   },
 
   // 4. WILD CARD (Redirection si route inconnue)
