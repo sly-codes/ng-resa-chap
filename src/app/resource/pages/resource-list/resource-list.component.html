@@ -1,37 +1,25 @@
 <div class="resources-container">
+  <!-- Header compact responsive -->
   <div class="resources-header">
-    <h1>
-      <span>Mes Ressources</span>
-      <i class="bx bx-sitemap"></i>
-    </h1>
+    <div class="header-title">
+      <h1>
+        <span>Mes Ressources</span>
+        <i class="bx bx-sitemap"></i>
+      </h1>
+      <span class="resource-count" *ngIf="resources$ | async as resources"
+        >({{ resources.length }})</span
+      >
+    </div>
     <button (click)="onAddResource()" class="btn-add-resource">
       <i class="bx bx-plus-circle"></i>
-      <span>Ajouter une ressource</span>
+      <span class="btn-text">Ajouter</span>
     </button>
   </div>
 
+  <!-- Controls optimisés pour mobile -->
   <div class="resources-controls">
-    <div class="filter-controls-group">
-      <div class="control-group">
-        <label for="type-filter">Type</label>
-        <select id="type-filter" [formControl]="typeFilter">
-          <option value="ALL">Tous les types</option>
-          <option value="ROOM">Salle</option>
-          <option value="EQUIPMENT">Équipement</option>
-        </select>
-      </div>
-
-      <div class="control-group city-filter-control">
-        <label for="city-filter">Ville</label>
-        <input
-          type="text"
-          id="city-filter"
-          [formControl]="cityFilter"
-          placeholder="Filtrer par ville..."
-          aria-label="Filtrer par ville"
-        />
-      </div>
-
+    <!-- Ligne 1: Recherche principale -->
+    <div class="search-row">
       <div class="control-group search-control">
         <i class="bx bx-search"></i>
         <input
@@ -41,18 +29,38 @@
           aria-label="Rechercher par nom"
         />
       </div>
+      <button
+        class="btn-refresh"
+        (click)="onRefresh()"
+        [disabled]="loading"
+        title="Rafraîchir la liste"
+        aria-label="Rafraîchir la liste"
+      >
+        <i class="bx" [ngClass]="{ 'bx-loader-alt bx-spin': loading, 'bx-refresh': !loading }"></i>
+        <span class="btn-text">Actualiser</span>
+      </button>
     </div>
 
-    <button
-      class="btn-refresh"
-      (click)="onRefresh()"
-      [disabled]="loading"
-      title="Rafraîchir la liste"
-      aria-label="Rafraîchir la liste"
-    >
-      <i class="bx" [ngClass]="{ 'bx-loader-alt bx-spin': loading, 'bx-refresh': !loading }"></i>
-      <span class="btn-text">Actualiser</span>
-    </button>
+    <!-- Ligne 2: Filtres (collapsible sur mobile) -->
+    <div class="filters-row">
+      <div class="control-group type-filter">
+        <select id="type-filter" [formControl]="typeFilter">
+          <option value="ALL">Tous types</option>
+          <option value="ROOM">Salle</option>
+          <option value="EQUIPMENT">Équipement</option>
+        </select>
+      </div>
+
+      <div class="control-group city-filter">
+        <input
+          type="text"
+          id="city-filter"
+          [formControl]="cityFilter"
+          placeholder="Ville..."
+          aria-label="Filtrer par ville"
+        />
+      </div>
+    </div>
   </div>
 
   <div *ngIf="error" class="resources-error">
@@ -116,7 +124,7 @@
 
             <td class="resource-description d-none d-md-table-cell">
               <button
-                placement="top"
+                placement="left"
                 type="button"
                 tabindex="0"
                 class="btn-desc"
@@ -151,6 +159,14 @@
                   ></i>
                 </button>
                 <div ngbDropdownMenu class="actions-menu">
+                  <button
+                    ngbDropdownItem
+                    (click)="onView(resource.id)"
+                    class="action-item action-view"
+                  >
+                    <i class="bx bx-show"></i>
+                    <span>Voir</span>
+                  </button>
                   <button
                     ngbDropdownItem
                     (click)="onEdit(resource.id)"

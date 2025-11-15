@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
+import { ResourceDetailComponent } from './catalogue/resource-detail/resource-detail.component';
+import { AdminGuard } from './core/admin.guard';
 import { ProfileComponent } from './profile/profile.component';
 import { MyReservationsComponent } from './reservations/my-reservations/my-reservations.component';
 import { ReceivedReservationsComponent } from './reservations/received-reservations/received-reservations.component';
-import { ResourceDetailComponent } from './catalogue/resource-detail/resource-detail.component';
-import { AdminGuard } from './core/admin.guard';
+import { ReservationDetailComponent } from './reservations/reservation-detail/reservation-detail.component';
 
 export const MAIN_ROUTES: Routes = [
   // Route 1: Le Tableau de Bord (Dashboard)
@@ -47,6 +48,16 @@ export const MAIN_ROUTES: Routes = [
     title: 'Mes Ressources | Resa Chap',
   },
 
+  // Route 3b: Détail d'une ressource en tant que propriétaire
+  {
+    path: 'resources/mine/:id',
+    loadComponent: () =>
+      import('./resource/pages/resource-owner-detail/resource-owner-detail.component').then(
+        (m) => m.ResourceOwnerDetailComponent
+      ),
+    title: 'Détail de ma ressource | Resa Chap',
+  },
+
   // Route 4: Mes Réservations faites (Locataire)
   {
     path: 'reservations/made',
@@ -61,7 +72,14 @@ export const MAIN_ROUTES: Routes = [
     title: 'Réservations Reçues | Resa Chap',
   },
 
-  // Route 6: Profil Utilisateur
+  // Route 6: Détails d'une réservation
+  {
+    path: 'reservations/:id',
+    component: ReservationDetailComponent,
+    title: 'Détails de la Réservation | Resa Chap',
+  },
+
+  // Route 7: Profil Utilisateur
   {
     path: 'profile',
     component: ProfileComponent,

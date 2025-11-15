@@ -1,0 +1,283 @@
+<div class="detail-container">
+  <div *ngIf="loading && !error" class="loader-section">
+    <i class="bx bx-loader-alt bx-spin"></i>
+    <p>Chargement des détails de la réservation...</p>
+  </div>
+
+  <div *ngIf="error" class="error-section">
+    <i class="bx bx-error-circle"></i>
+    <span>{{ error }}</span>
+    <button class="back-btn" (click)="goBack()"><i class="bx bx-left-arrow-alt"></i> Retour</button>
+  </div>
+
+  <ng-container *ngIf="reservation$ | async as reservation">
+    <div *ngIf="!loading && reservation" class="reservation-content">
+      <div class="reservation-header-section">
+        <div class="breadcrumb">
+          <a [routerLink]="['/dashboard']">Dashboard</a> /
+          <a
+            [routerLink]="[
+              isCurrentUserTenant(reservation) ? '/reservations/made' : '/reservations/received'
+            ]"
+          >
+            {{ isCurrentUserTenant(reservation) ? 'Mes Réservations' : 'Demandes Reçues' }}
+          </a>
+          /
+          <span>{{ reservation.resource.name }}</span>
+        </div>
+
+        <div class="header-main-info">
+          <h1 class="reservation-title">
+            <i [class]="'bx ' + getResourceTypeIcon(reservation.resource.type)"></i>
+            {{ reservation.resource.name }}
+          </h1>
+          <span [class]="getStatusBadgeClass(reservation.status)">
+            {{ getStatusText(reservation.status) }}
+          </span>
+        </div>
+
+        <div class="reservation-summary">
+          <div class="summary-item">
+            <i class="bx bx-calendar"></i>
+            <span>{{ reservation.dateDebut | date : 'fullDate' : 'fr-FR' }}</span>
+          </div>
+          <div class="summary-item">
+            <i class="bx bx-time"></i>
+            <span
+              >{{ reservation.dateDebut | date : 'shortTime' : 'fr-FR' }} -
+              {{ reservation.dateFin | date : 'shortTime' : 'fr-FR' }}</span
+            >
+          </div>
+          <div class="summary-item">
+            <i class="bx bx-map"></i>
+            <span>{{ reservation.resource.city || 'Non spécifié' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="left-column">
+          <!-- Informations sur la ressource -->
+          <div class="resource-section card-block">
+            <h2>
+              <i [class]="'bx ' + getResourceTypeIcon(reservation.resource.type)"></i>
+              Détails de la Ressource
+            </h2>
+
+            <div class="resource-image-wrapper" *ngIf="reservation.resource.mainImage">
+              <img
+                [src]="reservation.resource.mainImage"
+                [alt]="'Image de ' + reservation.resource.name"
+                class="resource-image"
+                onError="this.src='assets/placeholder-resource.jpg';"
+              />
+            </div>
+
+            <div class="resource-details">
+              <div class="detail-row">
+                <span class="label">Nom :</span>
+                <span class="value">{{ reservation.resource.name }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Type :</span>
+                <span class="value">{{ getResourceTypeText(reservation.resource.type) }}</span>
+              </div>
+              <div class="detail-row" *ngIf="reservation.resource.description">
+                <span class="label">Description :</span>
+                <span class="value">{{ reservation.resource.description }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Prix :</span>
+                <span class="value"
+                  >{{ reservation.resource.price | number : '1.0-0' : 'fr-FR' }} FCFA
+                  {{ getPriceUnitText(reservation.resource.priceUnit) }}</span
+                >
+              </div>
+              <div class="detail-row" *ngIf="reservation.resource.address">
+                <span class="label">Adresse :</span>
+                <span class="value">{{ reservation.resource.address }}</span>
+              </div>
+              <div class="detail-row" *ngIf="reservation.resource.city">
+                <span class="label">Ville :</span>
+                <span class="value">{{ reservation.resource.city }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informations de contact -->
+          <div class="contact-section card-block">
+            <h2>
+              <i class="bx bx-user"></i>
+              Contact {{ isCurrentUserTenant(reservation) ? 'Propriétaire' : 'Demandeur' }}
+            </h2>
+
+            <ng-container *ngIf="isCurrentUserTenant(reservation)">
+              <!-- Affichage du propriétaire si je suis le locataire -->
+              <div class="contact-info">
+                <div class="contact-avatar" *ngIf="reservation.resource.owner.profilePictureUrl">
+                  <img
+                    [src]="reservation.resource.owner.profilePictureUrl"
+                    [alt]="reservation.resource.owner.username || reservation.resource.owner.email"
+                  />
+                </div>
+                <div class="contact-details">
+                  <div class="contact-name">
+                    {{
+                      reservation.resource.owner.firstName ||
+                        reservation.resource.owner.username ||
+                        'Propriétaire'
+                    }}
+                    {{ reservation.resource.owner.lastName || '' }}
+                  </div>
+                  <div class="contact-email">
+                    <i class="bx bx-envelope"></i>
+                    {{ reservation.resource.owner.email }}
+                  </div>
+                  <div class="contact-phone" *ngIf="reservation.resource.owner.contactPhone">
+                    <i class="bx bx-phone"></i>
+                    {{ reservation.resource.owner.contactPhone }}
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="isCurrentUserOwner(reservation)">
+              <!-- Affichage du locataire si je suis le propriétaire -->
+              <div class="contact-info">
+                <div class="contact-avatar" *ngIf="reservation.locataire.profilePictureUrl">
+                  <img
+                    [src]="reservation.locataire.profilePictureUrl"
+                    [alt]="reservation.locataire.username || reservation.locataire.email"
+                  />
+                </div>
+                <div class="contact-details">
+                  <div class="contact-name">
+                    {{
+                      reservation.locataire.firstName ||
+                        reservation.locataire.username ||
+                        'Utilisateur'
+                    }}
+                    {{ reservation.locataire.lastName || '' }}
+                  </div>
+                  <div class="contact-email">
+                    <i class="bx bx-envelope"></i>
+                    {{ reservation.locataire.email }}
+                  </div>
+                  <div class="contact-phone" *ngIf="reservation.locataire.contactPhone">
+                    <i class="bx bx-phone"></i>
+                    {{ reservation.locataire.contactPhone }}
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <!-- Détails de la réservation -->
+          <div class="reservation-details-section card-block">
+            <h2>
+              <i class="bx bx-calendar-check"></i>
+              Détails de la Réservation
+            </h2>
+
+            <div class="detail-group">
+              <div class="detail-row">
+                <span class="label">Date de début :</span>
+                <span class="value">{{ reservation.dateDebut | date : 'fullDate' : 'fr-FR' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Heure de début :</span>
+                <span class="value">{{
+                  reservation.dateDebut | date : 'shortTime' : 'fr-FR'
+                }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Date de fin :</span>
+                <span class="value">{{ reservation.dateFin | date : 'fullDate' : 'fr-FR' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Heure de fin :</span>
+                <span class="value">{{ reservation.dateFin | date : 'shortTime' : 'fr-FR' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Durée :</span>
+                <span class="value"
+                  >{{
+                    calculateDurationInHours(reservation.dateDebut, reservation.dateFin)
+                  }}
+                  heures</span
+                >
+              </div>
+              <div class="detail-row">
+                <span class="label">Statut :</span>
+                <span [class]="getStatusBadgeClass(reservation.status)">
+                  {{ getStatusText(reservation.status) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="detail-group" *ngIf="reservation.notes">
+              <div class="detail-row notes">
+                <span class="label">Notes :</span>
+                <div class="notes-content">{{ reservation.notes }}</div>
+              </div>
+            </div>
+
+            <div class="detail-group">
+              <div class="detail-row">
+                <span class="label">Créée le :</span>
+                <span class="value">{{ reservation.createdAt | date : 'medium' : 'fr-FR' }}</span>
+              </div>
+              <div class="detail-row" *ngIf="reservation.updatedAt !== reservation.createdAt">
+                <span class="label">Modifiée le :</span>
+                <span class="value">{{ reservation.updatedAt | date : 'medium' : 'fr-FR' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calcul du coût -->
+          <div class="cost-section card-block">
+            <h2>
+              <i class="bx bx-money"></i>
+              Coût Estimé
+            </h2>
+
+            <div class="cost-breakdown">
+              <div class="cost-item">
+                <span>Prix unitaire :</span>
+                <span
+                  >{{ reservation.resource.price | number : '1.0-0' : 'fr-FR' }} FCFA
+                  {{ getPriceUnitText(reservation.resource.priceUnit) }}</span
+                >
+              </div>
+              <div class="cost-item">
+                <span>Durée :</span>
+                <span
+                  >{{
+                    calculateDurationInHours(reservation.dateDebut, reservation.dateFin)
+                  }}
+                  heures</span
+                >
+              </div>
+              <div class="cost-total">
+                <span>Total estimé :</span>
+                <span class="total-amount"
+                  >{{ calculateTotalCost(reservation) | number : '1.0-0' : 'fr-FR' }} FCFA</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="actions-section">
+            <button class="btn btn-secondary" (click)="goBack()">
+              <i class="bx bx-left-arrow-alt"></i>
+              Retour
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

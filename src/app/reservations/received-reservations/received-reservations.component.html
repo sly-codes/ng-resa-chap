@@ -1,21 +1,18 @@
 <div class="reservations-container">
-  <h1 class="reservations-title">
-    <i class="bx bx-list-check"></i>
-    <span>Réservations Reçues</span>
-  </h1>
+  <!-- Header compact -->
+  <div class="reservations-header">
+    <div class="header-title">
+      <h1 class="reservations-title">
+        <i class="bx bx-list-check"></i>
+        <span class="title-text">Réservations Reçues</span>
+      </h1>
+    </div>
+  </div>
 
+  <!-- Controls optimisés -->
   <div class="reservations-controls">
-    <div class="filter-controls-group">
-      <div class="control-group">
-        <label for="status-filter">Statut</label>
-        <select id="status-filter" [formControl]="statusFilter">
-          <option value="ALL">Tous les statuts</option>
-          <option *ngFor="let status of reservationStatuses" [value]="status">
-            {{ getReservationStatusText(status) }}
-          </option>
-        </select>
-      </div>
-
+    <!-- Ligne 1: Recherche principale -->
+    <div class="search-row">
       <div class="control-group search-control">
         <i class="bx bx-search"></i>
         <input
@@ -25,21 +22,33 @@
           aria-label="Rechercher par ressource ou demandeur"
         />
       </div>
+
+      <button
+        class="btn-refresh"
+        (click)="onRefresh()"
+        [disabled]="isLoading"
+        title="Rafraîchir la liste"
+        aria-label="Rafraîchir la liste"
+      >
+        <i
+          class="bx"
+          [ngClass]="{ 'bx-loader-alt bx-spin': isLoading, 'bx-refresh': !isLoading }"
+        ></i>
+        <span class="btn-text">Actualiser</span>
+      </button>
     </div>
 
-    <button
-      class="btn-refresh"
-      (click)="onRefresh()"
-      [disabled]="isLoading"
-      title="Rafraîchir la liste"
-      aria-label="Rafraîchir la liste"
-    >
-      <i
-        class="bx"
-        [ngClass]="{ 'bx-loader-alt bx-spin': isLoading, 'bx-refresh': !isLoading }"
-      ></i>
-      <span class="btn-text">Actualiser</span>
-    </button>
+    <!-- Ligne 2: Filtres -->
+    <div class="filters-row">
+      <div class="control-group status-filter">
+        <select id="status-filter" [formControl]="statusFilter">
+          <option value="ALL">Tous statuts</option>
+          <option *ngFor="let status of reservationStatuses" [value]="status">
+            {{ getReservationStatusText(status) }}
+          </option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="isLoading" class="reservations-loader">
@@ -105,16 +114,16 @@
 
               <td>
                 <button
-                placement="bottom"
-                type="button"
-                tabindex="0"
-                class="btn-desc"
-                data-bs-trigger="focus"
-                [ngbPopover]="res.notes || 'Aucune notes'"
-                popoverTitle="Description"
-              >
-                Voir notes
-              </button>
+                  placement="bottom"
+                  type="button"
+                  tabindex="0"
+                  class="btn-desc"
+                  data-bs-trigger="focus"
+                  [ngbPopover]="res.notes || 'Aucune notes'"
+                  popoverTitle="Description"
+                >
+                  Voir notes
+                </button>
               </td>
 
               <td>
@@ -131,34 +140,65 @@
                 </span>
               </td>
 
-              <td class="text-center">
-                <div *ngIf="res.status === 'PENDING'" class="reservation-actions">
+              <td class="actions-cell">
+                <div
+                  ngbDropdown
+                  container="body"
+                  placement="bottom-end"
+                  class="reservation-actions-dropdown"
+                >
                   <button
-                    (click)="onApprove(res.id)"
-                    class="btn-approve"
+                    type="button"
+                    class="btn-actions"
+                    ngbDropdownToggle
                     [disabled]="res.isApproving || res.isRejecting"
-                    title="Accepter la réservation"
-                    aria-label="Accepter la réservation"
+                    [attr.aria-label]="'Actions pour la demande de ' + res.locataire.username"
                   >
                     <i
                       class="bx"
-                      [ngClass]="res.isApproving ? 'bx-loader-alt bx-spin' : 'bx-check'"
+                      [ngClass]="{
+                        'bx-loader-alt bx-spin': res.isApproving || res.isRejecting,
+                        'bx-dots-vertical-rounded': !res.isApproving && !res.isRejecting
+                      }"
                     ></i>
-                    <span>Accepter</span>
                   </button>
-                  <button
-                    (click)="onReject(res.id)"
-                    class="btn-reject"
-                    [disabled]="res.isApproving || res.isRejecting"
-                    title="Refuser la réservation"
-                    aria-label="Refuser la réservation"
-                  >
-                    <i class="bx" [ngClass]="res.isRejecting ? 'bx-loader-alt bx-spin' : 'bx-x'"></i>
-                    <span>Refuser</span>
-                  </button>
-                </div>
-                <div *ngIf="res.status !== 'PENDING'" class="reservation-status-final">
-                  <span class="text-muted">—</span>
+                  <div ngbDropdownMenu class="actions-menu">
+                    <button
+                      ngbDropdownItem
+                      (click)="onViewReservation(res)"
+                      class="action-item action-view"
+                    >
+                      <i class="bx bx-show"></i>
+                      <span>Voir Détails</span>
+                    </button>
+                    <button
+                      *ngIf="res.status === 'PENDING'"
+                      ngbDropdownItem
+                      (click)="onApprove(res.id)"
+                      class="action-item action-approve"
+                    >
+                      <i class="bx bx-check"></i>
+                      <span>Accepter</span>
+                    </button>
+                    <button
+                      *ngIf="res.status === 'PENDING'"
+                      ngbDropdownItem
+                      (click)="onReject(res.id)"
+                      class="action-item action-reject"
+                    >
+                      <i class="bx bx-x"></i>
+                      <span>Refuser</span>
+                    </button>
+                    <button
+                      *ngIf="res.status !== 'PENDING'"
+                      ngbDropdownItem
+                      disabled
+                      class="action-item action-disabled"
+                    >
+                      <i class="bx bx-info-circle"></i>
+                      <span>{{ getReservationStatusText(res.status) }}</span>
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>

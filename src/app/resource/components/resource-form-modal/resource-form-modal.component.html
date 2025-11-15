@@ -5,12 +5,7 @@
         <i class="bx" [ngClass]="isEditMode ? 'bx-edit' : 'bx-plus-circle'"></i>
         <span>{{ isEditMode ? 'Modifier la ressource' : 'Ajouter une ressource' }}</span>
       </h2>
-      <button
-        type="button"
-        class="modal-close"
-        (click)="onCancel()"
-        aria-label="Fermer la modale"
-      >
+      <button type="button" class="modal-close" (click)="onCancel()" aria-label="Fermer la modale">
         <i class="bx bx-x"></i>
       </button>
     </div>
@@ -46,10 +41,14 @@
               class="form-input-file"
               accept="image/*"
             />
-            <div class="image-preview" [ngClass]="{'has-image': imagePreview || currentImageUrl}">
-              <img [src]="imagePreview || currentImageUrl" *ngIf="imagePreview || currentImageUrl" alt="Aperçu de l'image" />
+            <div class="image-preview" [ngClass]="{ 'has-image': imagePreview || currentImageUrl }">
+              <img
+                [src]="imagePreview || currentImageUrl"
+                *ngIf="imagePreview || currentImageUrl"
+                alt="Aperçu de l'image"
+              />
               <div class="image-placeholder" *ngIf="!imagePreview && !currentImageUrl">
-                <i class='bx bx-image-add'></i>
+                <i class="bx bx-image-add"></i>
                 <p>Cliquez ou glissez une image ici</p>
               </div>
             </div>
@@ -206,19 +205,20 @@
         </div>
 
         <div class="two-columns-group">
+
           <div class="form-group">
             <label for="price" class="form-label">
               Prix (FCFA)
               <span class="label-required">*</span>
             </label>
             <input
-              type="number"
+              type="text"
               id="price"
               formControlName="price"
               class="form-input"
-              placeholder="Ex: 1500"
-              min="0.01"
-              step="0.01"
+              placeholder="Ex: 1 500"
+              mask="separator.0"
+              thousandSeparator=" "
               [class.input-error]="
                 resourceForm!.get('price')?.invalid &&
                 (resourceForm!.get('price')?.dirty || resourceForm!.get('price')?.touched)
@@ -284,20 +284,13 @@
             placeholder="Décrivez la ressource, ses capacités, et autres détails pertinents..."
             rows="4"
           ></textarea>
-          <div class="form-hint">
-            Détails, capacités, emplacement... (max 500 caractères)
-          </div>
+          <div class="form-hint">Détails, capacités, emplacement... (max 500 caractères)</div>
         </div>
       </form>
     </div>
 
     <div class="modal-footer">
-      <button
-        type="button"
-        class="btn-cancel"
-        (click)="onCancel()"
-        [disabled]="isLoading"
-      >
+      <button type="button" class="btn-cancel" (click)="onCancel()" [disabled]="isLoading">
         <i class="bx bx-x"></i>
         <span>Annuler</span>
       </button>
@@ -308,7 +301,7 @@
         [disabled]="resourceForm!.invalid || isLoading"
       >
         <i class="bx" [ngClass]="isLoading ? 'bx-loader-alt bx-spin' : 'bx-save'"></i>
-        <span>{{ isLoading ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Créer') }}</span>
+        <span>{{ isLoading ? 'Enregistrement...' : isEditMode ? 'Mettre à jour' : 'Créer' }}</span>
       </button>
     </div>
   </div>

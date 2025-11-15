@@ -1,78 +1,37 @@
 <div class="catalogue-container">
-  <!-- Header -->
+  <!-- Header compact -->
   <div class="catalogue-header">
-    <div class="header-content">
+    <div class="header-title">
       <h1 class="catalogue-title">
         <i class="bx bx-collection"></i>
-        <span>Catalogue des Ressources</span>
+        <span class="title-text">Catalogue</span>
       </h1>
-
       <div class="resource-count" *ngIf="resources$ | async as resources">
         <span class="count-value">{{ resources.length }}</span>
-        <span class="count-label">
-          ressource{{ resources.length > 1 ? 's' : '' }} disponible{{
-            resources.length > 1 ? 's' : ''
-          }}
-        </span>
+        <span class="count-label">ressources</span>
       </div>
     </div>
   </div>
 
-  <!-- Filters -->
+  <!-- Filtres optimisés -->
   <div class="filter-section">
     <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="$event.preventDefault()">
-      <!-- Search -->
-      <div class="filter-group filter-search">
-        <label for="search" class="filter-label">
-          <i class="bx bx-search-alt"></i>
-          Rechercher
-        </label>
-        <div class="input-wrapper">
-          <i class="bx bx-search-alt input-icon"></i>
-          <input
-            type="text"
-            id="search"
-            formControlName="search"
-            class="filter-input"
-            placeholder="Nom, description..."
-            aria-label="Rechercher une ressource"
-          />
+      <!-- Ligne 1: Recherche principale -->
+      <div class="search-row">
+        <div class="filter-group filter-search">
+          <div class="input-wrapper">
+            <i class="bx bx-search-alt input-icon"></i>
+            <input
+              type="text"
+              id="search"
+              formControlName="search"
+              class="filter-input"
+              placeholder="Rechercher..."
+              aria-label="Rechercher une ressource"
+            />
+          </div>
         </div>
-      </div>
 
-      <!-- City -->
-      <div class="filter-group filter-city">
-        <label for="city" class="filter-label">
-          <i class="bx bx-map-pin"></i>
-          Ville
-        </label>
-        <input
-          type="text"
-          id="city"
-          formControlName="city"
-          class="filter-input"
-          placeholder="Ex: Abidjan"
-          aria-label="Filtrer par ville"
-        />
-      </div>
-
-      <!-- Type -->
-      <div class="filter-group filter-type">
-        <label for="type" class="filter-label">
-          <i class="bx bx-filter"></i>
-          Type de ressource
-        </label>
-        <select id="type" formControlName="type" class="filter-select">
-          <option value="">Tous les types</option>
-          <option *ngFor="let type of resourceTypes" [value]="type">
-            {{ getTypeLabel(type) }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Refresh Button -->
-      <div class="filter-group filter-actions">
-        <label class="filter-label filter-label-hidden">Actions</label>
         <button
           type="button"
           class="refresh-btn"
@@ -84,6 +43,29 @@
           <i class="bx bx-refresh" [class.bx-spin]="loading"></i>
           <span class="btn-text">Actualiser</span>
         </button>
+      </div>
+
+      <!-- Ligne 2: Filtres spécifiques -->
+      <div class="filters-row">
+        <div class="filter-group filter-type">
+          <select id="type" formControlName="type" class="filter-select">
+            <option value="">Tous types</option>
+            <option *ngFor="let type of resourceTypes" [value]="type">
+              {{ getTypeLabel(type) }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-group filter-city">
+          <input
+            type="text"
+            id="city"
+            formControlName="city"
+            class="filter-input"
+            placeholder="Ville..."
+            aria-label="Filtrer par ville"
+          />
+        </div>
       </div>
     </form>
   </div>
@@ -158,7 +140,7 @@
 
             <p class="card-description">
               <button
-                placement="bottom"
+                placement="top"
                 type="button"
                 tabindex="0"
                 class="btn-desc"
@@ -179,8 +161,8 @@
               <div class="meta-item-owner">
                 <i class="bx bx-user-circle"></i>
                 <span class="owner-name"
-                  >Par {{ resource.owner.firstName }} {{ resource.owner.lastName }} </span
-                >
+                  >Par {{ resource.owner.firstName }} {{ resource.owner.lastName }}
+                </span>
               </div>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
 } from '../../../core/resource.service';
 import { catchError, of, take, finalize, Subscription, Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgxMaskDirective } from 'ngx-mask';
 
 // 💡 NOUVEAU TYPE pour l'affichage des unités de prix
 interface PriceUnitDisplay {
@@ -21,7 +22,7 @@ interface PriceUnitDisplay {
   templateUrl: './resource-form-modal.component.html',
   styleUrls: ['./resource-form-modal.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIf, NgClass],
+  imports: [CommonModule, ReactiveFormsModule, NgIf, NgClass, NgxMaskDirective],
 })
 export class ResourceFormModalComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);

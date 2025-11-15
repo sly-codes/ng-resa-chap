@@ -82,6 +82,51 @@ export interface PaginatedReservations<T> {
   lastPage: number;
 }
 
+// Interface pour les détails complets d'une réservation
+export interface ReservationDetails {
+  id: string;
+  resourceId: string;
+  locataireId: string;
+  dateDebut: string;
+  dateFin: string;
+  notes?: string;
+  status: ReservationStatus;
+  createdAt: string;
+  updatedAt: string;
+  resource: {
+    id: string;
+    name: string;
+    type: 'ROOM' | 'EQUIPMENT';
+    description?: string;
+    price: number;
+    priceUnit: 'HOUR' | 'DAY' | 'WEEK' | 'MONTH';
+    country?: string;
+    city?: string;
+    address?: string;
+    mainImage?: string;
+    createdAt: string;
+    updatedAt: string;
+    owner: {
+      id: string;
+      email: string;
+      username?: string;
+      firstName?: string;
+      lastName?: string;
+      contactPhone?: string;
+      profilePictureUrl?: string;
+    };
+  };
+  locataire: {
+    id: string;
+    email: string;
+    username?: string;
+    firstName?: string;
+    lastName?: string;
+    contactPhone?: string;
+    profilePictureUrl?: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -144,5 +189,10 @@ export class ReservationService {
     return this.http.patch<Reservation>(`${this.apiUrl}/${id}/status`, dto);
   }
 
-  
+  /**
+   * Récupère les détails complets d'une réservation par ID
+   */
+  getReservationDetails(id: string): Observable<ReservationDetails> {
+    return this.http.get<ReservationDetails>(`${this.apiUrl}/${id}`);
+  }
 }

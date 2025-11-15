@@ -1,6 +1,7 @@
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgbDropdownModule, NgbModal, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import {
   BehaviorSubject,
@@ -37,6 +38,7 @@ export class ResourceListComponent implements OnInit {
   private resourceService = inject(ResourceService);
   private modalService = inject(NgbModal);
   private toastService = inject(ToastService);
+  private router = inject(Router);
 
   private refresh$ = new Subject<void>();
 
@@ -144,6 +146,10 @@ export class ResourceListComponent implements OnInit {
 
   onEdit(resourceId: string): void {
     this.openResourceModal(resourceId);
+  }
+
+  onView(resourceId: string): void {
+    this.router.navigate(['/resources/mine', resourceId]);
   }
 
   onDeleteRequest(resource: ManagedResourceView): void {

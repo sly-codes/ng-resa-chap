@@ -2,6 +2,7 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { AppRoutingModule } from './app-routing-module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core-module';
@@ -17,9 +18,10 @@ import { SharedModule } from './shared-module';
     AppRoutingModule,
     CoreModule,
     SharedModule,
+    NgxMaskDirective,
     AppComponent, // 💡 Maintenant valide car AppComponent est standalone
   ],
-  providers: [provideHttpClient(withInterceptors([jwtInterceptor]))],
-  bootstrap: [AppComponent],
+  providers: [provideHttpClient(withInterceptors([jwtInterceptor])), provideNgxMask()],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

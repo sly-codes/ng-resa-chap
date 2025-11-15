@@ -1,0 +1,563 @@
+.detail-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  min-height: 80vh;
+}
+
+// ========================================
+// LOADER & ERROR
+// ========================================
+.loader-section,
+.error-section {
+  padding: 3rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+
+  i {
+    font-size: 2.5rem;
+    color: #00add8;
+  }
+
+  span,
+  p {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+.error-section {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #991b1b;
+  padding: 1.5rem;
+  margin-top: 2rem;
+
+  i {
+    color: #991b1b;
+  }
+
+  span {
+    color: #991b1b;
+    font-weight: 500;
+  }
+
+  .back-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #d1d5db;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #374151;
+    font-weight: 600;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #9ca3af;
+    }
+  }
+}
+
+// ========================================
+// CARDS & BLOCKS
+// ========================================
+.card-block {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+
+  h2,
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    i {
+      color: #00add8;
+    }
+  }
+
+  p {
+    font-size: 0.938rem;
+    color: #4b5563;
+    line-height: 1.7;
+    margin: 0;
+  }
+}
+
+// ========================================
+// HEADER SECTION
+// ========================================
+.reservation-header-section {
+  margin-bottom: 2rem;
+
+  .breadcrumb {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+
+    a {
+      color: #00add8;
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .header-main-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .reservation-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      i {
+        color: #00add8;
+        font-size: 1.75rem;
+      }
+    }
+  }
+
+  .reservation-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #374151;
+      font-size: 0.938rem;
+
+      i {
+        color: #00add8;
+        font-size: 1.125rem;
+      }
+    }
+  }
+}
+
+// ========================================
+// CONTENT GRID
+// ========================================
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  align-items: start;
+
+  .left-column {
+    width: 100%;
+  }
+
+  .right-column {
+    width: 100%;
+  }
+}
+
+// ========================================
+// RESOURCE SECTION
+// ========================================
+.resource-section {
+  .resource-image-wrapper {
+    margin-bottom: 1.5rem;
+
+    .resource-image {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .resource-details {
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f3f4f6;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        font-weight: 600;
+        color: #374151;
+        min-width: 120px;
+        flex-shrink: 0;
+      }
+
+      .value {
+        color: #6b7280;
+        text-align: right;
+        flex-grow: 1;
+      }
+    }
+  }
+}
+
+// ========================================
+// CONTACT SECTION
+// ========================================
+.contact-section {
+  .contact-info {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+
+    .contact-avatar {
+      flex-shrink: 0;
+
+      img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e5e7eb;
+      }
+    }
+
+    .contact-details {
+      flex-grow: 1;
+
+      .contact-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.5rem;
+      }
+
+      .contact-email,
+      .contact-phone {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6b7280;
+        font-size: 0.938rem;
+        margin-bottom: 0.25rem;
+
+        i {
+          color: #00add8;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// RESERVATION DETAILS SECTION
+// ========================================
+.reservation-details-section {
+  .detail-group {
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f3f4f6;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.notes {
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .notes-content {
+          background: #f9fafb;
+          padding: 0.75rem;
+          border-radius: 4px;
+          border: 1px solid #e5e7eb;
+          color: #374151;
+          line-height: 1.6;
+          font-style: italic;
+        }
+      }
+
+      .label {
+        font-weight: 600;
+        color: #374151;
+        min-width: 120px;
+        flex-shrink: 0;
+      }
+
+      .value {
+        color: #6b7280;
+        text-align: right;
+        flex-grow: 1;
+      }
+    }
+  }
+}
+
+// ========================================
+// COST SECTION
+// ========================================
+.cost-section {
+  .cost-breakdown {
+    .cost-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f3f4f6;
+      color: #6b7280;
+    }
+
+    .cost-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0 0;
+      margin-top: 1rem;
+      border-top: 2px solid #00add8;
+      font-weight: 600;
+
+      span:first-child {
+        color: #111827;
+        font-size: 1.125rem;
+      }
+
+      .total-amount {
+        color: #00add8;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// ========================================
+// STATUS BADGES (même style que les listes)
+// ========================================
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.688rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+
+  @media (min-width: 768px) {
+    padding: 0.438rem 0.875rem;
+    font-size: 0.75rem;
+  }
+
+  &.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+
+  &.status-approved {
+    background: #e6f7fc;
+    color: #005f7a;
+    border: 1px solid #b3e5f5;
+  }
+
+  &.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  &.status-cancelled {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 1px solid #e5e7eb;
+  }
+}
+
+// ========================================
+// BADGES (anciens styles Bootstrap)
+// ========================================
+.badge {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+
+  &.bg-success {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  &.bg-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+
+  &.bg-danger {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  &.bg-secondary {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+}
+
+// ========================================
+// ACTIONS SECTION
+// ========================================
+.actions-section {
+  margin-top: 1.5rem;
+
+  .btn {
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+
+    &.btn-secondary {
+      background-color: #6b7280;
+      color: white;
+
+      &:hover {
+        background-color: #4b5563;
+      }
+    }
+
+    i {
+      font-size: 1.125rem;
+    }
+  }
+}
+
+// ========================================
+// RESPONSIVE DESIGN
+// ========================================
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-container {
+    padding: 1rem;
+  }
+
+  .reservation-header-section {
+    .header-main-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .reservation-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    .reservation-summary {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  .card-block {
+    padding: 1rem;
+  }
+
+  .resource-details,
+  .reservation-details-section {
+    .detail-row {
+      flex-direction: column;
+      gap: 0.25rem;
+      text-align: left;
+
+      .value {
+        text-align: left;
+      }
+    }
+  }
+
+  .contact-info {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .detail-container {
+    padding: 0.75rem;
+  }
+
+  .reservation-header-section {
+    .reservation-title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .card-block {
+    h2 {
+      font-size: 1rem;
+    }
+  }
+}

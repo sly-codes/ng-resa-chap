@@ -1,0 +1,227 @@
+<div class="owner-detail-container">
+  <div *ngIf="loading && !error" class="loader-section">
+    <i class="bx bx-loader-alt bx-spin"></i>
+    <p>Chargement des détails de la ressource...</p>
+  </div>
+
+  <div *ngIf="error" class="error-section">
+    <i class="bx bx-error-circle"></i>
+    <span>{{ error }}</span>
+    <button class="back-btn" (click)="onBackToList()">
+      <i class="bx bx-left-arrow-alt"></i> Retour à mes ressources
+    </button>
+  </div>
+
+  <ng-container *ngIf="resource$ | async as resource">
+    <div *ngIf="!loading && resource" class="resource-content">
+      
+      <!-- Header avec navigation et actions principales -->
+      <div class="resource-header-section">
+        <div class="breadcrumb-nav">
+          <button class="back-btn" (click)="onBackToList()">
+            <i class="bx bx-left-arrow-alt"></i>
+            <span>Retour à mes ressources</span>
+          </button>
+          <div class="breadcrumb">
+            <span>Mes Ressources</span> /
+            <span>{{ resource.name }}</span>
+          </div>
+        </div>
+
+        <div class="header-main-info">
+          <div class="title-section">
+            <h1 class="resource-title">{{ resource.name }}</h1>
+            <span
+              class="type-badge"
+              [ngClass]="{
+                'badge-room': resource.type === 'ROOM',
+                'badge-equipment': resource.type === 'EQUIPMENT'
+              }"
+            >
+              <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
+              <span>{{ getTypeLabel(resource.type) }}</span>
+            </span>
+          </div>
+
+          <div class="owner-actions">
+            <button 
+              class="action-btn view-public-btn"
+              (click)="onViewPublic(resource.id)"
+              title="Voir comme les locataires"
+            >
+              <i class="bx bx-show"></i>
+              <span>Vue publique</span>
+            </button>
+            <button 
+              class="action-btn edit-btn"
+              (click)="onEdit(resource.id)"
+            >
+              <i class="bx bx-edit"></i>
+              <span>Modifier</span>
+            </button>
+            <button 
+              class="action-btn delete-btn"
+              (click)="onDeleteRequest(resource)"
+              [disabled]="isDeleting"
+            >
+              <i 
+                class="bx"
+                [ngClass]="{
+                  'bx-loader-alt bx-spin': isDeleting,
+                  'bx-trash': !isDeleting
+                }"
+              ></i>
+              <span>{{ isDeleting ? 'Suppression...' : 'Supprimer' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="content-grid">
+        <!-- Left Column - Image and Description -->
+        <div class="left-column">
+          <div class="image-wrapper">
+            <img
+              [src]="resource.mainImage || 'assets/placeholder-resource.jpg'"
+              [alt]="'Image de ' + resource.name"
+              class="resource-image"
+              onError="this.src='assets/placeholder-resource.jpg';"
+            />
+            <div class="image-overlay">
+              <button class="change-image-btn" (click)="onEdit(resource.id)">
+                <i class="bx bx-camera"></i>
+                <span>Modifier l'image</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="description-section card-block">
+            <div class="section-header">
+              <h2>Description</h2>
+              <button class="quick-edit-btn" (click)="onEdit(resource.id)" title="Modifier">
+                <i class="bx bx-edit"></i>
+              </button>
+            </div>
+            <p>
+              {{ resource.description || "Aucune description n'est disponible pour cette ressource." }}
+            </p>
+          </div>
+
+          <div class="location-section card-block">
+            <div class="section-header">
+              <h2>Localisation</h2>
+              <button class="quick-edit-btn" (click)="onEdit(resource.id)" title="Modifier">
+                <i class="bx bx-edit"></i>
+              </button>
+            </div>
+            <div class="location-info">
+              <div class="location-item">
+                <i class="bx bx-map-pin"></i>
+                <span>{{ resource.address }}</span>
+              </div>
+              <div class="location-item">
+                <i class="bx bx-buildings"></i>
+                <span>{{ resource.city }}</span>
+              </div>
+              <div class="location-item">
+                <i class="bx bx-world"></i>
+                <span>{{ resource.country }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Owner info and details -->
+        <div class="right-column">
+          <div class="pricing-section card-block">
+            <h3>Informations de Tarification</h3>
+            <div class="price-display">
+              <span class="price-value">
+                {{ resource.price | currency: 'FCFA': 'symbol': '1.0-0' }}
+              </span>
+              <span class="price-unit">
+                / {{ getPriceUnitLabel(resource.priceUnit) }}
+              </span>
+            </div>
+            <button class="quick-edit-btn edit-price-btn" (click)="onEdit(resource.id)">
+              <i class="bx bx-edit"></i>
+              <span>Modifier le prix</span>
+            </button>
+          </div>
+
+          <div class="owner-info-section card-block">
+            <h3>Informations Propriétaire</h3>
+            <div class="owner-info">
+              <i class="bx bx-user-circle"></i>
+              <div class="owner-details">
+                <span class="owner-name">
+                  {{ resource.owner.firstName }} {{ resource.owner.lastName }}
+                </span>
+                <span class="owner-label">Propriétaire (Vous)</span>
+              </div>
+            </div>
+
+            <div class="contact-meta">
+              <div class="meta-item">
+                <i class="bx bx-envelope"></i>
+                <span>{{ resource.owner.email }}</span>
+              </div>
+              <div class="meta-item">
+                <i class="bx bx-phone"></i>
+                <span>{{ resource.owner.contactPhone || 'Non spécifié' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="resource-stats card-block">
+            <h3>Statistiques</h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <i class="bx bx-calendar-plus"></i>
+                <div class="stat-details">
+                  <span class="stat-value">{{ resource.createdAt | date: 'dd/MM/yyyy' }}</span>
+                  <span class="stat-label">Date de création</span>
+                </div>
+              </div>
+              <div class="stat-item">
+                <i class="bx bx-time"></i>
+                <div class="stat-details">
+                  <span class="stat-value">{{ getPriceUnitLabel(resource.priceUnit) }}</span>
+                  <span class="stat-label">Unité de facturation</span>
+                </div>
+              </div>
+              <div class="stat-item">
+                <i class="bx bx-category"></i>
+                <div class="stat-details">
+                  <span class="stat-value">{{ getTypeLabel(resource.type) }}</span>
+                  <span class="stat-label">Type de ressource</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-actions card-block">
+            <h3>Actions Rapides</h3>
+            <div class="actions-list">
+              <button class="quick-action-item" (click)="onViewPublic(resource.id)">
+                <i class="bx bx-show"></i>
+                <div>
+                  <span class="action-title">Aperçu public</span>
+                  <span class="action-desc">Voir comme vos clients</span>
+                </div>
+              </button>
+              <button class="quick-action-item" (click)="onEdit(resource.id)">
+                <i class="bx bx-edit"></i>
+                <div>
+                  <span class="action-title">Modifier détails</span>
+                  <span class="action-desc">Prix, description, localisation</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

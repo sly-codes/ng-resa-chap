@@ -117,11 +117,43 @@ body {
     color: $gray-400;
     pointer-events: none;
   }
+
+  .password-toggle-btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: $gray-400;
+    font-size: 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      color: $primary-cyan;
+      background: rgba($primary-cyan, 0.1);
+    }
+
+    &:focus {
+      outline: 2px solid rgba($primary-cyan, 0.3);
+      outline-offset: 2px;
+    }
+
+    .bx {
+      font-size: 18px;
+    }
+  }
 }
 
 .form-input {
   width: 100%;
-  padding: 8px 16px 8px 44px;
+  padding: 8px 48px 8px 44px; // Ajusté pour faire de la place au bouton toggle
   background: $white;
   border: 1px solid $gray-200;
   border-radius: 5px;

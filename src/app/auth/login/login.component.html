@@ -58,7 +58,7 @@
           <input
             id="password"
             name="password"
-            type="password"
+            [type]="showPassword ? 'text' : 'password'"
             formControlName="password"
             required
             class="form-input"
@@ -66,6 +66,14 @@
             autocomplete="current-password"
           />
           <i class="bx bx-lock-alt input-icon"></i>
+          <button 
+            type="button" 
+            (click)="togglePasswordVisibility()" 
+            class="password-toggle-btn"
+            [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+          >
+            <i [class]="showPassword ? 'bx bx-hide' : 'bx bx-show'"></i>
+          </button>
         </div>
         <div
           *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"

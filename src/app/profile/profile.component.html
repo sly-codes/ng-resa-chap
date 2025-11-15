@@ -1,140 +1,142 @@
 <div class="profile-container">
-    
-    <!-- En-tête avec badge de statut -->
-    <div class="profile-header">
-        <div class="header-content">
-            <h1 class="profile-title">
-                <i class='bx bx-user-circle'></i>
-                <span>Mon Profil</span>
-            </h1>
-            <span class="profile-badge">
-                <i class='bx bx-shield-quarter'></i>
-                Locateur & Locataire
-            </span>
+  <!-- En-tête avec badge de statut -->
+  <div class="profile-header">
+    <div class="header-content">
+      <h1 class="profile-title">
+        <i class="bx bx-user-circle"></i>
+        <span>Mon Profil</span>
+      </h1>
+      <span class="profile-badge">
+        <i class="bx bx-shield-quarter"></i>
+        Locateur & Locataire
+      </span>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="profile-loader">
+    <i class="bx bx-loader-alt bx-spin"></i>
+    <p>Chargement de vos informations...</p>
+  </div>
+
+  <!-- Contenu du Profil -->
+  <div *ngIf="!isLoading" class="profile-content">
+    <!-- Card principale -->
+    <div class="profile-card">
+      <!-- Section informations personnelles -->
+      <div class="card-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="bx bx-id-card"></i>
+            Informations personnelles
+          </h2>
+          <p class="section-subtitle">Gérez vos informations de compte</p>
         </div>
-    </div>
 
-    <!-- Loader -->
-    <div *ngIf="isLoading" class="profile-loader">
-        <i class='bx bx-loader-alt bx-spin'></i>
-        <p>Chargement de vos informations...</p>
-    </div>
+        <!-- Messages de notification -->
+        <div *ngIf="error" class="alert alert-error">
+          <i class="bx bx-error-circle"></i>
+          <span>{{ error }}</span>
+        </div>
 
-    <!-- Contenu du Profil -->
-    <div *ngIf="!isLoading" class="profile-content">
-        
-        <!-- Card principale -->
-        <div class="profile-card">
-            
-            <!-- Section informations personnelles -->
-            <div class="card-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class='bx bx-id-card'></i>
-                        Informations personnelles
-                    </h2>
-                    <p class="section-subtitle">Gérez vos informations de compte</p>
-                </div>
+        <div *ngIf="successMessage" class="alert alert-success">
+          <i class="bx bx-check-circle"></i>
+          <span>{{ successMessage }}</span>
+        </div>
 
-                <!-- Messages de notification -->
-                <div *ngIf="error" class="alert alert-error">
-                    <i class='bx bx-error-circle'></i>
-                    <span>{{ error }}</span>
-                </div>
-                
-                <div *ngIf="successMessage" class="alert alert-success">
-                    <i class='bx bx-check-circle'></i>
-                    <span>{{ successMessage }}</span>
-                </div>
+        <!-- Formulaire -->
+        <form [formGroup]="profileForm!" (ngSubmit)="onSaveProfile()" class="profile-form">
+          <!-- Email avec icône de statut -->
+          <div class="form-group">
+            <label for="email" class="form-label">
+              <span>Adresse email</span>
+              <!-- <span class="label-badge">Vérifié</span> -->
+            </label>
+            <div class="input-wrapper">
+              <i class="bx bx-envelope"></i>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="form-input input-readonly"
+                readonly
+              />
+            </div>
+            <p class="form-hint">
+              <i class="bx bx-info-circle"></i>
+              Votre email ne peut pas être modifié
+            </p>
+          </div>
 
-                <!-- Formulaire -->
-                <form [formGroup]="profileForm!" (ngSubmit)="onSaveProfile()" class="profile-form">
+          <!-- Username -->
+          <div class="form-group">
+            <label for="username" class="form-label">
+              <span>Nom d'utilisateur</span>
+              <span class="label-optional">Optionnel</span>
+            </label>
+            <div class="input-wrapper">
+              <i class="bx bx-user"></i>
+              <input
+                type="text"
+                id="username"
+                formControlName="username"
+                class="form-input"
+                placeholder="Choisissez un nom d'utilisateur"
+                [class.input-error]="
+                  profileForm!.get('username')?.invalid &&
+                  (profileForm!.get('username')?.dirty || profileForm!.get('username')?.touched)
+                "
+              />
+            </div>
+            <div
+              *ngIf="
+                profileForm!.get('username')?.invalid &&
+                (profileForm!.get('username')?.dirty || profileForm!.get('username')?.touched)
+              "
+              class="form-error"
+            >
+              <i class="bx bx-error-circle"></i>
+              Le nom d'utilisateur est trop long (max. 50 caractères)
+            </div>
+          </div>
 
-                    <!-- Email avec icône de statut -->
-                    <div class="form-group">
-                        <label for="email" class="form-label">
-                            <span>Adresse email</span>
-                            <!-- <span class="label-badge">Vérifié</span> -->
-                        </label>
-                        <div class="input-wrapper">
-                            <i class='bx bx-envelope'></i>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                formControlName="email" 
-                                class="form-input input-readonly" 
-                                readonly
-                            >
-                        </div>
-                        <p class="form-hint">
-                            <i class='bx bx-info-circle'></i>
-                            Votre email ne peut pas être modifié
-                        </p>
-                    </div>
+          <!-- Prénom et Nom -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName" class="form-label">
+                <span>Prénom</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="bx bx-user-pin"></i>
+                <input
+                  type="text"
+                  id="firstName"
+                  formControlName="firstName"
+                  class="form-input"
+                  placeholder="Votre prénom"
+                />
+              </div>
+            </div>
 
-                    <!-- Username -->
-                    <div class="form-group">
-                        <label for="username" class="form-label">
-                            <span>Nom d'utilisateur</span>
-                            <span class="label-optional">Optionnel</span>
-                        </label>
-                        <div class="input-wrapper">
-                            <i class='bx bx-user'></i>
-                            <input 
-                                type="text" 
-                                id="username" 
-                                formControlName="username" 
-                                class="form-input" 
-                                placeholder="Choisissez un nom d'utilisateur"
-                                [class.input-error]="profileForm!.get('username')?.invalid && (profileForm!.get('username')?.dirty || profileForm!.get('username')?.touched)"
-                            >
-                        </div>
-                        <div 
-                            *ngIf="profileForm!.get('username')?.invalid && (profileForm!.get('username')?.dirty || profileForm!.get('username')?.touched)" 
-                            class="form-error"
-                        >
-                            <i class='bx bx-error-circle'></i>
-                            Le nom d'utilisateur est trop long (max. 50 caractères)
-                        </div>
-                    </div>
+            <div class="form-group">
+              <label for="lastName" class="form-label">
+                <span>Nom de famille</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="bx bx-user-pin"></i>
+                <input
+                  type="text"
+                  id="lastName"
+                  formControlName="lastName"
+                  class="form-input"
+                  placeholder="Votre nom"
+                />
+              </div>
+            </div>
+          </div>
 
-                    <!-- Prénom et Nom -->
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName" class="form-label">
-                                <span>Prénom</span>
-                            </label>
-                            <div class="input-wrapper">
-                                <i class='bx bx-user-pin'></i>
-                                <input 
-                                    type="text" 
-                                    id="firstName" 
-                                    formControlName="firstName" 
-                                    class="form-input" 
-                                    placeholder="Votre prénom"
-                                >
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="lastName" class="form-label">
-                                <span>Nom de famille</span>
-                            </label>
-                            <div class="input-wrapper">
-                                <i class='bx bx-user-pin'></i>
-                                <input 
-                                    type="text" 
-                                    id="lastName" 
-                                    formControlName="lastName" 
-                                    class="form-input" 
-                                    placeholder="Votre nom"
-                                >
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Téléphone -->
-                    <div class="form-group">
+          <!-- Téléphone -->
+          <!-- <div class="form-group">
                         <label for="contactPhone" class="form-label">
                             <span>Numéro de téléphone</span>
                             <span class="label-optional">Optionnel</span>
@@ -149,48 +151,69 @@
                                 placeholder="+225 00 00 00 00 00"
                             >
                         </div>
-                    </div>
+                    </div> -->
 
-                    <!-- Actions -->
-                    <div class="form-actions">
-                        <button 
-                            type="submit" 
-                            class="btn-save" 
-                            [disabled]="profileForm!.invalid || isSaving"
-                        >
-                            <i class='bx' [ngClass]="isSaving ? 'bx-loader-alt bx-spin' : 'bx-save'"></i>
-                            <span>{{ isSaving ? 'Enregistrement...' : 'Enregistrer les modifications' }}</span>
-                        </button>
-                    </div>
+          <div class="form-group mb-4">
+            <label for="countryCode" class="form-label"> Pays et Indicatif </label>
+            <select id="countryCode" formControlName="countryCode" class="form-input">
+              <option *ngFor="let country of westAfricanCountries" [value]="country.code">
+                {{ country.flag }} {{ country.prefix }} ({{ country.name }})
+              </option>
+            </select>
+          </div>
 
-                </form>
+          <div class="form-group">
+            <label for="contactPhone" class="form-label">
+              <span>Numéro de téléphone</span>
+              <span class="label-optional">Optionnel</span>
+            </label>
+            <div class="input-wrapper">
+              <i class="bx bx-phone"></i>
+              <input
+                type="text"
+                id="contactPhone"
+                formControlName="contactPhone"
+                class="form-input"
+                placeholder="Saisir le numéro local"
+                [mask]="getPhoneMask()"
+                [prefix]="getPhonePrefix()"
+              />
             </div>
+          </div>
 
-        </div>
-
-        <!-- Card informations complémentaires -->
-        <div class="profile-sidebar">
-            <div class="sidebar-card">
-                <div class="sidebar-header">
-                    <i class='bx bx-info-circle'></i>
-                    <h3>Informations</h3>
-                </div>
-                <ul class="info-list">
-                    <li>
-                        <i class='bx bx-check'></i>
-                        <span>Vos données sont sécurisées</span>
-                    </li>
-                    <li>
-                        <i class='bx bx-check'></i>
-                        <span>Mises à jour propre</span>
-                    </li>
-                    <li>
-                        <i class='bx bx-check'></i>
-                        <span>Support disponible 24/7</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="submit" class="btn-save" [disabled]="profileForm!.invalid || isSaving">
+              <i class="bx" [ngClass]="isSaving ? 'bx-loader-alt bx-spin' : 'bx-save'"></i>
+              <span>{{ isSaving ? 'Enregistrement...' : 'Enregistrer les modifications' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+
+    <!-- Card informations complémentaires -->
+    <div class="profile-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-header">
+          <i class="bx bx-info-circle"></i>
+          <h3>Informations</h3>
+        </div>
+        <ul class="info-list">
+          <li>
+            <i class="bx bx-check"></i>
+            <span>Vos données sont sécurisées</span>
+          </li>
+          <li>
+            <i class="bx bx-check"></i>
+            <span>Mises à jour propre</span>
+          </li>
+          <li>
+            <i class="bx bx-check"></i>
+            <span>Support disponible 24/7</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>

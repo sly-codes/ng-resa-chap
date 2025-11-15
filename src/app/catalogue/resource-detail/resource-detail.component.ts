@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Observable, catchError, of, switchMap, tap } from 'rxjs';
 import { ResourceService, Resource } from '../../core/resource.service';
@@ -12,7 +12,7 @@ import { ToastService } from '../../../common/toast/toast.service';
   templateUrl: './resource-detail.component.html',
   styleUrls: ['./resource-detail.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NgIf],
 })
 export class ResourceDetailComponent implements OnInit {
   private resourceService = inject(ResourceService);

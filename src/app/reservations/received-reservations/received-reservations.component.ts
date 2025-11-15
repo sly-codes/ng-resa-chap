@@ -1,30 +1,30 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, NgFor, NgIf } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NgbDropdownModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import {
   BehaviorSubject,
-  Observable,
+  Observable, // 🚨 NOUVEAU: Import startWith
+  Subject,
   catchError,
+  combineLatest,
   debounceTime,
   distinctUntilChanged,
-  of,
+  of, // 🚨 NOUVEAU: Import combineLatest
+  startWith,
   switchMap,
   tap,
-  combineLatest, // 🚨 NOUVEAU: Import combineLatest
-  startWith, // 🚨 NOUVEAU: Import startWith
-  Subject, // 🚨 NOUVEAU: Import Subject pour le refresh
 } from 'rxjs';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import {
-  ReservationService,
-  ReservationStatus,
-  ReceivedReservationView,
-  ReservationQuery,
-  PaginatedReservations,
-} from '../reservation.service';
-import { HttpClientModule } from '@angular/common/http';
 import { PaginationComponent } from '../../../common/pagination/pagination.component';
 import { ToastService } from '../../../common/toast/toast.service';
-import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  ReceivedReservationView,
+  ReservationQuery,
+  ReservationService,
+  ReservationStatus,
+} from '../reservation.service';
 
 @Component({
   selector: 'app-received-reservations',
@@ -33,16 +33,20 @@ import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
   standalone: true,
   imports: [
     CommonModule,
+    NgIf,
+    NgFor,
     HttpClientModule,
     DatePipe,
     PaginationComponent,
     ReactiveFormsModule,
     NgbPopoverModule,
+    NgbDropdownModule,
   ],
 })
 export class ReceivedReservationsComponent implements OnInit {
   private reservationService = inject(ReservationService);
   private toastService = inject(ToastService);
+  private router = inject(Router);
 
   private reservationsSubject = new BehaviorSubject<ReceivedReservationView[]>([]);
   reservations$: Observable<ReceivedReservationView[]> = this.reservationsSubject.asObservable();
@@ -197,6 +201,10 @@ export class ReceivedReservationsComponent implements OnInit {
 
   onReject(id: string): void {
     this.updateStatus(id, 'REJECTED');
+  }
+
+  onViewReservation(reservation: ReceivedReservationView): void {
+    this.router.navigate(['/reservations', reservation.id]);
   }
 
   getResourceIcon(type: 'ROOM' | 'EQUIPMENT'): string {

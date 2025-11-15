@@ -1,21 +1,18 @@
 <div class="reservations-container">
-  <h1 class="reservations-title">
-    <i class="bx bx-book-bookmark"></i>
-    <span>Mes Réservations</span>
-  </h1>
+  <!-- Header compact -->
+  <div class="reservations-header">
+    <div class="header-title">
+      <h1 class="reservations-title">
+        <i class="bx bx-book-bookmark"></i>
+        <span class="title-text">Mes Réservations</span>
+      </h1>
+    </div>
+  </div>
 
+  <!-- Controls optimisés -->
   <div class="reservations-controls">
-    <div class="filter-controls-group">
-      <div class="control-group">
-        <label for="status-filter">Statut</label>
-        <select id="status-filter" [formControl]="statusFilter">
-          <option value="ALL">Tous les statuts</option>
-          <option *ngFor="let status of reservationStatuses" [value]="status">
-            {{ getReservationStatusText(status) }}
-          </option>
-        </select>
-      </div>
-
+    <!-- Ligne 1: Recherche principale -->
+    <div class="search-row">
       <div class="control-group search-control">
         <i class="bx bx-search"></i>
         <input
@@ -25,23 +22,35 @@
           aria-label="Rechercher par ressource ou locateur"
         />
       </div>
+
+      <button
+        class="btn-refresh"
+        (click)="onRefresh()"
+        [disabled]="isLoading"
+        title="Rafraîchir la liste"
+        aria-label="Rafraîchir la liste"
+      >
+        <i
+          class="bx"
+          [ngClass]="{ 'bx-loader-alt bx-spin': isLoading, 'bx-refresh': !isLoading }"
+        ></i>
+        <span class="btn-text">Actualiser</span>
+      </button>
     </div>
 
-    <button
-      class="btn-refresh"
-      (click)="onRefresh()"
-      [disabled]="isLoading"
-      title="Rafraîchir la liste"
-      aria-label="Rafraîchir la liste"
-    >
-      <i
-        class="bx"
-        [ngClass]="{ 'bx-loader-alt bx-spin': isLoading, 'bx-refresh': !isLoading }"
-      ></i>
-      <span class="btn-text">Actualiser</span>
-    </button>
+    <!-- Ligne 2: Filtres -->
+    <div class="filters-row">
+      <div class="control-group status-filter">
+        <select id="status-filter" [formControl]="statusFilter">
+          <option value="ALL">Tous statuts</option>
+          <option *ngFor="let status of reservationStatuses" [value]="status">
+            {{ getReservationStatusText(status) }}
+          </option>
+        </select>
+      </div>
+    </div>
   </div>
-  
+
   <div *ngIf="isLoading" class="reservations-loader">
     <i class="bx bx-loader-alt bx-spin"></i>
     <p>Chargement de vos réservations...</p>
@@ -96,16 +105,16 @@
 
               <td>
                 <button
-                placement="bottom"
-                type="button"
-                tabindex="0"
-                class="btn-desc"
-                data-bs-trigger="focus"
-                [ngbPopover]="res.notes || 'Aucune notes'"
-                popoverTitle="Description"
-              >
-                Voir notes
-              </button>
+                  placement="bottom"
+                  type="button"
+                  tabindex="0"
+                  class="btn-desc"
+                  data-bs-trigger="focus"
+                  [ngbPopover]="res.notes || 'Aucune notes'"
+                  popoverTitle="Description"
+                >
+                  Voir notes
+                </button>
               </td>
 
               <td>
@@ -122,21 +131,55 @@
                 </span>
               </td>
 
-              <td class="text-center">
-                <div class="reservation-actions">
+              <td class="actions-cell">
+                <div
+                  ngbDropdown
+                  container="body"
+                  placement="bottom-end"
+                  class="reservation-actions-dropdown"
+                >
                   <button
-                    *ngIf="res.status === 'PENDING'"
-                    (click)="onCancelReservation(res.id)"
-                    class="btn-cancel"
+                    type="button"
+                    class="btn-actions"
+                    ngbDropdownToggle
                     [disabled]="res.isCancelling"
-                    title="Annuler la réservation"
-                    aria-label="Annuler la réservation"
+                    [attr.aria-label]="'Actions pour la réservation de ' + res.resource.name"
                   >
-                    <i class="bx" [ngClass]="res.isCancelling ? 'bx-loader-alt bx-spin' : 'bx-x'"></i>
-                    <span>Annuler</span>
+                    <i
+                      class="bx"
+                      [ngClass]="{
+                        'bx-loader-alt bx-spin': res.isCancelling,
+                        'bx-dots-vertical-rounded': !res.isCancelling
+                      }"
+                    ></i>
                   </button>
-                  <div *ngIf="res.status !== 'PENDING'" class="reservation-status-final">
-                    <span class="text-muted">—</span>
+                  <div ngbDropdownMenu class="actions-menu">
+                    <button
+                      ngbDropdownItem
+                      (click)="onViewReservation(res)"
+                      class="action-item action-view"
+                    >
+                      <i class="bx bx-show"></i>
+                      <span>Voir Détails</span>
+                    </button>
+                    <button
+                      *ngIf="res.status === 'PENDING'"
+                      ngbDropdownItem
+                      (click)="onCancelReservation(res.id)"
+                      class="action-item action-cancel"
+                    >
+                      <i class="bx bx-x"></i>
+                      <span>Annuler</span>
+                    </button>
+                    <button
+                      *ngIf="res.status !== 'PENDING'"
+                      ngbDropdownItem
+                      disabled
+                      class="action-item action-disabled"
+                    >
+                      <i class="bx bx-info-circle"></i>
+                      <span>{{ getReservationStatusText(res.status) }}</span>
+                    </button>
                   </div>
                 </div>
               </td>

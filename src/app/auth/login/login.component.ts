@@ -23,6 +23,7 @@ import { ToastService } from '../../../common/toast/toast.service';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = false;
+  showPassword = false;
 
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
@@ -35,6 +36,10 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit(): void {
