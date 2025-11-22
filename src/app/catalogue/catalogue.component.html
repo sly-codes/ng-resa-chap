@@ -70,14 +70,8 @@
     </form>
   </div>
 
-  <!-- Error Message -->
-  <div *ngIf="error" class="catalogue-error">
-    <i class="bx bx-error-circle"></i>
-    <span>{{ error }}</span>
-  </div>
-
   <!-- Loader -->
-  <div *ngIf="loading && !error" class="catalogue-loader">
+  <div *ngIf="loading" class="catalogue-loader">
     <div class="loader-content">
       <i class="bx bx-loader-alt bx-spin"></i>
       <p>Chargement des ressources...</p>
@@ -85,112 +79,130 @@
   </div>
 
   <!-- Content -->
-  <ng-container *ngIf="resources$ | async as resources">
-    <div *ngIf="!loading && !error" class="catalogue-content">
-      <!-- Empty State -->
-      <div *ngIf="resources.length === 0" class="no-resource">
-        <div class="empty-icon">
-          <i class="bx bx-search-alt-2"></i>
-        </div>
-        <h3>Aucune ressource trouvée</h3>
-        <p>Essayez de modifier vos critères de recherche ou réinitialisez les filtres.</p>
-        <button class="reset-btn" (click)="filterForm.reset({ search: '', type: '', city: '' })">
-          <i class="bx bx-refresh"></i>
-          Réinitialiser les filtres
-        </button>
-      </div>
+  <ng-container *ngIf="!loading">
+    <!-- Error Message -->
+    <div *ngIf="error" class="catalogue-error">
+      <i class="bx bx-error-circle"></i>
+      <span>{{ error }}</span>
+    </div>
 
-      <!-- Resource Grid -->
-      <div class="catalogue-grid" *ngIf="resources.length > 0">
-        <div *ngFor="let resource of resources" class="resource-card">
-          <!-- Card Image -->
-          <div class="card-image-wrapper" (click)="onViewDetails(resource.id)">
-            <img
-              [src]="resource.mainImage || 'assets/placeholder-resource.jpg'"
-              [alt]="'Image de ' + resource.name"
-              class="card-image"
-              onError="this.src='assets/placeholder-resource.jpg';"
-            />
-            <div class="card-badge">
-              <span
-                class="type-badge"
-                [ngClass]="{
-                  'badge-room': resource.type === 'ROOM',
-                  'badge-equipment': resource.type === 'EQUIPMENT'
-                }"
-              >
-                <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
-                <span>{{ getTypeLabel(resource.type) }}</span>
-              </span>
-            </div>
+    <ng-container *ngIf="resources$ | async as resources">
+      <div *ngIf="!error" class="catalogue-content">
+        <!-- Empty State -->
+        <div *ngIf="resources.length === 0" class="no-resource">
+          <div class="empty-icon">
+            <i class="bx bx-search-alt-2"></i>
           </div>
+          <h3>Aucune ressource trouvée</h3>
+          <p>Essayez de modifier vos critères de recherche ou réinitialisez les filtres.</p>
+          <button class="reset-btn" (click)="filterForm.reset({ search: '', type: '', city: '' })">
+            <i class="bx bx-refresh"></i>
+            Réinitialiser les filtres
+          </button>
+        </div>
 
-          <!-- Card Info -->
-          <div class="card-info">
-            <div class="card-header">
-              <h2>{{ resource.name }}</h2>
-            </div>
-
-            <p class="card-price">
-              <span class="price-value">{{
-                resource.price | currency : 'FCFA' : 'symbol' : '1.0-0'
-              }}</span>
-              <span class="price-unit">/ {{ getPriceUnitLabel(resource.priceUnit) }}</span>
-            </p>
-
-            <p class="card-description">
-              <button
-                placement="top"
-                type="button"
-                tabindex="0"
-                class="btn-desc"
-                data-bs-trigger="focus"
-                [ngbPopover]="resource.description || 'Aucune description'"
-                popoverTitle="Description"
-              >
-                Voir description
-              </button>
-            </p>
-
-            <div class="resource-meta">
-              <div class="meta-item meta-location">
-                <i class="bx bx-map"></i>
-                <span>{{ resource.city || 'Ville non spécifiée' }}</span>
-              </div>
-
-              <div class="meta-item-owner">
-                <i class="bx bx-user-circle"></i>
-                <span class="owner-name"
-                  >Par {{ resource.owner.firstName }} {{ resource.owner.lastName }}
+        <!-- Resource Grid -->
+        <div class="catalogue-grid" *ngIf="resources.length > 0">
+          <div *ngFor="let resource of resources" class="resource-card">
+            <!-- Card Image -->
+            <div class="card-image-wrapper" (click)="onViewDetails(resource.id)">
+              <img
+                [src]="resource.mainImage || 'assets/placeholder-resource.jpg'"
+                [alt]="'Image de ' + resource.name"
+                class="card-image"
+                onError="this.src='assets/placeholder-resource.jpg';"
+              />
+              <div class="card-badge">
+                <span
+                  class="type-badge"
+                  [ngClass]="{
+                    'badge-room': resource.type === 'ROOM',
+                    'badge-equipment': resource.type === 'EQUIPMENT'
+                  }"
+                >
+                  <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
+                  <span>{{ getTypeLabel(resource.type) }}</span>
                 </span>
               </div>
             </div>
-          </div>
 
-          <!-- Card Actions -->
-          <div class="card-actions">
-            <button
-              (click)="onViewDetails(resource.id)"
-              class="details-btn"
-              [disabled]="loading"
-              aria-label="Voir les détails de {{ resource.name }}"
-            >
-              <i class="bx bx-info-circle"></i>
-              <span>Détails</span>
-            </button>
+            <!-- Card Info -->
+            <div class="card-info">
+              <div class="card-header">
+                <h2>{{ resource.name }}</h2>
+              </div>
 
-            <button
-              (click)="onReserve(resource.id, resource.name); $event.stopPropagation()"
-              class="reserve-btn"
-              [disabled]="loading"
-              aria-label="Réserver {{ resource.name }}"
-            >
-              <i class="bx bx-calendar-plus"></i>
-              <span>Réserver</span>
-            </button>
+              <p class="card-price">
+                <span class="price-value">{{
+                  resource.price | currency : 'FCFA' : 'symbol' : '1.0-0'
+                }}</span>
+                <span class="price-unit">/ {{ getPriceUnitLabel(resource.priceUnit) }}</span>
+              </p>
+
+              <p class="card-description">
+                <button
+                  placement="top"
+                  type="button"
+                  tabindex="0"
+                  class="btn-desc"
+                  data-bs-trigger="focus"
+                  [ngbPopover]="resource.description || 'Aucune description'"
+                  popoverTitle="Description"
+                >
+                  Voir description
+                </button>
+              </p>
+
+              <div class="resource-meta">
+                <div class="meta-item meta-location">
+                  <i class="bx bx-map"></i>
+                  <span>{{ resource.city || 'Ville non spécifiée' }}</span>
+                </div>
+
+                <div class="meta-item-owner">
+                  <i class="bx bx-user-circle"></i>
+                  <span class="owner-name"
+                    >Par {{ resource.owner.firstName }} {{ resource.owner.lastName }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="card-actions">
+              <button
+                (click)="onViewDetails(resource.id)"
+                class="details-btn"
+                [disabled]="loading"
+                aria-label="Voir les détails de {{ resource.name }}"
+              >
+                <i class="bx bx-info-circle"></i>
+                <span>Détails</span>
+              </button>
+
+              <button
+                (click)="onReserve(resource.id, resource.name); $event.stopPropagation()"
+                class="reserve-btn"
+                [disabled]="loading"
+                aria-label="Réserver {{ resource.name }}"
+              >
+                <i class="bx bx-calendar-plus"></i>
+                <span>Réserver</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Pagination Component -->
+      <app-pagination
+        *ngIf="resources.length > 0"
+        [totalItems]="totalItems"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [isLoading]="loading"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    </ng-container>
   </ng-container>
 </div>

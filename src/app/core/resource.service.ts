@@ -1,8 +1,25 @@
-import { Injectable, inject } from '@angular/core';
+/**
+ * Service de gestion des ressources cote frontend
+ *
+ * Ce service communique avec l'API backend pour gerer les ressources :
+ * - Creation de ressources avec upload d'images
+ * - Recuperation de la liste des ressources (publique et privee)
+ * - Modification des ressources existantes
+ * - Suppression de ressources
+ * - Filtrage avance (type, localisation, recherche textuelle)
+ * - Pagination pour optimiser les performances
+ *
+ * Les images sont gerees via Cloudinary cote backend
+ */
+
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+/**
+ * Informations du proprietaire d'une ressource
+ */
 export interface Owner {
   email: string;
   firstName: string;
@@ -10,9 +27,16 @@ export interface Owner {
   contactPhone: string;
 }
 
-// Type pour l'unité de prix
+/**
+ * Unite de tarification pour une ressource
+ * Determine si le prix est a l'heure, au jour, a la semaine ou au mois
+ */
 export type PriceUnit = 'HOUR' | 'DAY' | 'WEEK' | 'MONTH';
 
+/**
+ * Representation complete d'une ressource
+ * Inclut toutes les informations necessaires pour l'affichage
+ */
 export interface Resource {
   id: string;
   name: string;
@@ -20,23 +44,42 @@ export interface Resource {
   description: string;
   ownerId: string;
   createdAt: Date;
-  owner: Owner; // NOUVEAUX CHAMPS (confirmés par le backend)
+  owner: Owner;
   price: number;
   priceUnit: PriceUnit;
   country: string;
   city: string;
   address: string;
-  mainImage: string; // URL de l'image Cloudinary
+  mainImage: string;
 }
 
-// Interface pour les filtres étendus
+/**
+ * Options de filtrage pour la recherche de ressources
+ * Permet de combiner plusieurs criteres de recherche
+ */
 export interface ResourceFilters {
   search?: string;
   type?: 'ROOM' | 'EQUIPMENT';
-  city?: string; // Filtre par ville (Nécessaire pour le Catalogue)
+  city?: string;
+  page?: number;
+  limit?: number;
 }
 
-// DTO pour la soumission du formulaire (inclut le fichier)
+/**
+ * Reponse paginee de l'API pour les ressources
+ * Contient les donnees et les metadonnees de pagination
+ */
+export interface PaginatedResources {
+  data: Resource[];
+  total: number;
+  page: number;
+  lastPage: number;
+}
+
+/**
+ * DTO pour la creation d'une nouvelle ressource
+ * Utilise pour l'envoi de donnees depuis le formulaire
+ */
 export interface CreateResourceDTO {
   name: string;
   type: 'ROOM' | 'EQUIPMENT';
@@ -56,7 +99,7 @@ export class ResourceService {
   private readonly apiUrl = environment.apiUrl + '/resources';
   private http = inject(HttpClient);
   /**
-   * Ajoute les filtres search, type et city aux HttpParams
+   * Ajoute les filtres search, type, city, page et limit aux HttpParams
    */
 
   private buildFilterParams(filters?: ResourceFilters): HttpParams {
@@ -68,9 +111,15 @@ export class ResourceService {
       }
       if (filters.type) {
         params = params.set('type', filters.type);
-      } // Ajout du filtre city
+      }
       if (filters.city) {
         params = params.set('city', filters.city);
+      }
+      if (filters.page) {
+        params = params.set('page', filters.page.toString());
+      }
+      if (filters.limit) {
+        params = params.set('limit', filters.limit.toString());
       }
     }
     return params;
@@ -99,21 +148,21 @@ export class ResourceService {
     return formData;
   }
   /**
-   * Liste toutes les ressources disponibles (Catalogue public) avec filtres.
+   * Liste toutes les ressources disponibles (Catalogue public) avec filtres et pagination.
    */
 
-  getAllResources(filters?: ResourceFilters): Observable<Resource[]> {
-    const params = this.buildFilterParams(filters); // Le backend renvoie l'owner avec les champs requis
-    return this.http.get<Resource[]>(this.apiUrl, { params });
+  getAllResources(filters?: ResourceFilters): Observable<PaginatedResources> {
+    const params = this.buildFilterParams(filters);
+    return this.http.get<PaginatedResources>(this.apiUrl, { params });
   }
   /**
-   * Récupère les ressources appartenant à l'utilisateur connecté (Gestion).
+   * Récupère les ressources appartenant à l'utilisateur connecté (Gestion) avec pagination.
    * Appelle GET /resources/mine avec filtres.
    */
 
-  getMyResources(filters?: ResourceFilters): Observable<Resource[]> {
+  getMyResources(filters?: ResourceFilters): Observable<PaginatedResources> {
     const params = this.buildFilterParams(filters);
-    return this.http.get<Resource[]>(`${this.apiUrl}/mine`, { params });
+    return this.http.get<PaginatedResources>(`${this.apiUrl}/mine`, { params });
   }
   /**
    * Récupère une ressource par son ID (Détail)

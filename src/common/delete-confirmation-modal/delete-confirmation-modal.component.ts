@@ -141,18 +141,18 @@ import { CommonModule } from '@angular/common';
         display: flex;
         align-items: center;
         justify-content: center;
-        // animation: pulseWarning 2s ease-in-out infinite;
+        animation: pulseWarning 2s ease-in-out infinite;
       }
 
-      // @keyframes pulseWarning {
-      //   0%,
-      //   100% {
-      //     box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
-      //   }
-      //   50% {
-      //     box-shadow: 0 0 0 12px rgba(220, 38, 38, 0);
-      //   }
-      // }
+      @keyframes pulseWarning {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 12px rgba(220, 38, 38, 0);
+        }
+      }
 
       .warning-icon i {
         font-size: 2rem;

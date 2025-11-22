@@ -1,24 +1,25 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { NgbModal, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import {
-  Observable,
+  BehaviorSubject,
   catchError,
-  of,
-  switchMap,
-  tap,
-  startWith,
-  finalize,
+  combineLatest,
   debounceTime,
   distinctUntilChanged,
+  Observable,
+  of,
+  startWith,
   Subject,
-  merge,
+  switchMap,
+  tap,
 } from 'rxjs';
-import { RouterModule, Router } from '@angular/router'; // 💡 Ajout de Router pour la navigation
-import { NgbModal, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
-import { ReservationFormModalComponent } from '../reservations/reservation-form-modal/reservation-form-modal.component';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Resource, ResourceFilters, ResourceService } from '../core/resource.service';
+import { PaginationComponent } from '../../common/pagination/pagination.component';
 import { ToastService } from '../../common/toast/toast.service';
+import { Resource, ResourceFilters, ResourceService } from '../core/resource.service';
+import { ReservationFormModalComponent } from '../reservations/reservation-form-modal/reservation-form-modal.component';
 
 const RESOURCE_TYPES: ('ROOM' | 'EQUIPMENT')[] = ['ROOM', 'EQUIPMENT'];
 
@@ -26,83 +27,107 @@ const RESOURCE_TYPES: ('ROOM' | 'EQUIPMENT')[] = ['ROOM', 'EQUIPMENT'];
   selector: 'app-catalogue',
   templateUrl: './catalogue.component.html',
   styleUrls: ['./catalogue.component.scss'],
-  standalone: true, // 💡 Ajout de ResourceDetailComponent à importer/déclarer si c'est un module partagé
-  imports: [CommonModule, RouterModule, NgIf, ReactiveFormsModule, NgbPopoverModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgIf,
+    ReactiveFormsModule,
+    NgbPopoverModule,
+    PaginationComponent,
+  ],
 })
 export class CatalogueComponent implements OnInit {
   private resourceService = inject(ResourceService);
   private modalService = inject(NgbModal);
   private toastService = inject(ToastService);
-  private router = inject(Router); // 💡 Injection de Router
+  private router = inject(Router);
 
-  resources$!: Observable<Resource[]>;
+  private resourcesSubject = new BehaviorSubject<Resource[]>([]);
+  resources$: Observable<Resource[]> = this.resourcesSubject.asObservable();
+
   loading = true;
   error: string | null = null;
   resourceTypes = RESOURCE_TYPES;
 
-  private refreshTrigger = new Subject<boolean>();
+  // Pagination
+  totalItems = 0;
+  currentPage = 1;
+  totalPages = 1;
+  limit = 12;
+
+  private refresh$ = new Subject<{ page: number; silent: boolean }>();
 
   filterForm = new FormGroup({
     search: new FormControl<string>(''),
     type: new FormControl<'ROOM' | 'EQUIPMENT' | ''>(''),
-    city: new FormControl<string>(''), // 💡 AJOUT DU CONTRÔLE CITY
+    city: new FormControl<string>(''),
   });
 
   ngOnInit(): void {
     const filterChanges$ = this.filterForm.valueChanges.pipe(
       startWith(this.filterForm.value),
-      debounceTime(400), // Ajout de city dans le distinctUntilChanged
-      distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+      debounceTime(400),
+      distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+      tap(() => (this.currentPage = 1))
     );
 
-    const manualRefresh$ = this.refreshTrigger.pipe(
-      switchMap((isManual) => of({ filters: this.filterForm.value, isManual }))
-    );
+    // Flux principal combinant filtres et pagination
+    combineLatest([filterChanges$, this.refresh$.pipe(startWith({ page: 1, silent: false }))])
+      .pipe(
+        switchMap(([filters, refreshAction]) => {
+          const pageToLoad = refreshAction.page;
+          const silent = refreshAction.silent;
 
-    this.resources$ = merge(
-      filterChanges$.pipe(switchMap((filters) => of({ filters, isManual: false }))),
-      manualRefresh$
-    ).pipe(
-      tap(() => {
-        this.loading = true;
-        this.error = null;
-      }),
-      switchMap(({ filters, isManual }) => {
-        const searchParam = filters.search ?? undefined;
-        const typeParam = filters.type ?? '';
-        const cityParam = filters.city ?? undefined; // 💡 Récupération de City
+          if (!silent) {
+            this.loading = true;
+          }
+          this.error = null;
+          this.currentPage = pageToLoad;
 
-        const apiFilters: ResourceFilters = {
-          search: searchParam || undefined,
-          type: typeParam === '' ? undefined : (typeParam as 'ROOM' | 'EQUIPMENT'),
-          city: cityParam || undefined, // 💡 Passage de City au service
-        };
+          const searchParam = filters.search ?? undefined;
+          const typeParam = filters.type ?? '';
+          const cityParam = filters.city ?? undefined;
 
-        return this.resourceService.getAllResources(apiFilters).pipe(
-          tap(() => {
-            if (isManual) {
-              this.toastService.info('Catalogue', 'Catalogue des ressources mis à jour.');
-            }
-          }),
-          catchError((err) => {
-            this.error = 'Erreur lors du chargement ou du filtrage des ressources.';
-            console.error(err);
-            this.toastService.error(
-              'Chargement échoué',
-              'Impossible de récupérer les ressources depuis le serveur.'
-            );
-            return of([]);
-          }),
-          finalize(() => {
-            this.loading = false;
-          })
-        );
-      })
-    );
+          const apiFilters: ResourceFilters = {
+            search: searchParam || undefined,
+            type: typeParam === '' ? undefined : (typeParam as 'ROOM' | 'EQUIPMENT'),
+            city: cityParam || undefined,
+            page: this.currentPage,
+            limit: this.limit,
+          };
+
+          return this.resourceService.getAllResources(apiFilters).pipe(
+            tap((response) => {
+              this.loading = false;
+              this.totalItems = response.total;
+              this.totalPages = response.lastPage;
+              this.resourcesSubject.next(response.data);
+            }),
+            catchError((err) => {
+              this.loading = false;
+              this.error = 'Erreur lors du chargement ou du filtrage des ressources.';
+              console.error(err);
+              this.toastService.error(
+                'Chargement échoué',
+                'Impossible de récupérer les ressources depuis le serveur.'
+              );
+              this.resourcesSubject.next([]);
+              return of({ data: [], total: 0, page: 1, lastPage: 1 });
+            })
+          );
+        })
+      )
+      .subscribe();
+  }
+
+  onPageChange(page: number): void {
+    this.refresh$.next({ page, silent: false });
   }
 
   onRefresh(): void {
-    this.refreshTrigger.next(true);
+    this.refresh$.next({ page: this.currentPage, silent: false });
+    this.toastService.info('Actualisation', 'Rechargement du catalogue...');
   }
   /**
    * Ouvre la modale de réservation
@@ -127,7 +152,7 @@ export class CatalogueComponent implements OnInit {
             `La réservation pour "${resourceName}" a été enregistrée.`
           );
 
-          this.refreshTrigger.next(false);
+          this.refresh$.next({ page: this.currentPage, silent: false });
         }
       },
       (reason) => {

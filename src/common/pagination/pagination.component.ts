@@ -11,10 +11,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       <div class="pagination-controls">
         <button
           (click)="changePage(currentPage - 1)"
-          [disabled]="currentPage === 1"
+          [disabled]="currentPage === 1 || isLoading"
           class="btn-prev"
         >
-          <i class="bx bx-chevron-left"></i> Précédent
+          <i class="bx" [ngClass]="isLoading ? 'bx-loader-alt bx-spin' : 'bx-chevron-left'"></i>
+          Précédent
         </button>
 
         <ng-container *ngFor="let page of getPages()">
@@ -22,19 +23,22 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
             *ngIf="page !== '...'"
             (click)="changePage(page)"
             [class.active]="page === currentPage"
+            [disabled]="isLoading"
             class="btn-page"
           >
-            {{ page }}
+            <i *ngIf="isLoading && page === currentPage" class="bx bx-loader-alt bx-spin"></i>
+            <span *ngIf="!isLoading || page !== currentPage">{{ page }}</span>
           </button>
           <span *ngIf="page === '...'" class="page-ellipsis">...</span>
         </ng-container>
 
         <button
           (click)="changePage(currentPage + 1)"
-          [disabled]="currentPage === totalPages"
+          [disabled]="currentPage === totalPages || isLoading"
           class="btn-next"
         >
-          Suivant <i class="bx bx-chevron-right"></i>
+          Suivant
+          <i class="bx" [ngClass]="isLoading ? 'bx-loader-alt bx-spin' : 'bx-chevron-right'"></i>
         </button>
       </div>
     </div>
@@ -47,6 +51,7 @@ export class PaginationComponent {
   @Input() totalItems = 0;
   @Input() currentPage = 1;
   @Input() totalPages = 1;
+  @Input() isLoading = false;
   @Output() pageChange = new EventEmitter<number>();
 
   // ⚠️ CORRECTION: Accepter 'string | number' pour gérer le type du template et faire la conversion

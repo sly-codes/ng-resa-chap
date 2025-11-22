@@ -1,23 +1,36 @@
+/**
+ * Service d'authentification frontend de l'application ResaChap
+ *
+ * Ce service gère toute la logique d'authentification côté client :
+ * - Connexion et inscription locale (email/mot de passe)
+ * - Authentification sociale (Google, GitHub) via OAuth 2.0
+ * - Gestion des tokens JWT (Access Token et Refresh Token)
+ * - Stockage sécurisé des tokens dans localStorage
+ * - Rafraîchissement automatique des tokens expirés
+ * - Déconnexion et nettoyage de session
+ * - Décodage des tokens pour extraire les informations utilisateur
+ *
+ * Utilise RxJS BehaviorSubject pour notifier les composants
+ * des changements d'état d'authentification en temps réel.
+ */
+
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../../common/toast/toast.service';
 import { environment } from '../../environments/environment';
-import { ToastService } from '../../common/toast/toast.service'; // 💡 IMPORT
 
-// Interface pour les Tokens renvoyés par le backend
 export interface Tokens {
   access_token: string;
   refresh_token: string;
 }
 
-// Interface pour les données de connexion/inscription
 export interface AuthCredentials {
   email: string;
   password: string;
 }
 
-// Type pour le rôle utilisateur
 export type UserRole = 'SUPER_ADMIN' | 'LOCATEUR' | 'LOCATAIRE';
 
 @Injectable({
@@ -25,20 +38,29 @@ export type UserRole = 'SUPER_ADMIN' | 'LOCATEUR' | 'LOCATAIRE';
 })
 export class AuthService {
   private readonly apiUrl = environment.apiUrl + '/auth';
-  private toastService = inject(ToastService); // 💡 INJECTION
+  private toastService = inject(ToastService);
 
-  // Sujet pour l'état d'authentification (utilisé par Guards et l'UI)
+  /**
+   * BehaviorSubject pour suivre l'état d'authentification
+   * Utilisé par les guards pour protéger les routes
+   * et par les composants pour afficher/masquer des éléments UI
+   */
   public isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  // 🚀 NOUVEAU : État pour l'UX - Vrai si l'application vérifie l'auth ou rafraîchit
+  /**
+   * BehaviorSubject pour indiquer si une vérification d'auth est en cours
+   * Permet d'afficher des spinners pendant les opérations d'authentification
+   */
   public isCheckingAuthSubject = new BehaviorSubject<boolean>(false);
   isCheckingAuth$ = this.isCheckingAuthSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
 
   /**
-   * Vérifie si un Access Token existe (ne vérifie pas la validité du JWT, juste la présence)
+   * Vérifie la présence d'un Access Token dans le localStorage
+   * Note : Ne valide pas le token, vérifie uniquement son existence
+   * @returns true si un token existe, false sinon
    */
   private hasValidToken(): boolean {
     const at = localStorage.getItem('access_token');
@@ -46,7 +68,10 @@ export class AuthService {
   }
 
   /**
-   * Stocke les tokens et met à jour l'état d'authentification.
+   * Stocke les tokens JWT dans le localStorage
+   * et met à jour l'état d'authentification
+   *
+   * @param tokens Objet contenant access_token et refresh_token
    */
   private saveTokens(tokens: Tokens): void {
     localStorage.setItem('access_token', tokens.access_token);

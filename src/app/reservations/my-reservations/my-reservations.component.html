@@ -192,6 +192,7 @@
         [totalItems]="totalItems"
         [currentPage]="currentPage"
         [totalPages]="totalPages"
+        [isLoading]="isLoading"
         (pageChange)="onPageChange($event)"
         *ngIf="reservations.length > 0 && totalPages > 1"
       ></app-pagination>

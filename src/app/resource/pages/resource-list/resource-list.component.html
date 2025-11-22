@@ -63,132 +63,144 @@
     </div>
   </div>
 
-  <div *ngIf="error" class="resources-error">
-    {{ error }}
-  </div>
-
   <div *ngIf="loading" class="resources-loader">
     <i class="bx bx-loader-alt bx-spin"></i>
+    <p>Chargement de vos ressources...</p>
   </div>
 
-  <ng-container *ngIf="resources$ | async as resources">
-    <div *ngIf="resources.length === 0 && !loading && !error" class="resources-empty">
-      <i class="bx bx-info-circle"></i>
-      <p>
-        Aucune ressource trouvée avec les critères actuels.<br />
-        Cliquez sur "Ajouter une ressource" pour commencer.
-      </p>
+  <ng-container *ngIf="!loading">
+    <div *ngIf="error" class="resources-error">
+      {{ error }}
     </div>
 
-    <div *ngIf="resources.length > 0 && !loading" class="resources-table-wrapper">
-      <table class="resources-table">
-        <thead>
-          <tr>
-            <th scope="col">Nom</th>
-            <th scope="col">Type</th>
-            <th scope="col" class="d-none d-lg-table-cell">Ville</th>
-            <th scope="col" class="d-none d-md-table-cell">Prix</th>
-            <th scope="col" class="d-none d-md-table-cell">Description</th>
-            <th scope="col">
-              <span>Actions</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let resource of resources">
-            <td class="resource-name">
-              {{ resource.name }}
-            </td>
+    <ng-container *ngIf="resources$ | async as resources">
+      <div *ngIf="resources.length === 0 && !error" class="resources-empty">
+        <i class="bx bx-info-circle"></i>
+        <p>
+          Aucune ressource trouvée avec les critères actuels.<br />
+          Cliquez sur "Ajouter une ressource" pour commencer.
+        </p>
+      </div>
 
-            <td>
-              <span
-                class="resource-type-badge"
-                [ngClass]="{
-                  'badge-room': resource.type === 'ROOM',
-                  'badge-equipment': resource.type === 'EQUIPMENT'
-                }"
-              >
-                <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
-                <span>{{ getTypeLabel(resource.type) }}</span>
-              </span>
-            </td>
+      <div *ngIf="resources.length > 0" class="resources-table-wrapper">
+        <table class="resources-table">
+          <thead>
+            <tr>
+              <th scope="col">Nom</th>
+              <th scope="col">Type</th>
+              <th scope="col" class="d-none d-lg-table-cell">Ville</th>
+              <th scope="col" class="d-none d-md-table-cell">Prix</th>
+              <th scope="col" class="d-none d-md-table-cell">Description</th>
+              <th scope="col">
+                <span>Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let resource of resources">
+              <td class="resource-name">
+                {{ resource.name }}
+              </td>
 
-            <td class="resource-city d-none d-lg-table-cell">
-              {{ resource.city || 'N/A' }}
-            </td>
-
-            <td class="resource-price d-none d-md-table-cell">
-              {{ resource.price | currency : 'FCFA' }} /
-              {{ getUnitDisplayLabel(resource.priceUnit) }}
-            </td>
-
-            <td class="resource-description d-none d-md-table-cell">
-              <button
-                placement="left"
-                type="button"
-                tabindex="0"
-                class="btn-desc"
-                data-bs-trigger="focus"
-                [ngbPopover]="resource.description || 'Aucune description'"
-                popoverTitle="Description"
-              >
-                Voir description
-              </button>
-            </td>
-
-            <td class="actions-cell">
-              <div
-                ngbDropdown
-                container="body"
-                placement="bottom-end"
-                class="resource-actions-dropdown"
-              >
-                <button
-                  type="button"
-                  class="btn-actions"
-                  ngbDropdownToggle
-                  [disabled]="resource.isDeleting"
-                  [attr.aria-label]="'Actions pour ' + resource.name"
+              <td>
+                <span
+                  class="resource-type-badge"
+                  [ngClass]="{
+                    'badge-room': resource.type === 'ROOM',
+                    'badge-equipment': resource.type === 'EQUIPMENT'
+                  }"
                 >
-                  <i
-                    class="bx"
-                    [ngClass]="{
-                      'bx-loader-alt bx-spin': resource.isDeleting,
-                      'bx-dots-vertical-rounded': !resource.isDeleting
-                    }"
-                  ></i>
+                  <i [class]="'bx ' + getResourceIcon(resource.type)"></i>
+                  <span>{{ getTypeLabel(resource.type) }}</span>
+                </span>
+              </td>
+
+              <td class="resource-city d-none d-lg-table-cell">
+                {{ resource.city || 'N/A' }}
+              </td>
+
+              <td class="resource-price d-none d-md-table-cell">
+                {{ resource.price | currency : 'FCFA' }} /
+                {{ getUnitDisplayLabel(resource.priceUnit) }}
+              </td>
+
+              <td class="resource-description d-none d-md-table-cell">
+                <button
+                  placement="left"
+                  type="button"
+                  tabindex="0"
+                  class="btn-desc"
+                  data-bs-trigger="focus"
+                  [ngbPopover]="resource.description || 'Aucune description'"
+                  popoverTitle="Description"
+                >
+                  Voir description
                 </button>
-                <div ngbDropdownMenu class="actions-menu">
+              </td>
+
+              <td class="actions-cell">
+                <div
+                  ngbDropdown
+                  container="body"
+                  placement="bottom-end"
+                  class="resource-actions-dropdown"
+                >
                   <button
-                    ngbDropdownItem
-                    (click)="onView(resource.id)"
-                    class="action-item action-view"
+                    type="button"
+                    class="btn-actions"
+                    ngbDropdownToggle
+                    [disabled]="resource.isDeleting"
+                    [attr.aria-label]="'Actions pour ' + resource.name"
                   >
-                    <i class="bx bx-show"></i>
-                    <span>Voir</span>
+                    <i
+                      class="bx"
+                      [ngClass]="{
+                        'bx-loader-alt bx-spin': resource.isDeleting,
+                        'bx-dots-vertical-rounded': !resource.isDeleting
+                      }"
+                    ></i>
                   </button>
-                  <button
-                    ngbDropdownItem
-                    (click)="onEdit(resource.id)"
-                    class="action-item action-edit"
-                  >
-                    <i class="bx bx-edit"></i>
-                    <span>Modifier</span>
-                  </button>
-                  <button
-                    ngbDropdownItem
-                    (click)="onDeleteRequest(resource)"
-                    class="action-item action-delete"
-                  >
-                    <i class="bx bx-trash"></i>
-                    <span>Supprimer</span>
-                  </button>
+                  <div ngbDropdownMenu class="actions-menu">
+                    <button
+                      ngbDropdownItem
+                      (click)="onView(resource.id)"
+                      class="action-item action-view"
+                    >
+                      <i class="bx bx-show"></i>
+                      <span>Voir</span>
+                    </button>
+                    <button
+                      ngbDropdownItem
+                      (click)="onEdit(resource.id)"
+                      class="action-item action-edit"
+                    >
+                      <i class="bx bx-edit"></i>
+                      <span>Modifier</span>
+                    </button>
+                    <button
+                      ngbDropdownItem
+                      (click)="onDeleteRequest(resource)"
+                      class="action-item action-delete"
+                    >
+                      <i class="bx bx-trash"></i>
+                      <span>Supprimer</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Component -->
+      <app-pagination
+        [totalItems]="totalItems"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [isLoading]="loading"
+        (pageChange)="onPageChange($event)"
+      ></app-pagination>
+    </ng-container>
   </ng-container>
 </div>

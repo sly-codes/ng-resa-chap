@@ -9,7 +9,6 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
-  map,
   Observable,
   of,
   startWith,
@@ -18,6 +17,7 @@ import {
   tap,
 } from 'rxjs';
 import { DeleteConfirmationModalComponent } from '../../../../common/delete-confirmation-modal/delete-confirmation-modal.component';
+import { PaginationComponent } from '../../../../common/pagination/pagination.component';
 import { ToastService } from '../../../../common/toast/toast.service';
 import { Resource, ResourceFilters, ResourceService } from '../../../core/resource.service';
 import { ResourceFormModalComponent } from '../../components/resource-form-modal/resource-form-modal.component';
@@ -32,7 +32,15 @@ interface ManagedResourceView extends Resource {
   templateUrl: './resource-list.component.html',
   styleUrls: ['./resource-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgClass, NgIf, ReactiveFormsModule, NgbDropdownModule, NgbPopoverModule],
+  imports: [
+    CommonModule,
+    NgClass,
+    NgIf,
+    ReactiveFormsModule,
+    NgbDropdownModule,
+    NgbPopoverModule,
+    PaginationComponent,
+  ],
 })
 export class ResourceListComponent implements OnInit {
   private resourceService = inject(ResourceService);
@@ -40,69 +48,85 @@ export class ResourceListComponent implements OnInit {
   private toastService = inject(ToastService);
   private router = inject(Router);
 
-  private refresh$ = new Subject<void>();
+  private refresh$ = new Subject<{ page: number; silent: boolean }>();
 
   private resourcesSubject = new BehaviorSubject<ManagedResourceView[]>([]);
   resources$: Observable<ManagedResourceView[]> = this.resourcesSubject.asObservable();
 
-  error: string | null = null;
-  loading = true; // Contrôles de filtre et recherche
+  // Pagination
+  totalItems = 0;
+  currentPage = 1;
+  totalPages = 1;
+  limit = 10;
 
+  error: string | null = null;
+  loading = true;
+
+  // Contrôles de filtre et recherche
   typeFilter = new FormControl<'ALL' | 'ROOM' | 'EQUIPMENT'>('ALL', { nonNullable: true });
-  searchControl = new FormControl('', { nonNullable: true }); // 🚨 NOUVEAU: Contrôle pour le filtre par ville
+  searchControl = new FormControl('', { nonNullable: true });
   cityFilter = new FormControl('', { nonNullable: true });
 
   ngOnInit(): void {
     const typeFilter$ = this.typeFilter.valueChanges.pipe(
       startWith(this.typeFilter.value),
-      map((value) => value as 'ALL' | 'ROOM' | 'EQUIPMENT')
+      tap(() => (this.currentPage = 1))
     );
 
     const searchControl$ = this.searchControl.valueChanges.pipe(
       startWith(this.searchControl.value),
       debounceTime(400),
       distinctUntilChanged(),
-      map((value) => value as string)
-    ); // 🚨 NOUVEAU: Observables pour le filtre par ville
+      tap(() => (this.currentPage = 1))
+    );
 
     const cityFilter$ = this.cityFilter.valueChanges.pipe(
       startWith(this.cityFilter.value),
       debounceTime(400),
       distinctUntilChanged(),
-      map((value) => value.trim() as string)
+      tap(() => (this.currentPage = 1))
     );
 
-    const filterAndSearch$ = combineLatest([
+    // Flux principal combinant filtres, recherche et pagination
+    combineLatest([
       typeFilter$,
       searchControl$,
-      cityFilter$, // 🚨 NOUVEAU: Ajout du filtre de ville
-      this.refresh$.pipe(startWith(undefined)),
-    ]); // Subscription principale pour charger les données et remplir le Subject
-
-    filterAndSearch$
+      cityFilter$,
+      this.refresh$.pipe(startWith({ page: 1, silent: false })),
+    ])
       .pipe(
-        switchMap(([type, search, city, _]) => {
-          this.loading = true;
+        switchMap(([type, search, city, refreshAction]) => {
+          const pageToLoad = refreshAction.page;
+          const silent = refreshAction.silent;
+
+          if (!silent) {
+            this.loading = true;
+          }
           this.error = null;
+          this.currentPage = pageToLoad;
 
           const filters: ResourceFilters = {
             search: search || undefined,
-            type: type === 'ALL' ? undefined : type, // 🚨 NOUVEAU: Ajout du filtre city
+            type: type === 'ALL' ? undefined : (type as 'ROOM' | 'EQUIPMENT'),
             city: city || undefined,
+            page: this.currentPage,
+            limit: this.limit,
           };
 
           return this.resourceService.getMyResources(filters).pipe(
-            tap((res) => {
+            tap((response) => {
               this.loading = false;
+              this.totalItems = response.total;
+              this.totalPages = response.lastPage;
               this.resourcesSubject.next(
-                res.map((r) => ({ ...r, isDeleting: false } as ManagedResourceView))
+                response.data.map((r) => ({ ...r, isDeleting: false } as ManagedResourceView))
               );
             }),
             catchError((err) => {
               this.loading = false;
               this.error = err.error?.message || 'Erreur lors du chargement de vos ressources.';
               this.resourcesSubject.next([]);
-              return of([]);
+              return of({ data: [], total: 0, page: 1, lastPage: 1 });
             })
           );
         })
@@ -110,8 +134,12 @@ export class ResourceListComponent implements OnInit {
       .subscribe();
   }
 
+  onPageChange(page: number): void {
+    this.refresh$.next({ page, silent: false });
+  }
+
   onRefresh(): void {
-    this.refresh$.next();
+    this.refresh$.next({ page: this.currentPage, silent: false });
     this.toastService.info('Actualisation', 'Rechargement de la liste des ressources...');
   }
 
@@ -127,7 +155,7 @@ export class ResourceListComponent implements OnInit {
     modalRef.result.then(
       (result) => {
         if (result === true) {
-          this.refresh$.next();
+          this.refresh$.next({ page: this.currentPage, silent: false });
           this.toastService.success(
             resourceId ? 'Mise à jour réussie' : 'Création réussie',
             `La ressource a été ${resourceId ? 'modifiée' : 'créée'} avec succès.`
@@ -182,7 +210,7 @@ export class ResourceListComponent implements OnInit {
           'Suppression réussie',
           `La ressource "${resource.name}" a été supprimée.`
         );
-        this.refresh$.next();
+        this.refresh$.next({ page: this.currentPage, silent: false });
       },
       error: (err) => {
         this.toastService.error(

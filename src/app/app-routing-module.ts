@@ -34,15 +34,12 @@ const routes: Routes = [
     ],
   },
 
-  {
-    path: 'preview',
-    loadChildren: () => import('./preview/preview.module').then((m) => m.PreviewModule),
-  },
-
   // 4. WILD CARD (Redirection si route inconnue)
   // Redirige les erreurs 404 vers la Landing Page
   { path: '**', redirectTo: '' },
 ];
+
+export { routes };
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
