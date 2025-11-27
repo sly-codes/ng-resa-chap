@@ -1,4 +1,3 @@
-// toast.component.ts
 import {
   Component,
   OnDestroy,

@@ -1,6 +1,6 @@
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AuthService, UserRole } from '../../core/auth.service'; // 💡 Import de UserRole
+import { AuthService, UserRole } from '../../core/auth.service';
 import { Component, inject, OnInit, HostListener, LOCALE_ID } from '@angular/core';
 import {
   NgbDropdown,
@@ -11,9 +11,8 @@ import {
 import { ProfileService, UserProfile } from '../../core/services/profile.service';
 import { Observable } from 'rxjs';
 import { ToastComponent } from '../../../common/toast/toast.component';
-import localeFr from '@angular/common/locales/fr'; // 💡 Import de la locale FR
+import localeFr from '@angular/common/locales/fr';
 
-// Enregistrement de la locale FR pour les Pipes si non fait dans app.config/app.module
 registerLocaleData(localeFr);
 
 @Component({
@@ -30,15 +29,13 @@ registerLocaleData(localeFr);
     NgbDropdownItem,
     ToastComponent,
   ],
-  // 💡 AJOUT : Définir la locale du composant au cas où (bonne pratique)
   providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }],
 })
 export class LayoutComponent implements OnInit {
   private authService = inject(AuthService);
   private profileService = inject(ProfileService);
 
-  profile$!: Observable<UserProfile | null>; // État du menu mobile
-
+  profile$!: Observable<UserProfile | null>;
   isMobileSidebarOpen = false;
 
   ngOnInit(): void {
@@ -50,19 +47,13 @@ export class LayoutComponent implements OnInit {
       });
     }
   }
-  /**
-   * 🚀 NOUVEAU : Vérifie si l'utilisateur est Super Admin
-   */
 
   isSuperAdmin(): boolean {
     return this.authService.getRoleFromToken() === 'SUPER_ADMIN';
   }
-  /**
-   * Toggle la sidebar mobile
-   */
 
   toggleMobileSidebar(): void {
-    this.isMobileSidebarOpen = !this.isMobileSidebarOpen; // Bloquer le scroll du body quand la sidebar est ouverte
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
 
     if (this.isMobileSidebarOpen) {
       document.body.style.overflow = 'hidden';
@@ -70,17 +61,11 @@ export class LayoutComponent implements OnInit {
       document.body.style.overflow = '';
     }
   }
-  /**
-   * Fermer la sidebar mobile
-   */
 
   closeMobileSidebar(): void {
     this.isMobileSidebarOpen = false;
     document.body.style.overflow = '';
   }
-  /**
-   * Fermer la sidebar mobile si on redimensionne vers desktop
-   */
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
@@ -89,9 +74,6 @@ export class LayoutComponent implements OnInit {
       this.closeMobileSidebar();
     }
   }
-  /**
-   * Déconnexion
-   */
 
   onLogout(): void {
     this.closeMobileSidebar();

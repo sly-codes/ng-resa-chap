@@ -6,7 +6,6 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, finalize, of } from 'rxjs';
 import { ProfileService, UpdateProfileDto } from '../core/services/profile.service';
 
-// Définition de l'interface pour la structure des données des pays
 interface Country {
   code: string;
   name: string;
@@ -33,7 +32,6 @@ export class ProfileComponent implements OnInit {
   error: string | null = null;
   successMessage: string | null = null;
 
-  // Liste des pays d'Afrique de l'Ouest avec leurs masques et préfixes
   public westAfricanCountries: Country[] = [
     { code: 'CI', name: "Côte d'Ivoire", flag: '🇨🇮', prefix: '+225 ', mask: '00 00 00 00 00' },
     { code: 'SN', name: 'Sénégal', flag: '🇸🇳', prefix: '+221 ', mask: '00 000 00 00' },
@@ -46,26 +44,20 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.profileForm = this.fb.group({
       email: [{ value: '', disabled: true }],
-
       username: ['', [Validators.maxLength(50)]],
       firstName: ['', [Validators.maxLength(50)]],
       lastName: ['', [Validators.maxLength(50)]],
-
-      // Ajout du contrôle pour le code pays, initialisé avec la Côte d'Ivoire par défaut
       countryCode: ['CI'],
       contactPhone: [''],
     });
 
-    // Écouter les changements de countryCode pour réinitialiser le téléphone
     this.profileForm.get('countryCode')?.valueChanges.subscribe(() => {
-      // Réinitialise le champ téléphone pour effacer les saisies précédentes non conformes au nouveau masque
       this.profileForm.get('contactPhone')?.setValue('');
     });
 
     this.loadProfile();
   }
 
-  // Méthode pour charger le profil (logique inchangée)
   loadProfile(): void {
     this.isLoading = true;
     this.error = null;
@@ -87,22 +79,18 @@ export class ProfileComponent implements OnInit {
       });
   }
 
-  // Méthode appelée dans le template pour obtenir le masque dynamique
   getPhoneMask(): string {
     const code = this.profileForm.get('countryCode')?.value;
     return this.westAfricanCountries.find((c) => c.code === code)?.mask || '';
   }
 
-  // Méthode appelée dans le template pour obtenir le préfixe dynamique
   getPhonePrefix(): string {
     const code = this.profileForm.get('countryCode')?.value;
     return this.westAfricanCountries.find((c) => c.code === code)?.prefix || '';
   }
 
-  // Méthode pour sauvegarder le profil
   onSaveProfile(): void {
     if (this.profileForm.invalid || this.isSaving) {
-      // Marquer tous les contrôles comme "touchés" pour afficher les erreurs
       this.profileForm.markAllAsTouched();
       return;
     }
@@ -113,7 +101,6 @@ export class ProfileComponent implements OnInit {
       username: formValues.username,
       firstName: formValues.firstName,
       lastName: formValues.lastName,
-      // Le contactPhone est le numéro local saisi
       contactPhone: formValues.contactPhone,
     };
 

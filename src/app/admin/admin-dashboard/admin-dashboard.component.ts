@@ -36,7 +36,6 @@ export class AdminDashboardComponent implements OnInit {
     return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XOF' }).format(value);
   }
 
-  // Traduction des statuts de réservation
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = {
       PENDING: 'En attente',
@@ -47,7 +46,6 @@ export class AdminDashboardComponent implements OnInit {
     return labels[status] || status;
   }
 
-  // Traduction des types de ressources
   getResourceTypeLabel(type: string): string {
     const labels: Record<string, string> = {
       ROOM: 'Salles',

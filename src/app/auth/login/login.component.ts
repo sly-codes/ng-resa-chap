@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastService = inject(ToastService);
-  private cdr = inject(ChangeDetectorRef); // Injecter ChangeDetectorRef
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -53,23 +53,21 @@ export class LoginComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.cdr.detectChanges(); // Force l'affichage du spinner
+    this.cdr.detectChanges();
 
     const credentials = this.loginForm.value;
 
     this.authService.signin(credentials).subscribe({
       next: () => {
-        // Succès : Annuler l'état et effacer les champs
         this.isLoading = false;
-        this.loginForm.reset(); // 🚨 EFFACER LES CHAMPS UNIQUEMENT EN CAS DE SUCCÈS
-        this.cdr.detectChanges(); // Force la détection
-        this.toastService.success('Connexion Réussie', 'Bienvenue sur Resa Chap !');
+        this.loginForm.reset();
+        this.cdr.detectChanges();
+        this.toastService.success('Connexion Reussie', 'Bienvenue sur Resa Chap !');
         this.router.navigate(['/catalogue']);
       },
       error: (err: HttpErrorResponse) => {
-        // Échec : Annuler l'état, mais CONSERVER les champs pour la correction
         this.isLoading = false;
-        this.cdr.detectChanges(); // 🚨 CORRECTION CLÉ : Débloquer le bouton immédiatement
+        this.cdr.detectChanges();
 
         let errorMessage = 'Erreur serveur inconnue. Veuillez réessayer plus tard.';
 
@@ -100,9 +98,6 @@ export class LoginComponent implements OnInit {
     this.authService.loginWithGithub();
   }
 
-  /**
-   * Navigue vers la page d'accueil (landing page).
-   */
   goToLandingPage(): void {
     this.router.navigate(['/']);
   }

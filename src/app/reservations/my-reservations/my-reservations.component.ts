@@ -6,13 +6,13 @@ import { Router } from '@angular/router';
 import { NgbDropdownModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import {
   BehaviorSubject,
-  Observable, // 🚨 NOUVEAU: Import startWith
+  Observable,
   Subject,
   catchError,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
-  of, // 🚨 NOUVEAU: Import combineLatest
+  of,
   startWith,
   switchMap,
   tap,
@@ -51,7 +51,6 @@ export class MyReservationsComponent implements OnInit {
   private reservationsSubject = new BehaviorSubject<MyReservationView[]>([]);
   reservations$: Observable<MyReservationView[]> = this.reservationsSubject.asObservable();
 
-  // 🚨 Nouveau Subject pour déclencher le rechargement manuel/pagination
   private refresh$ = new Subject<{ page: number; silent: boolean }>();
 
   totalItems = 0;
@@ -69,29 +68,26 @@ export class MyReservationsComponent implements OnInit {
   ngOnInit(): void {
     const statusFilter$ = this.statusFilter.valueChanges.pipe(
       startWith(this.statusFilter.value),
-      tap(() => (this.currentPage = 1)) // Réinitialise la page lors d'un changement de filtre
+      tap(() => (this.currentPage = 1))
     );
 
     const searchControl$ = this.searchControl.valueChanges.pipe(
       startWith(this.searchControl.value),
       debounceTime(400),
       distinctUntilChanged(),
-      tap(() => (this.currentPage = 1)) // Réinitialise la page lors d'un changement de recherche
+      tap(() => (this.currentPage = 1))
     );
 
-    // Le flux principal qui combine filtres, recherche, et rafraîchissement manuel
     combineLatest([
       statusFilter$,
       searchControl$,
-      this.refresh$.pipe(startWith({ page: 1, silent: false })), // Déclenchement initial
+      this.refresh$.pipe(startWith({ page: 1, silent: false })),
     ])
       .pipe(
         switchMap(([status, search, refreshAction]) => {
-          // La page à charger est déterminée par l'action de rafraîchissement ou la valeur courante
           const pageToLoad = refreshAction.page;
           const silent = refreshAction.silent;
 
-          // 🚨 Afficher l'état de chargement UNIQUEMENT si l'action n'est pas silencieuse (ex: juste pour la pagination)
           if (!silent) {
             this.isLoading = true;
           }
@@ -110,17 +106,16 @@ export class MyReservationsComponent implements OnInit {
               this.totalItems = res.total;
               this.totalPages = res.lastPage;
               this.currentPage = res.page;
-              // 💡 CONSERVE isCancelling: Mappez les données pour s'assurer que 'isCancelling' est initialisé.
               this.reservationsSubject.next(
                 res.data.map((r) => ({ ...r, isCancelling: false } as MyReservationView))
               );
               this.isLoading = false;
             }),
             catchError((err) => {
-              this.error = err.error?.message || 'Erreur lors du chargement de vos réservations.';
+              this.error = err.error?.message || 'Erreur chargement reservations.';
               this.reservationsSubject.next([]);
               this.isLoading = false;
-              return of(null); // Retourne null pour terminer le flux
+              return of(null);
             })
           );
         })
@@ -129,21 +124,18 @@ export class MyReservationsComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
-    // 🚨 Déclenche le rechargement avec le nouveau numéro de page (non silencieux par défaut)
     this.refresh$.next({ page, silent: false });
   }
 
   onRefresh(): void {
-    // 🚨 Déclenche le rechargement avec la page courante.
     this.refresh$.next({ page: this.currentPage, silent: false });
-    this.toastService.info('Rafraîchissement', 'Liste de vos réservations mise à jour.');
+    this.toastService.info('Rafraichissement', 'Liste mise a jour.');
   }
 
   onCancelReservation(id: string): void {
     const reservationToCancel = this.reservationsSubject.getValue().find((res) => res.id === id);
     const resourceName = reservationToCancel?.resource.name || 'la ressource';
 
-    // 1. Mettre le bouton en chargement (isCancelling = true)
     let currentReservations = this.reservationsSubject
       .getValue()
       .map((res) => (res.id === id ? ({ ...res, isCancelling: true } as MyReservationView) : res));
@@ -151,23 +143,12 @@ export class MyReservationsComponent implements OnInit {
 
     this.reservationService.cancelReservation(id).subscribe({
       next: () => {
-        this.toastService.success(
-          'Annulation réussie',
-          `La réservation pour ${resourceName} a été annulée.`
-        );
-
-        // 💡 CHANGEMENT CLÉ : Rechargez la liste silencieusement pour une UX fluide.
-        // On passe silent: true pour que la loading spinner de toute la page ne s'affiche pas.
-        // Seul le bouton d'action 'Annuler' sera en chargement le temps de l'opération.
+        this.toastService.success('Annulation reussie', `Reservation annulee.`);
         this.refresh$.next({ page: this.currentPage, silent: true });
       },
       error: (err) => {
-        this.toastService.error(
-          "Échec de l'annulation",
-          err.error?.message || "Impossible d'annuler cette réservation."
-        );
+        this.toastService.error('Echec annulation', err.error?.message || 'Impossible d\'annuler.');
 
-        // Retirer manuellement l'état de chargement
         let errorReservations = this.reservationsSubject
           .getValue()
           .map((res) =>

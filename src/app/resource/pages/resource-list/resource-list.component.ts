@@ -22,7 +22,6 @@ import { ToastService } from '../../../../common/toast/toast.service';
 import { Resource, ResourceFilters, ResourceService } from '../../../core/resource.service';
 import { ResourceFormModalComponent } from '../../components/resource-form-modal/resource-form-modal.component';
 
-// Interface étendue pour la vue du tableau (pour le chargement du bouton)
 interface ManagedResourceView extends Resource {
   isDeleting?: boolean;
 }
@@ -53,7 +52,6 @@ export class ResourceListComponent implements OnInit {
   private resourcesSubject = new BehaviorSubject<ManagedResourceView[]>([]);
   resources$: Observable<ManagedResourceView[]> = this.resourcesSubject.asObservable();
 
-  // Pagination
   totalItems = 0;
   currentPage = 1;
   totalPages = 1;
@@ -62,7 +60,6 @@ export class ResourceListComponent implements OnInit {
   error: string | null = null;
   loading = true;
 
-  // Contrôles de filtre et recherche
   typeFilter = new FormControl<'ALL' | 'ROOM' | 'EQUIPMENT'>('ALL', { nonNullable: true });
   searchControl = new FormControl('', { nonNullable: true });
   cityFilter = new FormControl('', { nonNullable: true });
@@ -87,7 +84,6 @@ export class ResourceListComponent implements OnInit {
       tap(() => (this.currentPage = 1))
     );
 
-    // Flux principal combinant filtres, recherche et pagination
     combineLatest([
       typeFilter$,
       searchControl$,
@@ -145,7 +141,7 @@ export class ResourceListComponent implements OnInit {
 
   private openResourceModal(resourceId: string | null): void {
     const modalRef = this.modalService.open(ResourceFormModalComponent, {
-      size: 'lg', // 🚨 Mise à jour en 'xl' pour accueillir plus de champs
+      size: 'lg',
       centered: true,
       backdrop: 'static',
     });
@@ -195,9 +191,7 @@ export class ResourceListComponent implements OnInit {
           this.executeDelete(resource);
         }
       },
-      () => {
-        // La modale a été annulée ou fermée
-      }
+      () => {}
     );
   }
 
@@ -243,11 +237,6 @@ export class ResourceListComponent implements OnInit {
     }
   }
 
-  /**
-   * 💡 NOUVELLE MÉTHODE : Traduit l'unité de prix (HOUR, DAY, etc.) en français (Heure, Jour, etc.)
-   * @param unit L'unité de prix en majuscule (ex: "HOUR")
-   * @returns Le libellé en français.
-   */
   getUnitDisplayLabel(unit: string): string {
     switch (unit) {
       case 'HOUR':
@@ -259,7 +248,7 @@ export class ResourceListComponent implements OnInit {
       case 'MONTH':
         return 'Mois';
       default:
-        return unit; // Retourne l'unité originale si elle n'est pas trouvée
+        return unit;
     }
   }
 }

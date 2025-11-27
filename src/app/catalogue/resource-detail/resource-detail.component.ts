@@ -55,9 +55,6 @@ export class ResourceDetailComponent implements OnInit {
       })
     );
   }
-  /**
-   * Ouvre la modale de réservation pour la ressource actuelle
-   */
 
   onReserve(resourceId: string, resourceName: string): void {
     const modalRef = this.modalService.open(ReservationFormModalComponent, {
@@ -87,7 +84,7 @@ export class ResourceDetailComponent implements OnInit {
         }
       }
     );
-  } // Fonctions utilitaires
+  }
 
   getResourceIcon(type: 'ROOM' | 'EQUIPMENT'): string {
     return type === 'ROOM' ? 'bx-buildings' : 'bx-devices';

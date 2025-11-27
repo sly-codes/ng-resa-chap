@@ -26,7 +26,6 @@ export class ReservationDetailComponent implements OnInit {
   currentUserId: string | null = null;
 
   ngOnInit(): void {
-    // Récupérer l'ID de l'utilisateur connecté
     this.currentUserId = this.authService.getUserIdFromToken();
 
     this.reservation$ = this.route.params.pipe(
@@ -66,17 +65,13 @@ export class ReservationDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    // Navigation contextuelle basée sur le rôle de l'utilisateur
     this.reservation$.pipe(take(1)).subscribe((reservation) => {
       if (reservation) {
         if (this.isCurrentUserTenant(reservation)) {
-          // Si c'est le locataire, retour vers "Mes Réservations"
           this.router.navigate(['/reservations/made']);
         } else if (this.isCurrentUserOwner(reservation)) {
-          // Si c'est le propriétaire, retour vers "Demandes Reçues"
           this.router.navigate(['/reservations/received']);
         } else {
-          // Fallback vers le dashboard
           this.router.navigate(['/dashboard']);
         }
       } else {
@@ -139,32 +134,20 @@ export class ReservationDetailComponent implements OnInit {
     }
   }
 
-  /**
-   * Détermine si l'utilisateur connecté est le locataire de cette réservation
-   */
   isCurrentUserTenant(reservation: ReservationDetails): boolean {
     return this.currentUserId === reservation.locataireId;
   }
 
-  /**
-   * Détermine si l'utilisateur connecté est le propriétaire de la ressource
-   */
   isCurrentUserOwner(reservation: ReservationDetails): boolean {
     return this.currentUserId === reservation.resource.owner.id;
   }
 
-  /**
-   * Calcule la durée de la réservation en heures
-   */
   calculateDurationInHours(dateDebut: string, dateFin: string): number {
     const start = new Date(dateDebut);
     const end = new Date(dateFin);
     return Math.abs(end.getTime() - start.getTime()) / (1000 * 60 * 60);
   }
 
-  /**
-   * Calcule le coût total estimé de la réservation
-   */
   calculateTotalCost(reservation: ReservationDetails): number {
     const duration = this.calculateDurationInHours(reservation.dateDebut, reservation.dateFin);
     const price = reservation.resource.price;

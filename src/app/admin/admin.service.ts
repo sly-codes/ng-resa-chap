@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-// Interface correspondant au résultat de getDashboardMetrics du Backend
 export interface DashboardMetrics {
   users: {
     total: number;
@@ -42,11 +41,7 @@ export class AdminService {
   private readonly apiUrl = environment.apiUrl + '/admin/dashboard';
   private http = inject(HttpClient);
 
-  /**
-   * Récupère toutes les métriques du tableau de bord Super Admin.
-   */
   getDashboardMetrics(): Observable<DashboardMetrics> {
-    // L'intercepteur JWT s'occupe d'ajouter le token AT, le RolesGuard protège l'accès.
     return this.http.get<DashboardMetrics>(`${this.apiUrl}/metrics`);
   }
 }

@@ -29,15 +29,11 @@ export class ReservationFormModalComponent implements OnInit {
   }
 
   initializeForm(): void {
-    // Fonction pour obtenir la date et l'heure actuelles au format datetime-local (YYYY-MM-DDThh:mm)
     const now = new Date();
-    // Créer une date de fin 1 heure plus tard
     const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
 
     const formatToLocalDatetime = (date: Date): string => {
-      // Obtenir la partie YYYY-MM-DD
       const datePart = date.toISOString().split('T')[0];
-      // Obtenir la partie hh:mm
       const timePart = date.toTimeString().slice(0, 5);
       return `${datePart}T${timePart}`;
     };
@@ -55,16 +51,12 @@ export class ReservationFormModalComponent implements OnInit {
     );
   }
 
-  // Validateur personnalisé pour vérifier que dateDebut < dateFin
   timeConflictValidator(form: FormGroup) {
     const debut = form.get('dateDebut')?.value;
     const fin = form.get('dateFin')?.value;
 
-    if (debut && fin) {
-      // Les valeurs sont des chaînes (datetime-local). Les comparer permet de s'assurer de l'ordre.
-      if (debut >= fin) {
-        return { timeConflict: true };
-      }
+    if (debut && fin && debut >= fin) {
+      return { timeConflict: true };
     }
     return null;
   }
@@ -81,7 +73,6 @@ export class ReservationFormModalComponent implements OnInit {
     const formValue = this.reservationForm.value;
     const dto: CreateReservationDto = {
       resourceId: this.resourceId,
-      // Le format datetime-local est une chaîne ISO (sans Z) que NestJS peut parser en Date
       dateDebut: formValue.dateDebut,
       dateFin: formValue.dateFin,
       notes: formValue.notes,
@@ -92,9 +83,7 @@ export class ReservationFormModalComponent implements OnInit {
         this.activeModal.close('success');
       },
       error: (err) => {
-        // Votre backend renvoie des messages d'erreur spécifiques (e.g., conflit horaire)
-        this.error =
-          err.error?.message || 'Une erreur est survenue lors de la création de la réservation.';
+        this.error = err.error?.message || 'Erreur lors de la creation.';
         this.isLoading = false;
       },
     });

@@ -6,13 +6,13 @@ import { Router } from '@angular/router';
 import { NgbDropdownModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import {
   BehaviorSubject,
-  Observable, // 🚨 NOUVEAU: Import startWith
+  Observable,
   Subject,
   catchError,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
-  of, // 🚨 NOUVEAU: Import combineLatest
+  of,
   startWith,
   switchMap,
   tap,
@@ -51,7 +51,6 @@ export class ReceivedReservationsComponent implements OnInit {
   private reservationsSubject = new BehaviorSubject<ReceivedReservationView[]>([]);
   reservations$: Observable<ReceivedReservationView[]> = this.reservationsSubject.asObservable();
 
-  // 🚨 Nouveau Subject pour déclencher le rechargement manuel/pagination
   private refresh$ = new Subject<{ page: number; silent: boolean }>();
 
   totalItems = 0;
@@ -79,18 +78,16 @@ export class ReceivedReservationsComponent implements OnInit {
       tap(() => (this.currentPage = 1))
     );
 
-    // Le flux principal qui combine filtres, recherche, et rafraîchissement manuel
     combineLatest([
       statusFilter$,
       searchControl$,
-      this.refresh$.pipe(startWith({ page: 1, silent: false })), // Déclenchement initial
+      this.refresh$.pipe(startWith({ page: 1, silent: false })),
     ])
       .pipe(
         switchMap(([status, search, refreshAction]) => {
           const pageToLoad = refreshAction.page;
           const silent = refreshAction.silent;
 
-          // 🚨 Afficher l'état de chargement UNIQUEMENT si l'action n'est pas silencieuse (ex: après un filtre)
           if (!silent) {
             this.isLoading = true;
           }
@@ -109,24 +106,16 @@ export class ReceivedReservationsComponent implements OnInit {
               this.totalItems = res.total;
               this.totalPages = res.lastPage;
               this.currentPage = res.page;
-              // Assurer que les états de chargement des actions sont réinitialisés après le chargement
               this.reservationsSubject.next(
-                res.data.map(
-                  (r) =>
-                    ({
-                      ...r,
-                      isApproving: false,
-                      isRejecting: false,
-                    } as ReceivedReservationView)
-                )
+                res.data.map((r) => ({ ...r, isApproving: false, isRejecting: false } as ReceivedReservationView))
               );
               this.isLoading = false;
             }),
             catchError((err) => {
-              this.error = err.error?.message || 'Erreur lors du chargement des demandes reçues.';
+              this.error = err.error?.message || 'Erreur chargement demandes.';
               this.reservationsSubject.next([]);
               this.isLoading = false;
-              return of(null); // Retourne null pour terminer le flux
+              return of(null);
             })
           );
         })
@@ -135,60 +124,36 @@ export class ReceivedReservationsComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
-    // 🚨 Déclenche le rechargement avec le nouveau numéro de page (non silencieux par défaut)
     this.refresh$.next({ page, silent: false });
   }
 
   onRefresh(): void {
-    // 🚨 Déclenche le rechargement avec la page courante
     this.refresh$.next({ page: this.currentPage, silent: false });
-    this.toastService.info('Rafraîchissement', 'Liste des réservations mise à jour.');
+    this.toastService.info('Rafraichissement', 'Liste mise a jour.');
   }
 
   private updateStatus(id: string, status: 'CONFIRMED' | 'REJECTED'): void {
     const reservationToUpdate = this.reservationsSubject.getValue().find((res) => res.id === id);
     const resourceName = reservationToUpdate?.resource.name || 'la ressource';
-    const actionText = status === 'CONFIRMED' ? 'acceptée' : 'refusée';
+    const actionText = status === 'CONFIRMED' ? 'acceptee' : 'refusee';
 
-    // 1. Définir le champ de chargement à mettre à jour
-    const loadingField: 'isApproving' | 'isRejecting' =
-      status === 'CONFIRMED' ? 'isApproving' : 'isRejecting';
+    const loadingField: 'isApproving' | 'isRejecting' = status === 'CONFIRMED' ? 'isApproving' : 'isRejecting';
 
-    // 2. Mettre SEUL le bouton cliqué en chargement
     let currentReservations = this.reservationsSubject.getValue().map((res) =>
-      res.id === id
-        ? ({
-            ...res,
-            [loadingField]: true, // Utiliser la clé dynamique
-          } as ReceivedReservationView)
-        : res
+      res.id === id ? ({ ...res, [loadingField]: true } as ReceivedReservationView) : res
     );
     this.reservationsSubject.next(currentReservations);
 
     this.reservationService.updateReservationStatus(id, status).subscribe({
       next: () => {
-        // 3. Succès : Toast + Rechargement SILENCIEUX
-        this.toastService.success(
-          'Statut mis à jour',
-          `La réservation pour "${resourceName}" a été ${actionText}.`
-        );
-        // 💡 CHANGEMENT CLÉ : Rechargez la liste silencieusement pour une UX fluide.
+        this.toastService.success('Statut mis a jour', `Reservation ${actionText}.`);
         this.refresh$.next({ page: this.currentPage, silent: true });
       },
       error: (err) => {
-        // 4. Erreur : Toast + Retirer l'état de chargement SEULEMENT pour l'action qui a échoué
-        this.toastService.error(
-          'Échec de la mise à jour',
-          err.error?.message || 'Impossible de mettre à jour le statut de la réservation.'
-        );
+        this.toastService.error('Echec mise a jour', err.error?.message || 'Impossible de modifier.');
 
         let errorReservations = this.reservationsSubject.getValue().map((res) =>
-          res.id === id
-            ? ({
-                ...res,
-                [loadingField]: false, // Retirer SEUL l'état de chargement
-              } as ReceivedReservationView)
-            : res
+          res.id === id ? ({ ...res, [loadingField]: false } as ReceivedReservationView) : res
         );
         this.reservationsSubject.next(errorReservations);
       },

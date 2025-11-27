@@ -22,16 +22,12 @@ export class AdminGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const userRole = this.authService.getRoleFromToken(); // 1. Vérification du Rôle
+    const userRole = this.authService.getRoleFromToken();
 
     if (userRole === 'SUPER_ADMIN') {
-      return true; // Accès autorisé
+      return true;
     } else {
-      // 2. Accès refusé : notification et redirection
-      this.toastService.error(
-        'Accès Restreint',
-        "Vous n'avez pas les permissions d'administrateur pour accéder à cette zone."
-      ); // Redirection vers une page par défaut pour les utilisateurs non-admin (ex: dashboard utilisateur)
+      this.toastService.error('Acces Restreint', "Permissions administrateur requises.");
       return this.router.createUrlTree(['/dashboard']);
     }
   }

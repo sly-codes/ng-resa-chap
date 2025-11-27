@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastService } from '../../../common/toast/toast.service'; // 💡 IMPORT
+import { ToastService } from '../../../common/toast/toast.service';
 import { AuthService, Tokens } from '../../core/auth.service';
 
 @Component({
@@ -59,22 +59,21 @@ export class AuthCallbackComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
-  private toastService = inject(ToastService); // 💡 INJECTION
+  private toastService = inject(ToastService);
 
-  error: string | null = null; // Ajout d'une propriété pour s'assurer que l'on n'appelle pas plusieurs fois
+  error: string | null = null;
   private tokensHandled = false;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       const accessToken = params['at'];
       const refreshToken = params['rt'];
-      const backendError = params['error']; // 💡 NOUVEAU : Récupère l'erreur du backend
+      const backendError = params['error'];
 
       if (this.tokensHandled) {
         return;
       }
 
-      // 1. GESTION DES ERREURS
       if (backendError) {
         this.tokensHandled = true;
         this.error = backendError;
@@ -89,21 +88,19 @@ export class AuthCallbackComponent implements OnInit {
         return;
       }
 
-      // 2. GESTION DU SUCCÈS
       if (accessToken && refreshToken) {
-        this.tokensHandled = true; // Empêche le traitement multiple
+        this.tokensHandled = true;
 
         const tokens: Tokens = {
           access_token: accessToken,
           refresh_token: refreshToken,
-        }; // Donne un peu de temps pour voir le loader et permet au toast de s'afficher
+        };
 
         setTimeout(() => {
-          this.authService.handleSocialLogin(tokens); // Stocke, affiche le toast de SUCCÈS et redirige
-        }, 1500); // Réduit le délai à 1.5s
+          this.authService.handleSocialLogin(tokens);
+        }, 1500);
       } else if (!this.error) {
-        // Logique d'erreur si tokens manquants et qu'il n'y a pas déjà d'erreur
-        this.error = "Échec de l'authentification. Tokens manquants dans l'URL.";
+        this.error = "Echec authentification. Tokens manquants.";
         console.error(this.error);
         this.toastService.error('Échec de la Connexion', this.error);
 

@@ -11,7 +11,7 @@ export interface ToastMessage {
   providedIn: 'root',
 })
 export class ToastService {
-  private toastSubject = new Subject<ToastMessage>(); // Observable pour que les composants (ToastComponent) puissent s'abonner
+  private toastSubject = new Subject<ToastMessage>();
 
   toast$ = this.toastSubject.asObservable();
 
@@ -33,9 +33,6 @@ export class ToastService {
     this.show('warning', title, message);
   }
 
-  /**
-   * 💡 Ajout de la méthode info pour les notifications neutres ou de rafraîchissement.
-   */
   info(title: string, message: string) {
     this.show('info', title, message);
   }

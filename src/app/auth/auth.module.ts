@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-// Routes du module Auth
 const routes: Routes = [
   {
     path: 'login',
@@ -12,9 +11,8 @@ const routes: Routes = [
     path: 'signup',
     loadComponent: () => import('./signup/signup.component').then((m) => m.SignupComponent),
   },
-  // 🚀 NOUVEAU : Route pour le retour du flux Google
   {
-    path: 'callback', // Le chemin de votre backend doit rediriger vers /auth/callback
+    path: 'callback',
     loadComponent: () =>
       import('./auth-callback/auth-callback.component').then((m) => m.AuthCallbackComponent),
   },

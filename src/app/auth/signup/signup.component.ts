@@ -29,7 +29,7 @@ export class SignupComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastService = inject(ToastService);
-  private cdr = inject(ChangeDetectorRef); // Injecter ChangeDetectorRef
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
@@ -53,26 +53,21 @@ export class SignupComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.cdr.detectChanges(); // Force l'affichage du spinner
+    this.cdr.detectChanges();
 
     const credentials = this.signupForm.value;
 
     this.authService.signup(credentials).subscribe({
       next: () => {
-        // Succès : Annuler l'état et effacer les champs
         this.isLoading = false;
-        this.signupForm.reset(); // 🚨 EFFACER LES CHAMPS UNIQUEMENT EN CAS DE SUCCÈS
-        this.cdr.detectChanges(); // Force la détection
-        this.toastService.success(
-          'Inscription Réussie',
-          'Votre compte a été créé et vous êtes connecté !'
-        );
+        this.signupForm.reset();
+        this.cdr.detectChanges();
+        this.toastService.success('Inscription Reussie', 'Votre compte a ete cree !');
         this.router.navigate(['/catalogue']);
       },
       error: (err: HttpErrorResponse) => {
-        // Échec : Annuler l'état, mais CONSERVER les champs pour la correction
         this.isLoading = false;
-        this.cdr.detectChanges(); // 🚨 CORRECTION CLÉ : Débloquer le bouton immédiatement
+        this.cdr.detectChanges();
 
         let errorMessage = 'Erreur serveur inconnue. Veuillez réessayer plus tard.';
 
@@ -95,9 +90,6 @@ export class SignupComponent implements OnInit {
     });
   }
 
-  /**
-   * Navigue vers la page d'accueil (landing page).
-   */
   goToLandingPage(): void {
     this.router.navigate(['/']);
   }

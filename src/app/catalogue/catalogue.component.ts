@@ -50,7 +50,6 @@ export class CatalogueComponent implements OnInit {
   error: string | null = null;
   resourceTypes = RESOURCE_TYPES;
 
-  // Pagination
   totalItems = 0;
   currentPage = 1;
   totalPages = 1;
@@ -72,7 +71,6 @@ export class CatalogueComponent implements OnInit {
       tap(() => (this.currentPage = 1))
     );
 
-    // Flux principal combinant filtres et pagination
     combineLatest([filterChanges$, this.refresh$.pipe(startWith({ page: 1, silent: false }))])
       .pipe(
         switchMap(([filters, refreshAction]) => {
@@ -129,12 +127,8 @@ export class CatalogueComponent implements OnInit {
     this.refresh$.next({ page: this.currentPage, silent: false });
     this.toastService.info('Actualisation', 'Rechargement du catalogue...');
   }
-  /**
-   * Ouvre la modale de réservation
-   */
 
   onReserve(resourceId: string, resourceName: string): void {
-    // ... (Logique de réservation inchangée) ...
     const modalRef = this.modalService.open(ReservationFormModalComponent, {
       size: 'md',
       centered: true,
@@ -167,12 +161,8 @@ export class CatalogueComponent implements OnInit {
       }
     );
   }
-  /**
-   * 💡 NOUVEAU: Navigue vers la page de détails de la ressource.
-   */
 
   onViewDetails(resourceId: string): void {
-    // Assurez-vous que la route '/catalogue/:id' est configurée dans votre routing module
     this.router.navigate(['/catalogue', resourceId]);
   }
 

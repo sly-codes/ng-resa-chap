@@ -54,7 +54,6 @@ export class PaginationComponent {
   @Input() isLoading = false;
   @Output() pageChange = new EventEmitter<number>();
 
-  // ⚠️ CORRECTION: Accepter 'string | number' pour gérer le type du template et faire la conversion
   changePage(page: number | string): void {
     const pageNum = typeof page === 'string' ? parseInt(page, 10) : page;
 
@@ -63,7 +62,6 @@ export class PaginationComponent {
     }
   }
 
-  // Logique inchangée...
   getPages(): (number | string)[] {
     const maxPagesToShow = 5;
     const pages: (number | string)[] = [];

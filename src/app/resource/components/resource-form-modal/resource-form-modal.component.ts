@@ -11,10 +11,9 @@ import { catchError, of, take, finalize, Subscription, Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxMaskDirective } from 'ngx-mask';
 
-// 💡 NOUVEAU TYPE pour l'affichage des unités de prix
 interface PriceUnitDisplay {
-  value: PriceUnit; // La valeur réelle (HOUR, DAY, ...) envoyée au backend
-  label: string; // Le texte affiché (Heure, Jour, ...)
+  value: PriceUnit;
+  label: string;
 }
 
 @Component({
@@ -37,7 +36,6 @@ export class ResourceFormModalComponent implements OnInit, OnDestroy {
   isLoading = false;
   error: string | null = null;
 
-  // 💡 CORRECTION : Liste des unités de prix avec libellés FR
   priceUnitsDisplay: PriceUnitDisplay[] = [
     { value: 'HOUR', label: 'Heure' },
     { value: 'DAY', label: 'Jour' },
@@ -145,7 +143,7 @@ export class ResourceFormModalComponent implements OnInit, OnDestroy {
       country: formValue.country,
       city: formValue.city,
       address: formValue.address,
-      mainImage: formValue.mainImageFile, // Le fichier (File ou null)
+      mainImage: formValue.mainImageFile,
     };
 
     let operation: Observable<Resource>;

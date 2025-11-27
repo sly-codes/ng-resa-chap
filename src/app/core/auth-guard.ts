@@ -20,11 +20,9 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    // Vérifie si l'utilisateur a un token valide (via la logique du service)
     if (this.authService.isAuthenticatedSubject.value) {
-      return true; // Accès autorisé
+      return true;
     } else {
-      // Redirection vers la page de connexion
       return this.router.createUrlTree(['/auth/login']);
     }
   }
